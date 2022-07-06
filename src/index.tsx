@@ -9,31 +9,33 @@ import ZoomContext from './context/zoom-context';
 import { devConfig } from './config/dev';
 import { generateVideoToken } from './utils/util';
 
-let meetingArgs: any = Object.fromEntries(new URLSearchParams(location.search));
-if (
-  !meetingArgs.sdkKey ||
-  !meetingArgs.topic ||
-  !meetingArgs.name ||
-  !meetingArgs.signature
-) {
-  meetingArgs = devConfig;
-}
-if (!meetingArgs.signature && meetingArgs.sdkSecret && meetingArgs.topic) {
-  meetingArgs.signature = generateVideoToken(
-    meetingArgs.sdkKey,
-    meetingArgs.sdkSecret,
-    meetingArgs.topic,
-    meetingArgs.password,
-    'jack4',
-    'jack'
-  );
-}
-console.log('meetingArgs', meetingArgs);
+// let meetingArgs: any = Object.fromEntries(new URLSearchParams(location.search));
+// if (
+//   !meetingArgs.sdkKey ||
+//   !meetingArgs.topic ||
+//   !meetingArgs.name ||
+//   !meetingArgs.signature
+// ) {
+//   meetingArgs = devConfig;
+// }
+// if (!meetingArgs.signature && meetingArgs.sdkSecret && meetingArgs.topic) {
+//   meetingArgs.signature = generateVideoToken(
+//     meetingArgs.sdkKey,
+//     meetingArgs.sdkSecret,
+//     meetingArgs.topic,
+//     meetingArgs.password,
+//     'jack4',
+//     'jack'
+//   );
+// }
+// console.log('meetingArgs', meetingArgs);
 const zmClient = ZoomVideo.createClient();
 ReactDOM.render(
   <React.StrictMode>
     <ZoomContext.Provider value={zmClient}>
-      <App meetingArgs={meetingArgs as any} />
+      <App
+      // meetingArgs={meetingArgs as any} 
+      />
     </ZoomContext.Provider>
   </React.StrictMode>,
   document.getElementById('root'),

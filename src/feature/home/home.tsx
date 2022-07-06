@@ -8,6 +8,7 @@ import Background from 'images/background_image.png'
 
 
 import Header from 'images/header_logo.png'
+import Headers from '../../component/pages/Header'
 
 
 import App_Img from 'images/app_image.png'
@@ -48,9 +49,10 @@ return (
     <div
       className="main" 
           
-  style={ { backgroundImage: `url(${Background})` } }
+  // style={ { backgroundImage: `url(${Background})` } }
           
       >
+        <Headers />
       <div className="topnav">
         <a href="/" className="" id="logo">
           

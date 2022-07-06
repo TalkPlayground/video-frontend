@@ -21,6 +21,9 @@ import LoadingLayer from "./component/loading-layer";
 import Chat from "./feature/chat/chat";
 import { ChatClient, MediaStream } from "./index-types";
 import "./App.css";
+import login from "./feature/login/login";
+import Homepage from "./feature/home/Homepage";
+import Joinpage from './feature/Join/Joinpage'
 
 interface AppProps {
   meetingArgs: {
@@ -76,11 +79,11 @@ const mediaReducer = produce((draft, action) => {
   }
 }, mediaShape);
 
-function App(props: AppProps) {
-  const {
-    meetingArgs: { sdkKey, topic, signature, name, password },
-  } = props;
-  const [loading, setIsLoading] = useState(true);
+function App() {
+  // const {props: AppProps
+  //   meetingArgs: { sdkKey, topic, signature, name, password },
+  // } = props;
+  const [loading, setIsLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("");
   const [isFailover, setIsFailover] = useState<boolean>(false);
   const [status, setStatus] = useState<string>("closed");
@@ -89,78 +92,86 @@ function App(props: AppProps) {
   const [chatClient, setChatClient] = useState<ChatClient | null>(null);
   const [isSupportGalleryView, setIsSupportGalleryView] = useState<boolean>(true);
   const zmClient = useContext(ZoomContext);
+
+  useEffect(() => {
+    
+    const stream = zmClient.getMediaStream();
+    setMediaStream(stream);
+  }, [])
   
-  useEffect(() => {
-    const init = async () => {
-      await zmClient.init("en-US", `${window.location.origin}/lib`, 'zoom.us');
-      try {
-        setLoadingText("Joining the session...");
-        await zmClient.join(topic, signature, name, password);
-        const stream = zmClient.getMediaStream();
-        setMediaStream(stream);
-	      setIsSupportGalleryView(stream.isSupportMultipleVideos());
-        const chatClient = zmClient.getChatClient();
-        setChatClient(chatClient);
-        setIsLoading(false);
-      } catch (e) {
-        setIsLoading(false);
-        message.error(e.reason);
-      }
-    };
-    init();
-    return () => {
-      ZoomVideo.destroyClient();
-    };
-  }, [sdkKey, signature, zmClient, topic, name, password]);
-  const onConnectionChange = useCallback(
-    (payload) => {
-      if (payload.state === ConnectionState.Reconnecting) {
-        setIsLoading(true);
-        setIsFailover(true);
-        setStatus("connecting");
-        const { reason } = payload;
-        if (reason === "failover") {
-          setLoadingText("Session Disconnected,Try to reconnect");
-        }
-      } else if (payload.state === ConnectionState.Connected) {
-        setStatus("connected");
-        if (isFailover) {
-          setIsLoading(false);
-        }
-      } else if (payload.state === ConnectionState.Closed) {
-        setStatus("closed");
-        if (payload.reason === "ended by host") {
-          Modal.warning({
-            title: "Meeting ended",
-            content: "This meeting has been ended by host",
-          });
-        }
-      }
-    },
-    [isFailover]
-  );
-  const onMediaSDKChange = useCallback((payload) => {
-    const { action, type, result } = payload;
-    dispatch({ type: `${type}-${action}`, payload: result === "success" });
-  }, []);
-  const onLeaveOrJoinSession = useCallback(async () => {
-    if (status === "closed") {
-      setIsLoading(true);
-      await zmClient.join(topic, signature, name, password);
-      setIsLoading(false);
-    } else if (status === "connected") {
-      await zmClient.leave();
-      message.warn("You have left the session.");
-    }
-  }, [zmClient, status, topic, signature, name, password]);
-  useEffect(() => {
-    zmClient.on("connection-change", onConnectionChange);
-    zmClient.on("media-sdk-change", onMediaSDKChange);
-    return () => {
-      zmClient.off("connection-change", onConnectionChange);
-      zmClient.off("media-sdk-change", onMediaSDKChange);
-    };
-  }, [zmClient, onConnectionChange, onMediaSDKChange]);
+  
+  // // useEffect(() => {
+  // //   const init = async () => {
+  // //     await zmClient.init("en-US", `${window.location.origin}/lib`, 'zoom.us');
+  // //     try {
+  // //       setLoadingText("Joining the session...");
+  // //       await zmClient.join(topic, signature, name, password);
+        // const stream = zmClient.getMediaStream();
+        // setMediaStream(stream);
+	// //       setIsSupportGalleryView(stream.isSupportMultipleVideos());
+  // //       const chatClient = zmClient.getChatClient();
+  // //       setChatClient(chatClient);
+  // //       setIsLoading(false);
+  // //     } catch (e:any) {
+  // //       setIsLoading(false);
+  // //       message.error(e.reason);
+  // //     }
+  // //   };
+  // //   init();
+  // //   return () => {
+  // //     ZoomVideo.destroyClient();
+  // //   };
+  // // }, [sdkKey, signature, zmClient, topic, name, password]);
+
+  // const onConnectionChange = useCallback(
+  //   (payload) => {
+  //     if (payload.state === ConnectionState.Reconnecting) {
+  //       setIsLoading(true);
+  //       setIsFailover(true);
+  //       setStatus("connecting");
+  //       const { reason } = payload;
+  //       if (reason === "failover") {
+  //         setLoadingText("Session Disconnected,Try to reconnect");
+  //       }
+  //     } else if (payload.state === ConnectionState.Connected) {
+  //       setStatus("connected");
+  //       if (isFailover) {
+  //         setIsLoading(false);
+  //       }
+  //     } else if (payload.state === ConnectionState.Closed) {
+  //       setStatus("closed");
+  //       if (payload.reason === "ended by host") {
+  //         Modal.warning({
+  //           title: "Meeting ended",
+  //           content: "This meeting has been ended by host",
+  //         });
+  //       }
+  //     }
+  //   },
+  //   [isFailover]
+  // );
+  // const onMediaSDKChange = useCallback((payload) => {
+  //   const { action, type, result } = payload;
+  //   dispatch({ type: `${type}-${action}`, payload: result === "success" });
+  // }, []);
+  // const onLeaveOrJoinSession = useCallback(async () => {
+  //   if (status === "closed") {
+  //     setIsLoading(true);
+  //     await zmClient.join(topic, signature, name, password);
+  //     setIsLoading(false);
+  //   } else if (status === "connected") {
+  //     await zmClient.leave();
+  //     message.warn("You have left the session.");
+  //   }
+  // }, [zmClient, status, topic, signature, name, password]);
+  // useEffect(() => {
+  //   zmClient.on("connection-change", onConnectionChange);
+  //   zmClient.on("media-sdk-change", onMediaSDKChange);
+  //   return () => {
+  //     zmClient.off("connection-change", onConnectionChange);
+  //     zmClient.off("media-sdk-change", onMediaSDKChange);
+  //   };
+  // }, [zmClient, onConnectionChange, onMediaSDKChange]);
   return (
     <div className="App">
       {loading && <LoadingLayer content={loadingText} />}
@@ -172,7 +183,17 @@ function App(props: AppProps) {
                 <Route
                   path="/"
                   render={(props) => (
-                    <Home
+                    <Homepage
+                      {...props}
+                      status={status}
+                    />
+                  )}
+                  exact
+                />
+                <Route
+                  path="/Join"
+                  render={(props) => (
+                    <Joinpage
                       {...props}
                       status={status}
                     />
@@ -189,6 +210,7 @@ function App(props: AppProps) {
                   )}
                   exact
                 />
+                <Route path="/meet.talkplayground.com/login" component={login} />
                 <Route
                   path="/preview"
                   component={Preview}
