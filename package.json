@@ -4,6 +4,12 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.6.2",
+    "@craco/craco": "^6.4.4",
+    "@emotion/react": "^11.9.3",
+    "@emotion/styled": "^11.9.3",
+    "@material-ui/core": "^4.12.4",
+    "@mui/icons-material": "^5.8.4",
+    "@mui/material": "^5.8.7",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.8.3",
@@ -59,11 +65,14 @@
     "@types/react-router-dom": "^5.1.7",
     "@typescript-eslint/eslint-plugin": "^4.19.0",
     "@typescript-eslint/parser": "^4.19.0",
+    "autoprefixer": "^9.8.8",
     "copy-webpack-plugin": "6.2.1",
     "customize-cra": "1.0.0",
+    "postcss": "^7.0.39",
     "react-app-rewired": "2.1.8",
     "sass": "1.32.8",
     "sass-loader": "10.1.1",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17",
     "typescript": "4.2.3",
     "write-file-webpack-plugin": "4.5.1"
   }

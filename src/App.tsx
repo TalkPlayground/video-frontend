@@ -5,14 +5,19 @@ import React, {
   useCallback,
   useReducer,
 } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  useHistory,
+} from "react-router-dom";
 import ZoomVideo, { ConnectionState } from "@zoom/videosdk";
 import { message, Modal } from "antd";
 import "antd/dist/antd.css";
 import produce from "immer";
 import Home from "./feature/home/home";
 import Video from "./feature/video/video";
-import VideoSingle from './feature/video/video-single';
+import VideoSingle from "./feature/video/video-single";
 import Preview from "./feature/preview/preview";
 import ZoomContext from "./context/zoom-context";
 import ZoomMediaContext from "./context/media-context";
@@ -21,6 +26,8 @@ import LoadingLayer from "./component/loading-layer";
 import Chat from "./feature/chat/chat";
 import { ChatClient, MediaStream } from "./index-types";
 import "./App.css";
+import Joinpage from "./feature/Join/Joinpage";
+import Homepage from "./feature/home/Homepage";
 
 interface AppProps {
   meetingArgs: {
@@ -80,38 +87,43 @@ function App(props: AppProps) {
   const {
     meetingArgs: { sdkKey, topic, signature, name, password },
   } = props;
-  const [loading, setIsLoading] = useState(true);
+
+  const history = useHistory();
+  const [loading, setIsLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("");
   const [isFailover, setIsFailover] = useState<boolean>(false);
   const [status, setStatus] = useState<string>("closed");
   const [mediaState, dispatch] = useReducer(mediaReducer, mediaShape);
   const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
   const [chatClient, setChatClient] = useState<ChatClient | null>(null);
-  const [isSupportGalleryView, setIsSupportGalleryView] = useState<boolean>(true);
+  const [isSupportGalleryView, setIsSupportGalleryView] =
+    useState<boolean>(true);
   const zmClient = useContext(ZoomContext);
-  
+
   useEffect(() => {
-    const init = async () => {
-      await zmClient.init("en-US", `${window.location.origin}/lib`, 'zoom.us');
-      try {
-        setLoadingText("Joining the session...");
-        await zmClient.join(topic, signature, name, password);
-        const stream = zmClient.getMediaStream();
-        setMediaStream(stream);
-	      setIsSupportGalleryView(stream.isSupportMultipleVideos());
-        const chatClient = zmClient.getChatClient();
-        setChatClient(chatClient);
-        setIsLoading(false);
-      } catch (e) {
-        setIsLoading(false);
-        message.error(e.reason);
-      }
-    };
-    init();
-    return () => {
-      ZoomVideo.destroyClient();
-    };
-  }, [sdkKey, signature, zmClient, topic, name, password]);
+    sessionStorage.clear();
+  }, []);
+
+  const init = async (nameData: any) => {
+    setIsLoading(true);
+    console.log("name", nameData);
+    await zmClient.init("en-US", `${window.location.origin}/lib`, "zoom.us");
+    try {
+      setLoadingText("Joining the session...");
+      await zmClient.join(topic, signature, nameData, password);
+      const stream = zmClient.getMediaStream();
+      setMediaStream(stream);
+      setIsSupportGalleryView(stream.isSupportMultipleVideos());
+      const chatClient = zmClient.getChatClient();
+      setChatClient(chatClient);
+      history.push(`/video${window.location.search}`);
+      setIsLoading(false);
+    } catch (e: any) {
+      setIsLoading(false);
+      message.error(e.reason);
+    }
+  };
+
   const onConnectionChange = useCallback(
     (payload) => {
       if (payload.state === ConnectionState.Reconnecting) {
@@ -139,10 +151,12 @@ function App(props: AppProps) {
     },
     [isFailover]
   );
+
   const onMediaSDKChange = useCallback((payload) => {
     const { action, type, result } = payload;
     dispatch({ type: `${type}-${action}`, payload: result === "success" });
   }, []);
+
   const onLeaveOrJoinSession = useCallback(async () => {
     if (status === "closed") {
       setIsLoading(true);
@@ -153,6 +167,7 @@ function App(props: AppProps) {
       message.warn("You have left the session.");
     }
   }, [zmClient, status, topic, signature, name, password]);
+
   useEffect(() => {
     zmClient.on("connection-change", onConnectionChange);
     zmClient.on("media-sdk-change", onMediaSDKChange);
@@ -171,29 +186,26 @@ function App(props: AppProps) {
               <Switch>
                 <Route
                   path="/"
-                  render={(props) => (
-                    <Home
-                      {...props}
-                      status={status}
-                    />
-                  )}
+                  render={(props) => <Homepage {...props} status={status} />}
                   exact
                 />
                 <Route
+                  path="/Join"
+                  render={(props) => (
+                    <Joinpage {...props} status={status} init={init} />
+                  )}
+                  exact
+                />
+                {/* <Route
                   path="/index.html"
-                  render={(props) => (
-                    <Home
-                      {...props}
-                      status={status}
-                    />
-                  )}
+                  render={(props) => <Home {...props} status={status} />}
                   exact
-                />
+                /> */}
+                <Route path="/preview" component={Preview} />
                 <Route
-                  path="/preview"
-                  component={Preview}
+                  path="/video"
+                  component={isSupportGalleryView ? Video : VideoSingle}
                 />
-                <Route path="/video" component={isSupportGalleryView ? Video : VideoSingle} />
                 <Route path="/chat" component={Chat} />
               </Switch>
             </Router>
