@@ -47,7 +47,6 @@ const VideoFooter = (props: VideoFooterProps) => {
       );
     }
   }, [mediaStream, isStartedVideo]);
-  
   const onMicrophoneClick = useCallback(async () => {
     if (isStartedAudio) {
       if (isMuted) {
