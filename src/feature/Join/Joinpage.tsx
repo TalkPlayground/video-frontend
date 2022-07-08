@@ -57,8 +57,7 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
     history.push(`/${type}${window.location.search}`);
   };
 
-  const url =
-    "https://stackoverflow.com/questions/43209666/react-router-v4-cannot-get-url";
+  const url = "https://meet.talkpg.com/gur-ufbn-mio";
   return (
     <>
       <Header />
@@ -69,13 +68,14 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
           style={{ width: "60rem", marginTop: "5em" }}
         >
           <Grid
-            xs={6}
-            className="justify-content-center py-5 align-items-center "
+            xs={12}
+            md={6}
+            className="flex flex-col justify-content-center py-5 align-items-center "
           >
             <img src={HeaderIcon} alt="header_logo" className="Joinpagelogo" />
             <Typography
               style={{
-                fontSize: "40.54px",
+                fontSize: "2.54rem",
                 fontWeight: "inherit",
                 lineHeight: "43.3px",
                 color: "#434343",
@@ -85,7 +85,8 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
             </Typography>
           </Grid>
           <Grid
-            xs={6}
+            xs={12}
+            md={6}
             className="d-flex flex-column justify-content-center align-items-center"
           >
             {/* <Box className="d-flex flex-column justify-content-center align-items-center"> */}
@@ -140,7 +141,7 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
         open={openToast}
         id="JoinMeetingLink"
         message={
-          <Box className="d-flex justify-content-between align-items-center h-2">
+          <Box className="d-flex justify-content-between align-items-center">
             <p>{url?.length > 50 ? url.slice(0, 50) + "..." : url}</p>
             <IconButton onClick={() => navigator.clipboard.writeText(url)}>
               <ContentCopyIcon className="cursor-pointer" />

@@ -6,23 +6,23 @@
   justify-content: center;
   align-items: center;
   width: 60px !important;
-  height: 60px !important;
+  height: 40px !important;
   > *{
     font-size: 28px !important;
   }
 }
 .camera-dropdown-button {
-  border-radius: 20px;
+  border-radius: 10px;
   border: 1px solid #fff;
   width: 70px;
   display: flex;
   justify-content: center;
   margin-left: 30px;
   > .ant-btn {
-    font-size: 30px;
+    font-size: 25px;
     color: #fff;
     display: flex;
-    height: 60px !important;
+    height: 40px !important;
     align-items: center;
     border-width: 0 !important;
     padding: 0;

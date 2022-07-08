@@ -11,7 +11,7 @@ import {
   Box,
   IconButton,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
 import LinkIcon from "@mui/icons-material/Link";
 import HomepagePhoto from "../../assets/hompagePhoto.png";
@@ -40,8 +40,7 @@ function KeepMountedModal({ setOpenModal, openModal }: any) {
   const handleClose = () => setOpenModal(false);
   const [copyLinkDone, setcopyLinkDone] = useState(false);
 
-  const url =
-    "https://stackoverflow.com/questions/43209666/react-router-v4-cannot-get-url";
+  const url = "https://meet.talkpg.com/gur-ufbn-mio";
 
   const copyLink = () => {
     setcopyLinkDone(true);
@@ -80,7 +79,7 @@ function KeepMountedModal({ setOpenModal, openModal }: any) {
             Copy this link and send it to people you want to meet with. Be sure
             to save it so you can use it later, too.
           </Typography>
-          <Box className="d-flex justify-content-between align-items-center bg-light px-2 rounded mt-5 ">
+          <Box className="d-flex justify-content-between align-items-center bg-light px-2 my-3 rounded mb-5 ">
             <p id="copyInput">
               {url?.length > 35 ? url.slice(0, 35) + "..." : url}
             </p>
@@ -116,6 +115,10 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  useEffect(() => {
+    sessionStorage.clear();
+  }, []);
 
   const startSession = () => {
     // navigate("/Join");
@@ -159,9 +162,9 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
               fontSize: "22px",
               fontWeight: 300,
               lineHeight: "31.51px",
-              color: "gray",
+              // color: "gray",
             }}
-            className="pt-4 px-5"
+            className="pb-4 pt-1 px-5 bg-red-600"
           >
             Designed specifically for building emotional <br /> awareness. Free
             and available for all.
@@ -195,7 +198,7 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
               }}
               style={{ marginLeft: "38px" }}
             >
-              <MenuItem onClick={startSession} className="py-2">
+              <MenuItem onClick={startSession} className="py-1 mb-1">
                 <VideocamOutlinedIcon className="mr-2" />
                 <ListItemText
                   primary={
@@ -205,7 +208,7 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
                   }
                 />
               </MenuItem>
-              <MenuItem onClick={handleClose} className="py-2">
+              <MenuItem onClick={handleClose} className="py-1">
                 <LinkIcon className="mr-2" />
                 <ListItemText
                   onClick={createSession}
@@ -219,11 +222,8 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
             </Menu>
           </Box>
           <Divider className="ml-5 mt-3" />
-          <Typography className="pt-5 px-5" style={{ fontSize: "20px" }}>
-            <span
-              className=" cursor-pointer underline pr-1"
-              style={{ color: "#494CE2" }}
-            >
+          <Typography className="pt-3 px-5" style={{ fontSize: "15px" }}>
+            <span className="LearnMore pr-1" style={{ color: "#494CE2" }}>
               Learn more
             </span>
             about Playground

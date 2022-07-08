@@ -1,16 +1,18 @@
 /* eslint-disable no-nested-ternary */
-import React from 'react';
-import { Menu, Tooltip, Dropdown, Button } from 'antd';
-import classNames from 'classnames';
+import React from "react";
+import { Menu, Tooltip, Dropdown, Button } from "antd";
+import classNames from "classnames";
 import {
   AudioOutlined,
   AudioMutedOutlined,
   CheckOutlined,
   UpOutlined,
-} from '@ant-design/icons';
-import { IconFont } from '../../../component/icon-font';
-import './microphone.scss';
-import { MediaDevice } from '../video-types';
+} from "@ant-design/icons";
+import { IconFont } from "../../../component/icon-font";
+import "./microphone.scss";
+import { MediaDevice } from "../video-types";
+import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice";
+
 const { Button: DropdownButton } = Dropdown;
 interface MicrophoneButtonProps {
   isStartedAudio: boolean;
@@ -35,12 +37,16 @@ const MicrophoneButton = (props: MicrophoneButtonProps) => {
     onMicrophoneClick,
     onMicrophoneMenuClick,
   } = props;
-  const tooltipText = isStartedAudio ? (isMuted ? 'unmute' : 'mute') : 'start audio';
+  const tooltipText = isStartedAudio
+    ? isMuted
+      ? "unmute"
+      : "mute"
+    : "start audio";
   const menu = [];
   if (microphoneList && microphoneList.length) {
     menu.push({
-      group: 'microphone',
-      title: 'Select a Microphone',
+      group: "microphone",
+      title: "Select a Microphone",
       items: microphoneList.map((i) => ({
         label: i.label,
         value: i.deviceId,
@@ -50,8 +56,8 @@ const MicrophoneButton = (props: MicrophoneButtonProps) => {
   }
   if (speakerList && speakerList.length) {
     menu.push({
-      group: 'speaker',
-      title: 'Select a speaker',
+      group: "speaker",
+      title: "Select a speaker",
       items: speakerList.map((i) => ({
         label: i.label,
         value: i.deviceId,
@@ -62,8 +68,8 @@ const MicrophoneButton = (props: MicrophoneButtonProps) => {
   menu.push({
     items: [
       {
-        label: 'Leave Audio',
-        value: 'leave audio',
+        label: "Leave Audio",
+        value: "leave audio",
       },
     ],
   });
@@ -93,21 +99,21 @@ const MicrophoneButton = (props: MicrophoneButtonProps) => {
         }
         // initialData.products.map(product => product.id)
         // (initialData.products as Array<CompoundType['products'][0]>).map(product => product.id)
-        return (e.items as Array<{ value: string; label: string }>).map((m: any) => (
-          <Menu.Item key={m?.value}>{m?.label}</Menu.Item>
-        ));
+        return (e.items as Array<{ value: string; label: string }>).map(
+          (m: any) => <Menu.Item key={m?.value}>{m?.label}</Menu.Item>
+        );
       })}
     </Menu>
   );
   return (
-    <div className={classNames('microphone-footer', className)}>
+    <div className={classNames("microphone-footer", className)}>
       {isStartedAudio ? (
         <DropdownButton
-          className={'microphone-dropdown-button'}
+          className={"microphone-dropdown-button"}
           size="large"
           overlay={overlayMenu}
           onClick={onMicrophoneClick}
-          trigger={['click']}
+          trigger={["click"]}
           type="ghost"
           icon={<UpOutlined />}
           placement="topRight"
@@ -115,16 +121,16 @@ const MicrophoneButton = (props: MicrophoneButtonProps) => {
           {isMuted ? <AudioMutedOutlined /> : <AudioOutlined />}
         </DropdownButton>
       ) : (
-    <Tooltip title={tooltipText}>
-      <Button
-            className={'microphone-button'}
+        <Tooltip title={tooltipText}>
+          <Button
+            className={"microphone-button"}
             icon={<IconFont type="icon-headset" />}
             size="large"
-        ghost
-        shape="circle"
-        onClick={onMicrophoneClick}
-      />
-    </Tooltip>
+            ghost
+            shape="circle"
+            onClick={onMicrophoneClick}
+          />
+        </Tooltip>
       )}
     </div>
   );
