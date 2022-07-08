@@ -11,11 +11,12 @@ import React, { useEffect, useState } from "react";
 import Header_logo from "../../assets/header_logo.png";
 
 import Header_icon from "../../assets/app_image.png";
-import "./Header.scss";
+import "./index.scss";
+import { useHistory } from "react-router-dom";
 // import { useNavigate } from "react-router-dom";
 
 function Header() {
-  //   const navigate = useNavigate();
+  const history = useHistory();
   return (
     <Grid container className="align-items-center py-2 px-5">
       <Grid xs={12} md={6} className="d-flex justify-items-start">
@@ -30,7 +31,7 @@ function Header() {
           <Button
             variant="outlined"
             style={{ textTransform: "inherit", color: "#949494" }}
-            // onClick={() => navigate("/Loginoption")}
+            onClick={() => history.push("/Loginoption")}
             startIcon={
               <img
                 src={Header_icon}

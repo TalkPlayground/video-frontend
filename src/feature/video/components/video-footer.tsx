@@ -4,32 +4,34 @@ import React, {
   useContext,
   useEffect,
   MutableRefObject,
-} from 'react';
-import classNames from 'classnames';
-import { message } from 'antd';
-import ZoomContext from '../../../context/zoom-context';
-import CameraButton from './camera';
-import MicrophoneButton from './microphone';
-import { ScreenShareButton } from './screen-share';
-import ZoomMediaContext from '../../../context/media-context';
-import { useUnmount } from '../../../hooks';
-import { MediaDevice } from '../video-types';
-import './video-footer.scss';
+} from "react";
+import classNames from "classnames";
+import { message } from "antd";
+import ZoomContext from "../../../context/zoom-context";
+import CameraButton from "./camera";
+import MicrophoneButton from "./microphone";
+import { ScreenShareButton } from "./screen-share";
+import ZoomMediaContext from "../../../context/media-context";
+import { useUnmount } from "../../../hooks";
+import { MediaDevice } from "../video-types";
+import "./video-footer.scss";
+import CallEndIcon from "@mui/icons-material/CallEnd";
+import { IconButton, Tooltip } from "@mui/material";
 interface VideoFooterProps {
   className?: string;
   shareRef?: MutableRefObject<HTMLCanvasElement | null>;
   sharing?: boolean;
 }
-const isAudioEnable = typeof AudioWorklet === 'function';
+const isAudioEnable = typeof AudioWorklet === "function";
 const VideoFooter = (props: VideoFooterProps) => {
   const { className, shareRef, sharing } = props;
   const [isStartedAudio, setIsStartedAudio] = useState(false);
   const [isStartedVideo, setIsStartedVideo] = useState(false);
   const [isStartedScreenShare, setIsStartedScreenShare] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const [activeMicrophone, setActiveMicrophone] = useState('');
-  const [activeSpeaker, setActiveSpeaker] = useState('');
-  const [activeCamera, setActiveCamera] = useState('');
+  const [activeMicrophone, setActiveMicrophone] = useState("");
+  const [activeSpeaker, setActiveSpeaker] = useState("");
+  const [activeCamera, setActiveCamera] = useState("");
   const [micList, setMicList] = useState<MediaDevice[]>([]);
   const [speakerList, setSpeakerList] = useState<MediaDevice[]>([]);
   const [cameraList, setCameraList] = useState<MediaDevice[]>([]);
@@ -42,16 +44,14 @@ const VideoFooter = (props: VideoFooterProps) => {
     } else {
       await mediaStream?.startVideo();
       setIsStartedVideo(true);
-      await mediaStream?.mirrorVideo(
-        false
-      );
+      await mediaStream?.mirrorVideo(false);
     }
   }, [mediaStream, isStartedVideo]);
   const onMicrophoneClick = useCallback(async () => {
     if (isStartedAudio) {
       if (isMuted) {
-          await mediaStream?.unmuteAudio();
-          setIsMuted(false);
+        await mediaStream?.unmuteAudio();
+        setIsMuted(false);
       } else {
         await mediaStream?.muteAudio();
         setIsMuted(true);
@@ -63,22 +63,21 @@ const VideoFooter = (props: VideoFooterProps) => {
   }, [mediaStream, isStartedAudio, isMuted]);
   const onMicrophoneMenuClick = async (key: string) => {
     if (mediaStream) {
-      const [type, deviceId] = key.split('|');
-      if (type === 'microphone') {
+      const [type, deviceId] = key.split("|");
+      if (type === "microphone") {
         if (deviceId !== activeMicrophone) {
           await mediaStream.switchMicrophone(deviceId);
           setActiveMicrophone(mediaStream.getActiveMicrophone());
         }
-      } else if (type === 'speaker') {
+      } else if (type === "speaker") {
         if (deviceId !== activeSpeaker) {
           await mediaStream.switchSpeaker(deviceId);
           setActiveSpeaker(mediaStream.getActiveSpeaker());
         }
-      } else if (type === 'leave audio') {
+      } else if (type === "leave audio") {
         await mediaStream.stopAudio();
         setIsStartedAudio(false);
       }
-      
     }
   };
   const onSwitchCamera = async (key: string) => {
@@ -91,19 +90,19 @@ const VideoFooter = (props: VideoFooterProps) => {
   };
   const onHostAudioMuted = useCallback((payload) => {
     const { action, source, type } = payload;
-    if (action === 'join' && type === 'computer') {
+    if (action === "join" && type === "computer") {
       setIsStartedAudio(true);
-    } else if (action === 'leave') {
+    } else if (action === "leave") {
       setIsStartedAudio(false);
-    } else if (action === 'muted') {
+    } else if (action === "muted") {
       setIsMuted(true);
-      if (source === 'passive(mute one)') {
-        message.info('Host muted you');
+      if (source === "passive(mute one)") {
+        message.info("Host muted you");
       }
-    } else if (action === 'unmuted') {
+    } else if (action === "unmuted") {
       setIsMuted(false);
-      if (source === 'passive') {
-        message.info('Host unmuted you');
+      if (source === "passive") {
+        message.info("Host unmuted you");
       }
     }
   }, []);
@@ -117,7 +116,7 @@ const VideoFooter = (props: VideoFooterProps) => {
     }
   }, [mediaStream, isStartedScreenShare, shareRef]);
   const onPassivelyStopShare = useCallback(({ reason }) => {
-    console.log('passively stop reason:', reason);
+    console.log("passively stop reason:", reason);
     setIsStartedScreenShare(false);
   }, []);
   const onDeviceChange = useCallback(() => {
@@ -131,13 +130,13 @@ const VideoFooter = (props: VideoFooterProps) => {
     }
   }, [mediaStream]);
   useEffect(() => {
-    zmClient.on('current-audio-change', onHostAudioMuted);
-    zmClient.on('passively-stop-share', onPassivelyStopShare);
-    zmClient.on('device-change', onDeviceChange);
+    zmClient.on("current-audio-change", onHostAudioMuted);
+    zmClient.on("passively-stop-share", onPassivelyStopShare);
+    zmClient.on("device-change", onDeviceChange);
     return () => {
-      zmClient.off('current-audio-change', onHostAudioMuted);
-      zmClient.off('passively-stop-share', onPassivelyStopShare);
-      zmClient.off('device-change', onDeviceChange);
+      zmClient.off("current-audio-change", onHostAudioMuted);
+      zmClient.off("passively-stop-share", onPassivelyStopShare);
+      zmClient.off("device-change", onDeviceChange);
     };
   }, [zmClient, onHostAudioMuted, onPassivelyStopShare, onDeviceChange]);
   useUnmount(() => {
@@ -152,24 +151,20 @@ const VideoFooter = (props: VideoFooterProps) => {
     }
   });
   return (
-    <div className={classNames('video-footer', className)}>
-      
-        { isAudioEnable && (
-      <MicrophoneButton
-        isStartedAudio={isStartedAudio}
-        isMuted={isMuted}
-        onMicrophoneClick={onMicrophoneClick}
+    <div className={classNames("video-footer", className)}>
+      {isAudioEnable && (
+        <MicrophoneButton
+          isStartedAudio={isStartedAudio}
+          isMuted={isMuted}
+          onMicrophoneClick={onMicrophoneClick}
           onMicrophoneMenuClick={onMicrophoneMenuClick}
-          
-        microphoneList={micList}
-      
-      speakerList={speakerList}
-      activeMicrophone={activeMicrophone}
-      activeSpeaker={activeSpeaker}
+          microphoneList={micList}
+          speakerList={speakerList}
+          activeMicrophone={activeMicrophone}
+          activeSpeaker={activeSpeaker}
         />
       )}
-      
-      
+
       <CameraButton
         isStartedVideo={isStartedVideo}
         onCameraClick={onCameraClick}
@@ -177,15 +172,26 @@ const VideoFooter = (props: VideoFooterProps) => {
         cameraList={cameraList}
         activeCamera={activeCamera}
       />
-      
-      
-        { sharing && (
-          <ScreenShareButton
-            isStartedScreenShare={isStartedScreenShare}
-            onScreenShareClick={onScreenShareClick}
-          />
-        )}
-      
+
+      {sharing && (
+        <ScreenShareButton
+          isStartedScreenShare={isStartedScreenShare}
+          onScreenShareClick={onScreenShareClick}
+        />
+      )}
+      <a
+        className="ml-4 bg-danger rounded-circle"
+        style={{ padding: "11px 12px" }}
+        href="/"
+      >
+        <Tooltip title={"Call Ended"} style={{ backgroundColor: "black" }}>
+          <CallEndIcon style={{ fill: "#fff" }} />
+        </Tooltip>
+      </a>
+      {/* <a className="exit" href="/">
+        <i className="far fa-times-circle"></i>{" "}
+      </a> */}
+
       {/* {(zmClient.isManager() || zmClient.isHost())&& (
         <ScreenShareLockButton
         isLockedScreenShare={isLockedScreenShare}

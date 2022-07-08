@@ -1,25 +1,37 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
-.HomepagePhoto{
-  width: 80%;
+.HomepagePhoto {
+  width: 85%;
 }
 
-#copyInput{
+#copyInput {
   font-size: 18px;
 }
 
-.css-1exqwzz-MuiSnackbarContent-message{
+.css-1exqwzz-MuiSnackbarContent-message {
   padding: 0 !important;
+}
+#JoinMeetingLink .css-1eqdgzv-MuiPaper-root-MuiSnackbarContent-root {
+  padding: 0px 16px !important;
+  color: #919499;
+  background-color: #fff;
+}
+
+.LearnMore {
+  cursor: pointer;
+}
+.LearnMore:hover {
+  text-decoration: underline;
 }

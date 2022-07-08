@@ -28,6 +28,9 @@ import { ChatClient, MediaStream } from "./index-types";
 import "./App.css";
 import Joinpage from "./feature/Join/Joinpage";
 import Homepage from "./feature/home/Homepage";
+import Loginoption from "./feature/Loginoption/Loginoption";
+import Loginpage from "./feature/Loginoption/Login";
+import RegisterPage from "./feature/Loginoption/Register";
 
 interface AppProps {
   meetingArgs: {
@@ -99,10 +102,6 @@ function App(props: AppProps) {
   const [isSupportGalleryView, setIsSupportGalleryView] =
     useState<boolean>(true);
   const zmClient = useContext(ZoomContext);
-
-  useEffect(() => {
-    sessionStorage.clear();
-  }, []);
 
   const init = async (nameData: any) => {
     setIsLoading(true);
@@ -193,6 +192,23 @@ function App(props: AppProps) {
                   path="/Join"
                   render={(props) => (
                     <Joinpage {...props} status={status} init={init} />
+                  )}
+                  exact
+                />
+                <Route
+                  path="/LoginOption"
+                  render={(props) => <Loginoption {...props} status={status} />}
+                  exact
+                />
+                <Route
+                  path="/Login"
+                  render={(props) => <Loginpage {...props} status={status} />}
+                  exact
+                />
+                <Route
+                  path="/Register"
+                  render={(props) => (
+                    <RegisterPage {...props} status={status} />
                   )}
                   exact
                 />

@@ -1,20 +1,22 @@
-import React, { useContext, useRef } from 'react';
-import classnames from 'classnames';
-import { RouteComponentProps } from 'react-router-dom';
-import ZoomContext from '../../context/zoom-context';
-import ZoomMediaContext from '../../context/media-context';
-import Avatar from './components/avatar';
-import VideoFooter from './components/video-footer';
-import Pagination from './components/pagination';
-import { useCanvasDimension } from './hooks/useCanvasDimension';
-import { useGalleryLayout } from './hooks/useGalleryLayout';
-import { usePagination } from './hooks/usePagination';
-import { useActiveVideo } from './hooks/useAvtiveVideo';
-import { useShare } from './hooks/useShare';
-import './video.scss';
-import { isSupportWebCodecs } from '../../utils/platform';
+import React, { useContext, useRef } from "react";
+import classnames from "classnames";
+import { RouteComponentProps } from "react-router-dom";
+import ZoomContext from "../../context/zoom-context";
+import ZoomMediaContext from "../../context/media-context";
+import Avatar from "./components/avatar";
+import VideoFooter from "./components/video-footer";
+import Pagination from "./components/pagination";
+import { useCanvasDimension } from "./hooks/useCanvasDimension";
+import { useGalleryLayout } from "./hooks/useGalleryLayout";
+import { usePagination } from "./hooks/usePagination";
+import { useActiveVideo } from "./hooks/useAvtiveVideo";
+import { useShare } from "./hooks/useShare";
+import "./video.scss";
+import { isSupportWebCodecs } from "../../utils/platform";
 
-const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => {
+const VideoContainer: React.FunctionComponent<RouteComponentProps> = (
+  props
+) => {
   const zmClient = useContext(ZoomContext);
   const {
     mediaStream,
@@ -22,13 +24,15 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
   } = useContext(ZoomMediaContext);
   const videoRef = useRef<HTMLCanvasElement | null>(null);
   const shareRef = useRef<HTMLCanvasElement | null>(null);
-  const selfShareRef = useRef<HTMLCanvasElement & HTMLVideoElement | null>(null);
+  const selfShareRef = useRef<(HTMLCanvasElement & HTMLVideoElement) | null>(
+    null
+  );
   const shareContainerRef = useRef<HTMLDivElement | null>(null);
   const canvasDimension = useCanvasDimension(mediaStream, videoRef);
   const activeVideo = useActiveVideo(zmClient);
   const { page, pageSize, totalPage, totalSize, setPage } = usePagination(
     zmClient,
-    canvasDimension,
+    canvasDimension
   );
   const { visibleParticipants, layout: videoLayout } = useGalleryLayout(
     zmClient,
@@ -41,21 +45,19 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
       pageSize,
       totalPage,
       totalSize,
-    },
+    }
   );
   const { isRecieveSharing, isStartedShare, sharedContentDimension } = useShare(
     zmClient,
     mediaStream,
-    shareRef,
+    shareRef
   );
   const isSharing = isRecieveSharing || isStartedShare;
   const contentDimension = sharedContentDimension;
   if (isSharing && shareContainerRef.current) {
     const { width, height } = sharedContentDimension;
-    const {
-      width: containerWidth,
-      height: containerHeight,
-    } = shareContainerRef.current.getBoundingClientRect();
+    const { width: containerWidth, height: containerHeight } =
+      shareContainerRef.current.getBoundingClientRect();
     const ratio = Math.min(containerWidth / width, containerHeight / height, 1);
     contentDimension.width = Math.floor(width * ratio);
     contentDimension.height = Math.floor(height * ratio);
@@ -63,10 +65,10 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
 
   return (
     <div className="viewport">
-      <a className="exit" href="/"> <i className="far fa-times-circle"></i> </a>
+      {/* <a className="exit" href="/"> <i className="far fa-times-circle"></i> </a> */}
       <div
-        className={classnames('share-container', {
-          'in-sharing': isSharing,
+        className={classnames("share-container", {
+          "in-sharing": isSharing,
         })}
         ref={shareContainerRef}
       >
@@ -78,21 +80,29 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
           }}
         >
           <canvas
-            className={classnames('share-canvas', { hidden: isStartedShare })}
+            className={classnames("share-canvas", { hidden: isStartedShare })}
             ref={shareRef}
           />
-          {isSupportWebCodecs() ? <video
-            className={classnames('share-canvas', { hidden: isRecieveSharing })}
-            ref={selfShareRef}
-          /> : <canvas
-            className={classnames('share-canvas', { hidden: isRecieveSharing })}
-            ref={selfShareRef}
-          />}
+          {isSupportWebCodecs() ? (
+            <video
+              className={classnames("share-canvas", {
+                hidden: isRecieveSharing,
+              })}
+              ref={selfShareRef}
+            />
+          ) : (
+            <canvas
+              className={classnames("share-canvas", {
+                hidden: isRecieveSharing,
+              })}
+              ref={selfShareRef}
+            />
+          )}
         </div>
       </div>
       <div
-        className={classnames('video-container', {
-          'in-sharing': isSharing,
+        className={classnames("video-container", {
+          "in-sharing": isSharing,
         })}
       >
         <canvas
@@ -126,9 +136,13 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
           })}
         </ul>
       </div>
-      
-      <VideoFooter className="video-operations" sharing shareRef={selfShareRef} />
-      
+
+      <VideoFooter
+        className="video-operations"
+        sharing
+        shareRef={selfShareRef}
+      />
+
       {totalPage > 1 && (
         <Pagination
           page={page}

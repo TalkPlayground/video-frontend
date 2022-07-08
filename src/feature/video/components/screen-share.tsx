@@ -1,9 +1,12 @@
-import React from 'react';
-import { Button, Tooltip } from 'antd';
-import classNames from 'classnames';
-import { IconFont } from '../../../component/icon-font';
-import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
-import './screen-share.scss';
+import React from "react";
+import { Button, Tooltip } from "antd";
+import classNames from "classnames";
+import { IconFont } from "../../../component/icon-font";
+import { LockOutlined, UnlockOutlined } from "@ant-design/icons";
+import "./screen-share.scss";
+import ScreenShareIcon from "@mui/icons-material/ScreenShare";
+import StopScreenShareIcon from "@mui/icons-material/StopScreenShare";
+
 interface ScreenShareButtonProps {
   isStartedScreenShare: boolean;
   onScreenShareClick: () => void;
@@ -18,13 +21,19 @@ const ScreenShareButton = (props: ScreenShareButtonProps) => {
   const { isStartedScreenShare, onScreenShareClick } = props;
   return (
     <Tooltip
-      title={isStartedScreenShare ? 'stop screen share' : 'start screen share'}
+      title={isStartedScreenShare ? "stop screen share" : "start screen share"}
     >
       <Button
-        className={classNames('screen-share-button', {
-          'started-share': isStartedScreenShare,
+        className={classNames("screen-share-button", {
+          "started-share": isStartedScreenShare,
         })}
-        icon={<IconFont type="icon-share" />}
+        icon={
+          isStartedScreenShare ? (
+            <StopScreenShareIcon type="icon-share" />
+          ) : (
+            <ScreenShareIcon type="icon-share" />
+          )
+        }
         // eslint-disable-next-line react/jsx-boolean-value
         ghost={true}
         shape="circle"
@@ -39,7 +48,7 @@ const ScreenShareLockButton = (props: ScreenShareLockButtonProps) => {
   const { isLockedScreenShare, onScreenShareLockClick } = props;
   return (
     <Tooltip
-      title={isLockedScreenShare ? 'unlock screen share' : ' lock screen share'}
+      title={isLockedScreenShare ? "unlock screen share" : " lock screen share"}
     >
       <Button
         className={"screen-share-button"}
@@ -54,4 +63,4 @@ const ScreenShareLockButton = (props: ScreenShareLockButtonProps) => {
   );
 };
 
-export { ScreenShareButton, ScreenShareLockButton};
+export { ScreenShareButton, ScreenShareLockButton };
