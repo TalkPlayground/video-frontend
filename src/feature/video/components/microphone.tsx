@@ -106,8 +106,8 @@ const MicrophoneButton = (props: MicrophoneButtonProps) => {
     </Menu>
   );
   return (
-    <div className={classNames("microphone-footer", className)}>
-      {isStartedAudio ? (
+    <div className={classNames("microphone-footer")}>
+      {/* {isStartedAudio ? (
         <DropdownButton
           className={"microphone-dropdown-button"}
           size="large"
@@ -120,18 +120,20 @@ const MicrophoneButton = (props: MicrophoneButtonProps) => {
         >
           {isMuted ? <AudioMutedOutlined /> : <AudioOutlined />}
         </DropdownButton>
-      ) : (
-        <Tooltip title={tooltipText}>
-          <Button
-            className={"microphone-button"}
-            icon={<IconFont type="icon-headset" />}
-            size="large"
-            ghost
-            shape="circle"
-            onClick={onMicrophoneClick}
-          />
-        </Tooltip>
-      )}
+      ) : ( */}
+      <Tooltip title={tooltipText}>
+        <Button
+          className={
+            isMuted ? "microphone-button bg-danger" : "microphone-button"
+          }
+          icon={isMuted ? <AudioMutedOutlined /> : <AudioOutlined />}
+          size="large"
+          ghost
+          shape="circle"
+          onClick={onMicrophoneClick}
+        />
+      </Tooltip>
+      {/* )} */}
     </div>
   );
 };

@@ -23,6 +23,7 @@ import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
 import Header from "../../component/pages/Header";
 import { RouteComponentProps } from "react-router-dom";
 import "../../index.css";
+import { devConfig } from "../../config/dev";
 
 const style = {
   position: "absolute",
@@ -40,7 +41,7 @@ function KeepMountedModal({ setOpenModal, openModal }: any) {
   const handleClose = () => setOpenModal(false);
   const [copyLinkDone, setcopyLinkDone] = useState(false);
 
-  const url = "https://meet.talkpg.com/gur-ufbn-mio";
+  const url = `${window.location.origin}/video?topic=${devConfig.topic}`;
 
   const copyLink = () => {
     setcopyLinkDone(true);

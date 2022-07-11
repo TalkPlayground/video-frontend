@@ -1,11 +1,11 @@
 .camere-button {
-  font-size: 30px;
+  font-size: 20px;
   color: #fff;
   margin-left: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 60px !important;
+  width: 45px !important;
   height: 40px !important;
   > *{
     font-size: 28px !important;
@@ -19,7 +19,7 @@
   justify-content: center;
   margin-left: 30px;
   > .ant-btn {
-    font-size: 25px;
+    font-size: 20px;
     color: #fff;
     display: flex;
     height: 40px !important;
@@ -27,9 +27,9 @@
     border-width: 0 !important;
     padding: 0;
     margin-right: 5px;
-    &:hover {
-      color: #40a9ff;
-    }
+    // &:hover {
+    //   color: #40a9ff;
+    // }
   }
   > .ant-dropdown-trigger {
     width: 20px !important;
@@ -48,9 +48,9 @@
       left: 10px;
       top: 15px;
     }
-    &:hover {
-      color: #40a9ff;
-    }
+    // &:hover {
+    //   color: #40a9ff;
+    // }
   }
   .ant-dropdown-menu-item-group-title {
     color: #fff;

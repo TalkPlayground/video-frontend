@@ -37,6 +37,12 @@ const VideoFooter = (props: VideoFooterProps) => {
   const [cameraList, setCameraList] = useState<MediaDevice[]>([]);
   const { mediaStream } = useContext(ZoomMediaContext);
   const zmClient = useContext(ZoomContext);
+
+  useEffect(() => {
+    onCameraClick();
+    onMicrophoneClick();
+  }, []);
+
   const onCameraClick = useCallback(async () => {
     if (isStartedVideo) {
       await mediaStream?.stopVideo();

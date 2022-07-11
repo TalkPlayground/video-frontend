@@ -10,7 +10,7 @@ import classNames from "classnames";
 import "./camera.scss";
 import { MediaDevice } from "../video-types";
 import VideocamIcon from "@mui/icons-material/Videocam";
-import VideocamOffIcon from "@mui/icons-material/VideocamOff";
+import VideocamOffOutlinedIcon from "@mui/icons-material/VideocamOffOutlined";
 
 interface CameraButtonProps {
   isStartedVideo: boolean;
@@ -38,7 +38,7 @@ const CameraButton = (props: CameraButtonProps) => {
         {cameraList.map((item) => (
           <Menu.Item
             key={item.deviceId}
-            icon={item.deviceId === activeCamera && <VideocamOffIcon />}
+            icon={item.deviceId === activeCamera && <VideocamOffOutlinedIcon />}
           >
             {item.label}
           </Menu.Item>
@@ -48,7 +48,7 @@ const CameraButton = (props: CameraButtonProps) => {
   );
   return (
     <div className={classNames("camera-footer", className)}>
-      {isStartedVideo && menu ? (
+      {/* {isStartedVideo && menu ? (
         <Dropdown.Button
           className={"camera-dropdown-button"}
           size="large"
@@ -61,18 +61,29 @@ const CameraButton = (props: CameraButtonProps) => {
         >
           <VideoCameraOutlined />
         </Dropdown.Button>
-      ) : (
-        <Tooltip title={`${isStartedVideo ? "stop camera" : "start camera"}`}>
-          <Button
-            className={classNames("camere-button", className)}
-            icon={isStartedVideo ? <VideocamIcon /> : <VideocamIcon />}
-            ghost={true}
-            shape="circle"
-            size="large"
-            onClick={onCameraClick}
-          />
-        </Tooltip>
-      )}
+      ) : 
+      ( */}
+      <Tooltip title={`${isStartedVideo ? "stop camera" : "start camera"}`}>
+        <Button
+          className={classNames(
+            "camere-button",
+            isStartedVideo ? "bg-danger" : "",
+            className
+          )}
+          icon={
+            isStartedVideo ? (
+              <VideocamOffOutlinedIcon style={{ fill: "#fff" }} />
+            ) : (
+              <VideocamIcon />
+            )
+          }
+          ghost={true}
+          shape="circle"
+          size="large"
+          onClick={onCameraClick}
+        />
+      </Tooltip>
+      {/* )} */}
     </div>
   );
 };
