@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext, useRef, useState } from "react";
 import classnames from "classnames";
 import { RouteComponentProps } from "react-router-dom";
 import ZoomContext from "../../context/zoom-context";
@@ -13,10 +13,12 @@ import { useActiveVideo } from "./hooks/useAvtiveVideo";
 import { useShare } from "./hooks/useShare";
 import "./video.scss";
 import { isSupportWebCodecs } from "../../utils/platform";
+import BasicCard from "../../component/pages/Linkcard";
 
 const VideoContainer: React.FunctionComponent<RouteComponentProps> = (
   props
 ) => {
+  const [LinkShowCard, setLinkShowCard] = useState(true);
   const zmClient = useContext(ZoomContext);
   const {
     mediaStream,
@@ -65,6 +67,12 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (
 
   return (
     <div className="viewport">
+      {LinkShowCard && (
+        <BasicCard
+          setLinkShowCard={setLinkShowCard}
+          LinkShowCard={LinkShowCard}
+        />
+      )}
       {/* <a className="exit" href="/"> <i className="far fa-times-circle"></i> </a> */}
       <div
         className={classnames("share-container", {

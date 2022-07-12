@@ -31,6 +31,8 @@ import Homepage from "./feature/home/Homepage";
 import Loginoption from "./feature/Loginoption/Loginoption";
 import Loginpage from "./feature/Loginoption/Login";
 import RegisterPage from "./feature/Loginoption/Register";
+import { devConfig, topicInfo } from "./config/dev";
+import { getExploreName } from "./utils/platform";
 
 interface AppProps {
   meetingArgs: {
@@ -103,6 +105,13 @@ function App(props: AppProps) {
     useState<boolean>(true);
   const zmClient = useContext(ZoomContext);
 
+  useEffect(() => {
+    console.log("devConfig", devConfig);
+    if (topicInfo?.length) {
+      init(`${getExploreName()}-${Math.floor(Math.random() * 1000)}`);
+    }
+  }, [topicInfo]);
+
   const init = async (nameData: any) => {
     setIsLoading(true);
     console.log("name", nameData);
@@ -115,7 +124,7 @@ function App(props: AppProps) {
       setIsSupportGalleryView(stream.isSupportMultipleVideos());
       const chatClient = zmClient.getChatClient();
       setChatClient(chatClient);
-      history.push(`/video${window.location.search}`);
+      // history.push(`/video${window.location.search}`);
       setIsLoading(false);
     } catch (e: any) {
       setIsLoading(false);

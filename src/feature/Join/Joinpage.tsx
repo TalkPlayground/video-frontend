@@ -54,10 +54,10 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
 
   const onCardClick = (type: string) => {
     init(DisplayDataInfo.Displayname);
-    history.push(`/${type}${window.location.search}`);
+    history.push(`/${type}?topic=${devConfig.topic}${window.location.search}`);
   };
 
-  const url = "https://meet.talkpg.com/gur-ufbn-mio";
+  const url = `${window.location.origin}/video?topic=${devConfig.topic}`;
   return (
     <>
       <Header />
@@ -141,8 +141,9 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
         open={openToast}
         id="JoinMeetingLink"
         message={
-          <Box className="d-flex justify-content-between align-items-center">
+          <Box className="d-flex justify-content-between align-items-center ">
             <p>{url?.length > 50 ? url.slice(0, 50) + "..." : url}</p>
+
             <IconButton onClick={() => navigator.clipboard.writeText(url)}>
               <ContentCopyIcon className="cursor-pointer" />
             </IconButton>
