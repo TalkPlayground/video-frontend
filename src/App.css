@@ -2,11 +2,16 @@
   text-align: center;
   height: 100%;
 }
-p,li,ul,ol,h1,h2{
+p,
+li,
+ul,
+ol,
+h1,
+h2 {
   padding: 0;
   margin: 0;
 }
-li{
+li {
   list-style: none;
 }
 .back-home {
@@ -17,4 +22,28 @@ li{
 }
 #root {
   height: 100%;
+}
+
+.HomepagePhoto {
+  width: 85%;
+}
+
+#copyInput {
+  font-size: 18px;
+}
+
+.css-1exqwzz-MuiSnackbarContent-message {
+  padding: 0 !important;
+}
+#JoinMeetingLink .css-1eqdgzv-MuiPaper-root-MuiSnackbarContent-root {
+  padding: 0px 16px !important;
+  color: #919499;
+  background-color: #fff;
+}
+
+.LearnMore {
+  cursor: pointer;
+}
+.LearnMore:hover {
+  text-decoration: underline;
 }

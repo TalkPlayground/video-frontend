@@ -27,6 +27,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import MeetingDetails from "./components/MeetingDetails";
+import BasicCard from "../../component/pages/Linkcard";
 
 const VideoContainer: React.FunctionComponent<RouteComponentProps> = (
   props
@@ -49,6 +50,8 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (
     mediaStream,
     shareRef
   );
+
+  const [LinkShowCard, setLinkShowCard] = useState(true);
   const isSharing = isRecieveSharing || isStartedShare;
   const contentDimension = sharedContentDimension;
   if (isSharing && shareContainerRef.current) {
@@ -136,6 +139,12 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (
   });
   return (
     <div className="viewport">
+      {LinkShowCard && (
+        <BasicCard
+          setLinkShowCard={setLinkShowCard}
+          LinkShowCard={LinkShowCard}
+        />
+      )}
       <div
         className={classnames("share-container", {
           "in-sharing": isSharing,
@@ -180,14 +189,14 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (
         )}
       </div>
 
-      <MeetingDetails modalOpenClose={modalOpenClose} />
+      {/* <MeetingDetails modalOpenClose={modalOpenClose} /> */}
 
       <VideoFooter
         className="video-operations"
         sharing
         shareRef={selfShareRef}
-        setmodalOpenClose={setmodalOpenClose}
-        modalOpenClose={modalOpenClose}
+        setmodalOpenClose={setLinkShowCard}
+        modalOpenClose={LinkShowCard}
       />
     </div>
   );

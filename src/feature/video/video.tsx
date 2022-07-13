@@ -158,7 +158,7 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (
         </ul>
       </div>
 
-      <MeetingDetails modalOpenClose={modalOpenClose} />
+      {/* <MeetingDetails modalOpenClose={modalOpenClose} /> */}
 
       <VideoFooter
         className="video-operations"
