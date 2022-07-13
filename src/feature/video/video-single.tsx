@@ -29,9 +29,12 @@ import {
 import MeetingDetails from "./components/MeetingDetails";
 import BasicCard from "../../component/pages/Linkcard";
 
-const VideoContainer: React.FunctionComponent<RouteComponentProps> = (
-  props
-) => {
+interface VideoProps extends RouteComponentProps {
+  DisplayDataInfo: any;
+}
+
+const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
+  const { DisplayDataInfo } = props;
   const zmClient = useContext(ZoomContext);
   const {
     mediaStream,
@@ -143,6 +146,7 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (
         <BasicCard
           setLinkShowCard={setLinkShowCard}
           LinkShowCard={LinkShowCard}
+          DisplayDataInfo={DisplayDataInfo}
         />
       )}
       <div

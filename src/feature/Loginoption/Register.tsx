@@ -42,7 +42,8 @@ function RegisterPage(props: any) {
         // alignItems="center"
         // justifyContent="center"
         xs={12}
-        sm={6}
+        sm={12}
+        md={4}
       >
         <Grid xs={12} className="">
           <img src={HeaderIcon} alt="header_logo" style={{ width: "10rem" }} />

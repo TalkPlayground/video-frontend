@@ -14,7 +14,7 @@ import {
 import React, { useEffect, useState } from "react";
 import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
 import LinkIcon from "@mui/icons-material/Link";
-import HomepagePhoto from "../../assets/hompagePhoto.png";
+import HomepagePhoto from "../../assets/homepagePhoto.jpg";
 //   import { useNavigate } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";

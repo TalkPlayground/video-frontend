@@ -24,9 +24,12 @@ import {
 } from "@material-ui/core";
 import MeetingDetails from "./components/MeetingDetails";
 
-const VideoContainer: React.FunctionComponent<RouteComponentProps> = (
-  props
-) => {
+interface VideoProps extends RouteComponentProps {
+  DisplayDataInfo: any;
+}
+
+const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
+  const { DisplayDataInfo } = props;
   const [LinkShowCard, setLinkShowCard] = useState(true);
   const zmClient = useContext(ZoomContext);
   const {
@@ -83,6 +86,7 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (
         <BasicCard
           setLinkShowCard={setLinkShowCard}
           LinkShowCard={LinkShowCard}
+          DisplayDataInfo={DisplayDataInfo}
         />
       )}
       {/* <a className="exit" href="/"> <i className="far fa-times-circle"></i> </a> */}

@@ -40,7 +40,7 @@ function Header() {
               />
             }
           >
-            Login to view insight
+            {false ? "Logged In" : "Login to view insight"}
           </Button>
         </Box>
       </Grid>

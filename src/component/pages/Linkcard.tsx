@@ -10,7 +10,11 @@ import CloseIcon from "@mui/icons-material/Close";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { devConfig } from "../../config/dev";
 
-export default function BasicCard({ setLinkShowCard, LinkShowCard }: any) {
+export default function BasicCard({
+  setLinkShowCard,
+  LinkShowCard,
+  DisplayDataInfo,
+}: any) {
   const url = `${window.location.origin}/video?topic=${devConfig.topic}`;
 
   const cardOpen = () => {
@@ -54,7 +58,7 @@ export default function BasicCard({ setLinkShowCard, LinkShowCard }: any) {
         </CardContent>
         <CardActions>
           <p style={{ fontSize: 12 }} className="text-secondary pl-2 mb-4">
-            Joined as Nick@gmail.com
+            Joined as {DisplayDataInfo.emailinfo}
           </p>
         </CardActions>
       </Card>

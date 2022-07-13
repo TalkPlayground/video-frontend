@@ -32,15 +32,15 @@ import "./Joinpage.scss";
 interface JoinProps extends RouteComponentProps {
   status: string;
   init: any;
+  DisplayDataInfo: any;
+  setDisplayDataInfo: any;
 }
 
 const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
-  const { history, init } = props;
+  const { history, init, setDisplayDataInfo, DisplayDataInfo } = props;
   const [openToast, setopenToast] = useState(false);
-  const [DisplayDataInfo, setDisplayDataInfo] = useState({
-    Displayname: "",
-    emailinfo: "",
-  });
+  const [nameValidation, setnameValidation] = useState(false);
+  const [emailValidate, setemailValidate] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
@@ -50,11 +50,37 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
 
   function DisplayNameData(e: any) {
     setDisplayDataInfo({ ...DisplayDataInfo, [e.target.name]: e.target.value });
+    setemailValidate(false);
+    setnameValidation(false);
   }
 
   const onCardClick = (type: string) => {
-    init(DisplayDataInfo.Displayname);
-    history.push(`/${type}?topic=${devConfig.topic}${window.location.search}`);
+    if (
+      DisplayDataInfo.Displayname?.length > 0 &&
+      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
+        DisplayDataInfo.emailinfo
+      )
+    ) {
+      init(DisplayDataInfo.Displayname);
+      history.push(
+        `/${type}?topic=${devConfig.topic}${window.location.search}`
+      );
+    } else if (
+      DisplayDataInfo.Displayname?.length == 0 &&
+      DisplayDataInfo.emailinfo?.length == 0
+    ) {
+      setemailValidate(true);
+      setnameValidation(true);
+    } else if (DisplayDataInfo.Displayname?.length == 0) {
+      setnameValidation(true);
+    } else if (
+      !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
+        DisplayDataInfo.emailinfo
+      ) ||
+      DisplayDataInfo.emailinfo?.length == 0
+    ) {
+      setemailValidate(true);
+    }
   };
 
   const url = `${window.location.origin}/video?topic=${devConfig.topic}`;
@@ -91,6 +117,7 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
           >
             {/* <Box className="d-flex flex-column justify-content-center align-items-center"> */}
             <TextField
+              error={nameValidation ? true : false}
               id="filled-search"
               label="Name to display"
               type="string"
@@ -103,6 +130,7 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
               onChange={DisplayNameData}
             />
             <TextField
+              error={emailValidate ? true : false}
               size="small"
               style={{ paddingBottom: "20px" }}
               type="email"

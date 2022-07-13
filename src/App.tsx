@@ -103,6 +103,12 @@ function App(props: AppProps) {
   const [chatClient, setChatClient] = useState<ChatClient | null>(null);
   const [isSupportGalleryView, setIsSupportGalleryView] =
     useState<boolean>(true);
+
+  const [DisplayDataInfo, setDisplayDataInfo] = useState({
+    Displayname: "",
+    emailinfo: "",
+  });
+
   const zmClient = useContext(ZoomContext);
 
   useEffect(() => {
@@ -114,7 +120,11 @@ function App(props: AppProps) {
   const init = async (nameData: any) => {
     setIsLoading(true);
     console.log("name", nameData);
-    await zmClient.init("en-US", "Global");
+    await zmClient.init(
+      "en-US",
+      "https://dmogdx0jrul3u.cloudfront.net/2.0.0/lib"
+    );
+
     try {
       setLoadingText("Joining the session...");
       await zmClient.join(topic, signature, nameData, password);
@@ -199,7 +209,13 @@ function App(props: AppProps) {
                 <Route
                   path="/Join"
                   render={(props) => (
-                    <Joinpage {...props} status={status} init={init} />
+                    <Joinpage
+                      {...props}
+                      status={status}
+                      init={init}
+                      setDisplayDataInfo={setDisplayDataInfo}
+                      DisplayDataInfo={DisplayDataInfo}
+                    />
                   )}
                   exact
                 />
@@ -228,7 +244,16 @@ function App(props: AppProps) {
                 <Route path="/preview" component={Preview} />
                 <Route
                   path="/video"
-                  component={isSupportGalleryView ? Video : VideoSingle}
+                  render={(props) =>
+                    isSupportGalleryView ? (
+                      <Video {...props} DisplayDataInfo={DisplayDataInfo} />
+                    ) : (
+                      <VideoSingle
+                        {...props}
+                        DisplayDataInfo={DisplayDataInfo}
+                      />
+                    )
+                  }
                 />
                 <Route path="/chat" component={Chat} />
               </Switch>
