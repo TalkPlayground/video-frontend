@@ -120,11 +120,7 @@ function App(props: AppProps) {
   const init = async (nameData: any) => {
     setIsLoading(true);
     console.log("name", nameData);
-    await zmClient.init(
-      "en-US",
-      "https://dmogdx0jrul3u.cloudfront.net/2.0.0/lib"
-    );
-
+    await zmClient.init("en-US", `${window.location.origin}/lib`, "zoom.us");
     try {
       setLoadingText("Joining the session...");
       await zmClient.join(topic, signature, nameData, password);
