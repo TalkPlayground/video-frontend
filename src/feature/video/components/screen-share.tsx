@@ -4,8 +4,8 @@ import classNames from "classnames";
 import { IconFont } from "../../../component/icon-font";
 import { LockOutlined, UnlockOutlined } from "@ant-design/icons";
 import "./screen-share.scss";
-import ScreenShareIcon from "@mui/icons-material/ScreenShare";
-import StopScreenShareIcon from "@mui/icons-material/StopScreenShare";
+import PresentToAllOutlinedIcon from "@mui/icons-material/PresentToAllOutlined";
+import { IconButton } from "@material-ui/core";
 
 interface ScreenShareButtonProps {
   isStartedScreenShare: boolean;
@@ -23,23 +23,33 @@ const ScreenShareButton = (props: ScreenShareButtonProps) => {
     <Tooltip
       title={isStartedScreenShare ? "stop screen share" : "start screen share"}
     >
-      <Button
-        className={classNames("screen-share-button", {
+      <IconButton
+        className={classNames("screen-share-button ml-3", {
           "started-share": isStartedScreenShare,
         })}
-        icon={
-          isStartedScreenShare ? (
-            <StopScreenShareIcon type="icon-share" />
-          ) : (
-            <ScreenShareIcon type="icon-share" />
-          )
-        }
-        // eslint-disable-next-line react/jsx-boolean-value
-        ghost={true}
-        shape="circle"
-        size="large"
+        style={{
+          backgroundColor: isStartedScreenShare ? "#8ab4f8" : "#3c4043",
+          color: isStartedScreenShare ? "#202124" : "white",
+        }}
+        // icon={
+        //   isStartedScreenShare ? (
+        //     <StopScreenShareIcon type="icon-share" />
+        //   ) : (
+        //     <ScreenShareIcon type="icon-share" />
+        //   )
+        // }
+        // // eslint-disable-next-line react/jsx-boolean-value
+        // ghost={true}
+        // shape="circle"
+        // size="large"
         onClick={onScreenShareClick}
-      />
+      >
+        {isStartedScreenShare ? (
+          <PresentToAllOutlinedIcon type="icon-share" />
+        ) : (
+          <PresentToAllOutlinedIcon type="icon-share" />
+        )}
+      </IconButton>
     </Tooltip>
   );
 };

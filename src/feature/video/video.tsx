@@ -14,6 +14,15 @@ import { useShare } from "./hooks/useShare";
 import "./video.scss";
 import { isSupportWebCodecs } from "../../utils/platform";
 import BasicCard from "../../component/pages/Linkcard";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  Drawer,
+  Typography,
+} from "@material-ui/core";
+import MeetingDetails from "./components/MeetingDetails";
 
 const VideoContainer: React.FunctionComponent<RouteComponentProps> = (
   props
@@ -54,6 +63,9 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (
     mediaStream,
     shareRef
   );
+
+  const [modalOpenClose, setmodalOpenClose] = useState(false);
+
   const isSharing = isRecieveSharing || isStartedShare;
   const contentDimension = sharedContentDimension;
   if (isSharing && shareContainerRef.current) {
@@ -142,13 +154,18 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (
               />
             );
           })}
+          ;
         </ul>
       </div>
+
+      <MeetingDetails modalOpenClose={modalOpenClose} />
 
       <VideoFooter
         className="video-operations"
         sharing
         shareRef={selfShareRef}
+        setmodalOpenClose={setLinkShowCard}
+        modalOpenClose={LinkShowCard}
       />
 
       {totalPage > 1 && (

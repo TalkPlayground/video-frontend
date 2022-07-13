@@ -9,7 +9,8 @@ import {
 import classNames from "classnames";
 import "./camera.scss";
 import { MediaDevice } from "../video-types";
-import VideocamIcon from "@mui/icons-material/Videocam";
+import { IconButton } from "@material-ui/core";
+import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
 import VideocamOffOutlinedIcon from "@mui/icons-material/VideocamOffOutlined";
 
 interface CameraButtonProps {
@@ -38,7 +39,7 @@ const CameraButton = (props: CameraButtonProps) => {
         {cameraList.map((item) => (
           <Menu.Item
             key={item.deviceId}
-            icon={item.deviceId === activeCamera && <VideocamOffOutlinedIcon />}
+            icon={item.deviceId === activeCamera && <CheckOutlined />}
           >
             {item.label}
           </Menu.Item>
@@ -61,27 +62,36 @@ const CameraButton = (props: CameraButtonProps) => {
         >
           <VideoCameraOutlined />
         </Dropdown.Button>
-      ) : 
-      ( */}
+      ) : ( */}
       <Tooltip title={`${isStartedVideo ? "stop camera" : "start camera"}`}>
-        <Button
-          className={classNames(
-            "camere-button",
-            isStartedVideo ? "bg-danger" : "",
-            className
-          )}
+        {/* <Button
+          className={classNames("camere-button", className)}
           icon={
             isStartedVideo ? (
-              <VideocamOffOutlinedIcon style={{ fill: "#fff" }} />
+              <VideoCameraOutlined />
             ) : (
-              <VideocamIcon />
+              <VideoCameraAddOutlined />
             )
           }
           ghost={true}
           shape="circle"
           size="large"
           onClick={onCameraClick}
-        />
+        /> */}
+        <IconButton
+          className={classNames(
+            isStartedVideo ? "camere-button ml-3" : "camere-button ml-3",
+            className
+          )}
+          style={{ backgroundColor: !isStartedVideo ? "#ea4335 " : "#3c4043" }}
+          onClick={onCameraClick}
+        >
+          {isStartedVideo ? (
+            <VideocamOutlinedIcon />
+          ) : (
+            <VideocamOffOutlinedIcon style={{ fill: "#fff" }} />
+          )}
+        </IconButton>
       </Tooltip>
       {/* )} */}
     </div>

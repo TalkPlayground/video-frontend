@@ -127,9 +127,9 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
 
           <Grid xs={12}>
             <Box className="d-flex justify-content-end align-items-center pb-2 pr-4 ">
-              <Box className="pointer hover:text-[#494CE2] d-flex align-items-center">
+              <Box className=" hover:text-[#494CE2] d-flex align-items-center">
                 <SettingsIcon fontSize="small" />
-                <Typography className="text-xs pl-1 select-none">
+                <Typography variant="caption" className="pl-1">
                   Settings
                 </Typography>
               </Box>

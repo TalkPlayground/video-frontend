@@ -22,7 +22,7 @@ export default function BasicCard({ setLinkShowCard, LinkShowCard }: any) {
       className="position-absolute"
       style={{
         bottom: "80px",
-        left: "50px",
+        right: "30px",
         zIndex: 10,
         textAlign: "left",
       }}

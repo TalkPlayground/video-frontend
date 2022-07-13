@@ -6,7 +6,7 @@ import React, {
   MutableRefObject,
 } from "react";
 import classNames from "classnames";
-import { message } from "antd";
+import { message, Tooltip } from "antd";
 import ZoomContext from "../../../context/zoom-context";
 import CameraButton from "./camera";
 import MicrophoneButton from "./microphone";
@@ -16,15 +16,29 @@ import { useUnmount } from "../../../hooks";
 import { MediaDevice } from "../video-types";
 import "./video-footer.scss";
 import CallEndIcon from "@mui/icons-material/CallEnd";
-import { IconButton, Tooltip } from "@mui/material";
+import { IconButton, Badge } from "@mui/material";
+import { Typography } from "@material-ui/core";
+import moment from "moment";
+import { topicInfo } from "../../../config/dev";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
+import CommentOutlinedIcon from "@mui/icons-material/CommentOutlined";
+import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
+import LockClockOutlinedIcon from "@mui/icons-material/LockClockOutlined";
+import ClosedCaptionOffOutlinedIcon from "@mui/icons-material/ClosedCaptionOffOutlined";
+import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
+
 interface VideoFooterProps {
   className?: string;
   shareRef?: MutableRefObject<HTMLCanvasElement | null>;
   sharing?: boolean;
+  setmodalOpenClose: any;
+  modalOpenClose: any;
 }
 const isAudioEnable = typeof AudioWorklet === "function";
 const VideoFooter = (props: VideoFooterProps) => {
-  const { className, shareRef, sharing } = props;
+  const { className, shareRef, sharing, setmodalOpenClose, modalOpenClose } =
+    props;
   const [isStartedAudio, setIsStartedAudio] = useState(false);
   const [isStartedVideo, setIsStartedVideo] = useState(false);
   const [isStartedScreenShare, setIsStartedScreenShare] = useState(false);
@@ -37,6 +51,8 @@ const VideoFooter = (props: VideoFooterProps) => {
   const [cameraList, setCameraList] = useState<MediaDevice[]>([]);
   const { mediaStream } = useContext(ZoomMediaContext);
   const zmClient = useContext(ZoomContext);
+
+  const [onCaptionClick, setonCaptionClick] = useState(false);
 
   useEffect(() => {
     onCameraClick();
@@ -156,49 +172,103 @@ const VideoFooter = (props: VideoFooterProps) => {
       mediaStream?.stopShareScreen();
     }
   });
+
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+
   return (
     <div className={classNames("video-footer", className)}>
-      {isAudioEnable && (
-        <MicrophoneButton
-          isStartedAudio={isStartedAudio}
-          isMuted={isMuted}
-          onMicrophoneClick={onMicrophoneClick}
-          onMicrophoneMenuClick={onMicrophoneMenuClick}
-          microphoneList={micList}
-          speakerList={speakerList}
-          activeMicrophone={activeMicrophone}
-          activeSpeaker={activeSpeaker}
-        />
-      )}
+      <div className="d-flex footer-left">
+        <Typography
+          variant="subtitle1"
+          className="text-white px-3"
+          style={{ borderRight: "1px solid white", fontWeight: "bold" }}
+        >
+          {moment().format("LT")}
+        </Typography>
 
-      <CameraButton
-        isStartedVideo={isStartedVideo}
-        onCameraClick={onCameraClick}
-        onSwitchCamera={onSwitchCamera}
-        cameraList={cameraList}
-        activeCamera={activeCamera}
-      />
-
-      {sharing && (
-        <ScreenShareButton
-          isStartedScreenShare={isStartedScreenShare}
-          onScreenShareClick={onScreenShareClick}
+        {topicInfo ? (
+          <Typography
+            variant="subtitle1"
+            className="text-white px-3 "
+            style={{ fontWeight: "bold" }}
+          >
+            {topicInfo}
+          </Typography>
+        ) : (
+          <Typography
+            variant="subtitle1"
+            className="text-white px-3"
+            style={{ fontWeight: "bold" }}
+          >
+            {urlParams.get("topic")}
+          </Typography>
+        )}
+      </div>
+      <div className="d-flex footer-center justify-content-center">
+        {isAudioEnable && (
+          <MicrophoneButton
+            isStartedAudio={isStartedAudio}
+            isMuted={isMuted}
+            onMicrophoneClick={onMicrophoneClick}
+            onMicrophoneMenuClick={onMicrophoneMenuClick}
+            microphoneList={micList}
+            speakerList={speakerList}
+            activeMicrophone={activeMicrophone}
+            activeSpeaker={activeSpeaker}
+          />
+        )}
+        <CameraButton
+          isStartedVideo={isStartedVideo}
+          onCameraClick={onCameraClick}
+          onSwitchCamera={onSwitchCamera}
+          cameraList={cameraList}
+          activeCamera={activeCamera}
         />
-      )}
-      <a
-        className="ml-4 bg-danger rounded-circle"
-        style={{ padding: "11px 12px" }}
-        href="/"
-      >
-        <Tooltip title={"Call Ended"} style={{ backgroundColor: "black" }}>
+
+        {/* <Tooltip title="Turn on captions (c)">
+          <IconButton
+            // className={isMuted ? "microphone-button" : "microphone-button"}
+            className="ml-3 screen-share-button"
+            style={{
+              backgroundColor: onCaptionClick ? "#8ab4f8" : "#3c4043",
+              color: onCaptionClick ? "#202124" : "white",
+            }}
+            onClick={() => setonCaptionClick(!onCaptionClick)}
+          >
+            <ClosedCaptionOffOutlinedIcon />
+          </IconButton>
+        </Tooltip> */}
+
+        {sharing && (
+          <ScreenShareButton
+            isStartedScreenShare={isStartedScreenShare}
+            onScreenShareClick={onScreenShareClick}
+          />
+        )}
+        {/* <Tooltip title="More Option">
+          <IconButton
+            // className={isMuted ? "microphone-button" : "microphone-button"}
+            className="ml-3 screen-share-button"
+            style={{ backgroundColor: true ? "#3c4043" : "#ea4335" }}
+            // onClick={onMicrophoneClick}
+          >
+            <MoreVertOutlinedIcon style={{ fill: "#fff" }} />
+          </IconButton>
+        </Tooltip> */}
+        <a
+          className="rounded-pill ml-3"
+          style={{ padding: "8px 16px", backgroundColor: "#ea4335" }}
+          href="/"
+        >
+          {/* <Tooltip title={"Call Ended"} style={{ backgroundColor: "black" }}> */}
           <CallEndIcon style={{ fill: "#fff" }} />
-        </Tooltip>
-      </a>
-      {/* <a className="exit" href="/">
+          {/* </Tooltip> */}
+        </a>
+        {/* <a className="exit" href="/">
         <i className="far fa-times-circle"></i>{" "}
       </a> */}
-
-      {/* {(zmClient.isManager() || zmClient.isHost())&& (
+        {/* {(zmClient.isManager() || zmClient.isHost())&& (
         <ScreenShareLockButton
         isLockedScreenShare={isLockedScreenShare}
         onScreenShareLockClick={()=>{
@@ -207,6 +277,39 @@ const VideoFooter = (props: VideoFooterProps) => {
         }}
       />
       )} */}
+      </div>
+      <div className="footer-right mr-5">
+        <Tooltip title="Meeting details">
+          <IconButton
+            className="ml-2 HoverIcon"
+            onClick={() => setmodalOpenClose(!modalOpenClose)}
+          >
+            <InfoOutlinedIcon style={{ fill: "#fff" }} />
+          </IconButton>
+        </Tooltip>
+        {/* <Tooltip title="Show everyone">
+          <IconButton className="ml-2 HoverIcon">
+            <Badge badgeContent={4} color="info">
+              <GroupOutlinedIcon style={{ fill: "#fff" }} color="action" />
+            </Badge>
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Chat with everyone">
+          <IconButton className="ml-2 HoverIcon">
+            <CommentOutlinedIcon style={{ fill: "#fff" }} />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Activities">
+          <IconButton className="ml-2 HoverIcon">
+            <CategoryOutlinedIcon style={{ fill: "#fff" }} />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Host controls">
+          <IconButton className="ml-2 HoverIcon">
+            <LockClockOutlinedIcon style={{ fill: "#fff" }} />
+          </IconButton>
+        </Tooltip> */}
+      </div>
     </div>
   );
 };

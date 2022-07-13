@@ -106,9 +106,8 @@ function App(props: AppProps) {
   const zmClient = useContext(ZoomContext);
 
   useEffect(() => {
-    console.log("devConfig", devConfig);
     if (topicInfo?.length) {
-      init(`${getExploreName()}-${Math.floor(Math.random() * 1000)}`);
+      init(devConfig.name);
     }
   }, [topicInfo]);
 

@@ -8,7 +8,6 @@ import reportWebVitals from "./reportWebVitals";
 import ZoomContext from "./context/zoom-context";
 import { devConfig } from "./config/dev";
 import { generateVideoToken } from "./utils/util";
-const { v4: uuidv4 } = require("uuid");
 
 let meetingArgs: any = Object.fromEntries(new URLSearchParams(location.search));
 if (

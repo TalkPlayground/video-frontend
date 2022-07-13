@@ -134,7 +134,10 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
     <>
       <Header />
       <KeepMountedModal setOpenModal={setOpenModal} openModal={openModal} />
-      <Grid container className="px-5" style={{ marginTop: "5em" }}>
+      <Grid
+        container
+        className="px-5 d-flex justify-items-center align-items-center h-75"
+      >
         <Grid xs={12} md={6} className=" text-left">
           <Typography
             style={{
