@@ -55,7 +55,7 @@ const VideoFooter = (props: VideoFooterProps) => {
   const [onCaptionClick, setonCaptionClick] = useState(false);
 
   useEffect(() => {
-    onCameraClick();
+    // onCameraClick();
     onMicrophoneClick();
   }, []);
 

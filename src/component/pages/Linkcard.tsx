@@ -61,7 +61,7 @@ export default function BasicCard({ setLinkShowCard, LinkShowCard }: any) {
             sx={{ fontSize: 12 }}
             className="text-secondary pl-2 mb-4"
           >
-            Joined as Shivam.kumar@oodles.io
+            Joined as Nick@gmail.com
           </Typography>
         </CardActions>
       </Card>
