@@ -30,21 +30,17 @@ export default function BasicCard({ setLinkShowCard, LinkShowCard }: any) {
       <Card sx={{ minWidth: 275, borderRadius: 4 }}>
         <CardContent>
           <Box className="d-flex align-items-center justify-content-between">
-            <Typography
-              sx={{ fontSize: 18, fontWeight: "bold" }}
-              color="black"
-              gutterBottom
-            >
+            <p style={{ fontSize: 18, fontWeight: "bold", color: "black" }}>
               Your meeting's ready
-            </Typography>
+            </p>
             <IconButton onClick={cardOpen}>
               <CloseIcon className="cursor-pointer" />
             </IconButton>
           </Box>
-          <Typography sx={{ fontSize: 14 }} variant="h6" component="div">
+          <p style={{ fontSize: 14 }}>
             Or share this joining info with others you want in
             <br /> the meeting
-          </Typography>
+          </p>
           <Box className="d-flex bg-secondary text-white px-2 mt-3 rounded justify-content-between align-items-center ">
             <p>{url?.length > 38 ? url.slice(0, 38) + "..." : url}</p>
 
@@ -57,12 +53,9 @@ export default function BasicCard({ setLinkShowCard, LinkShowCard }: any) {
           </Box>
         </CardContent>
         <CardActions>
-          <Typography
-            sx={{ fontSize: 12 }}
-            className="text-secondary pl-2 mb-4"
-          >
+          <p style={{ fontSize: 12 }} className="text-secondary pl-2 mb-4">
             Joined as Nick@gmail.com
-          </Typography>
+          </p>
         </CardActions>
       </Card>
     </Box>

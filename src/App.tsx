@@ -114,7 +114,7 @@ function App(props: AppProps) {
   const init = async (nameData: any) => {
     setIsLoading(true);
     console.log("name", nameData);
-    await zmClient.init("en-US", `${window.location.origin}/lib`, "zoom.us");
+    await zmClient.init("en-US", "Global");
     try {
       setLoadingText("Joining the session...");
       await zmClient.join(topic, signature, nameData, password);
