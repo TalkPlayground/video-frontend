@@ -157,7 +157,7 @@ function App(props: AppProps) {
   const init = async (nameData: any) => {
     setIsLoading(true);
     console.log("name", nameData);
-    await zmClient.init("en-US", `${window.location.origin}/lib`);
+    await zmClient.init("en-US", `${window.location.origin}/lib`, "zoom.us");
     try {
       setLoadingText("Joining the session...");
       await zmClient.join(topic, signature, nameData, password);
@@ -167,7 +167,8 @@ function App(props: AppProps) {
         "stream.isSupportMultipleVideos()",
         stream.isSupportMultipleVideos()
       );
-      setIsSupportGalleryView(stream.isSupportMultipleVideos());
+      // setIsSupportGalleryView(stream.isSupportMultipleVideos());
+      setIsSupportGalleryView(true);
       const chatClient = zmClient.getChatClient();
       setChatClient(chatClient);
       // history.push(`/video${window.location.search}`);
