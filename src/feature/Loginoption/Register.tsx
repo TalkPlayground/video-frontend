@@ -23,17 +23,17 @@ function RegisterPage(props: any) {
   };
 
   const RegisterForm = async () => {
-    // await axios
-    //   .post(`${baseURL + Apis.Login}`, {
-    //     username: "pankaj.raj@oodles.io",
-    //     password: "pankaj",
-    //   })
-    //   .then(function (response) {
-    //     console.log(response);
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //   });
+    await axios
+      .post(Apis.Login, {
+        username: "pankaj.raj@oodles.io",
+        password: "pankaj",
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     // if (
     //   RegisterData.email &&
     //   RegisterData.Fname &&

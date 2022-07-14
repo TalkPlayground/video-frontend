@@ -2,6 +2,7 @@
   "name": "react-video-sdk-demo",
   "version": "1.0.2",
   "private": true,
+  "proxy": "https://meet.talkplayground.com/",
   "dependencies": {
     "@ant-design/icons": "^4.6.2",
     "@craco/craco": "^6.4.4",
@@ -36,7 +37,6 @@
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
-  "proxy": "https://meet.talkplayground.com/",
   "eslintConfig": {
     "extends": [
       "react-app",
