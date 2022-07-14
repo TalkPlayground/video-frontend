@@ -1,15 +1,21 @@
 import { Box, Button, Grid, TextField, Typography } from "@material-ui/core";
+import axios from "axios";
+import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { Apis } from "../../Api";
 
 import HeaderIcon from "../../assets/app_image.png";
 
 function Loginpage(props: any) {
   const history = useHistory();
+  const { setUserInfo, setLoginOrNot } = props;
   const [emailData, setemailData] = useState("");
   const [passwordData, setpasswordData] = useState("");
   const [emailValidate, setemailValidate] = useState(false);
   const [passwordValidation, setpasswordValidation] = useState(false);
+
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     setemailValidate(false);
@@ -35,12 +41,34 @@ function Loginpage(props: any) {
     }
   }
 
-  const LoginData = () => {
+  const handleClickVariant = (variant: any) => {
+    // variant could be success, error, warning, info, or default
+    enqueueSnackbar("Logged In", { variant });
+  };
+
+  const LoginData = async () => {
     if (
       /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(emailData) &&
       validatePassword(passwordData)
     ) {
-      history.push("/");
+      const info = {
+        username: emailData,
+        password: passwordData,
+      };
+      await axios
+        .post(Apis.Login, { ...info })
+        .then(function (response) {
+          console.log(response);
+          localStorage.setItem("accessToken", response.data.data.accessToken);
+          // var decoded = jwt_decode(response.data.data.accessToken);
+          // setUserInfo(decoded);
+          setLoginOrNot(true);
+          handleClickVariant("success");
+          history.push("/");
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     } else if (
       !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(emailData) &&
       !passwordData
@@ -79,7 +107,7 @@ function Loginpage(props: any) {
           error={emailValidate ? true : false}
           id="filled-search"
           label="Email"
-          type="string"
+          type="email"
           style={{ paddingBottom: "20px" }}
           className="w-72"
           variant="outlined"

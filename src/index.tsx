@@ -8,6 +8,7 @@ import reportWebVitals from "./reportWebVitals";
 import ZoomContext from "./context/zoom-context";
 import { devConfig } from "./config/dev";
 import { generateVideoToken } from "./utils/util";
+import { SnackbarProvider } from "notistack";
 
 let meetingArgs: any = Object.fromEntries(new URLSearchParams(location.search));
 if (
@@ -33,7 +34,9 @@ const zmClient = ZoomVideo.createClient();
 ReactDOM.render(
   <React.StrictMode>
     <ZoomContext.Provider value={zmClient}>
-      <App meetingArgs={meetingArgs as any} />
+      <SnackbarProvider maxSnack={3}>
+        <App meetingArgs={meetingArgs as any} />
+      </SnackbarProvider>
     </ZoomContext.Provider>
   </React.StrictMode>,
   document.getElementById("root")

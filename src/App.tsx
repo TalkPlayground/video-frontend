@@ -33,6 +33,8 @@ import Loginpage from "./feature/Loginoption/Login";
 import RegisterPage from "./feature/Loginoption/Register";
 import { devConfig, topicInfo } from "./config/dev";
 import { getExploreName } from "./utils/platform";
+import jwt_decode from "jwt-decode";
+import { useSnackbar } from "notistack";
 
 interface AppProps {
   meetingArgs: {
@@ -103,13 +105,48 @@ function App(props: AppProps) {
   const [chatClient, setChatClient] = useState<ChatClient | null>(null);
   const [isSupportGalleryView, setIsSupportGalleryView] =
     useState<boolean>(true);
+  const [UserInfo, setUserInfo] = useState({
+    exp: "",
+    name: "",
+    sub: "",
+    userId: "",
+  });
+
+  const [LoginOrNot, setLoginOrNot] = useState(false);
 
   const [DisplayDataInfo, setDisplayDataInfo] = useState({
     Displayname: "",
     emailinfo: "",
   });
 
+  const accessToken = localStorage.getItem("accessToken");
+
+  useEffect(() => {
+    if (!UserInfo.name && accessToken) {
+      console.log(" njnknk");
+      // var decoded = jwt_decode(accessToken);
+      // if (decoded) {
+      setUserInfo(jwt_decode(accessToken));
+      // handleClickVariant("success");
+      // }
+    }
+  }, [accessToken, LoginOrNot]);
+
   const zmClient = useContext(ZoomContext);
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleClickVariant = (variant: any) => {
+    // variant could be success, error, warning, info, or default
+    enqueueSnackbar("Logged In", { variant });
+  };
+
+  useEffect(() => {
+    console.log("UserInfo", UserInfo);
+    if (UserInfo) {
+      setDisplayDataInfo({ ...DisplayDataInfo, emailinfo: UserInfo.sub });
+    }
+  }, [UserInfo]);
 
   useEffect(() => {
     if (topicInfo?.length) {
@@ -203,7 +240,15 @@ function App(props: AppProps) {
               <Switch>
                 <Route
                   path="/"
-                  render={(props) => <Homepage {...props} status={status} />}
+                  render={(props) => (
+                    <Homepage
+                      {...props}
+                      status={status}
+                      UserInfo={UserInfo}
+                      init={init}
+                      setLoginOrNot={setLoginOrNot}
+                    />
+                  )}
                   exact
                 />
                 <Route
@@ -226,7 +271,15 @@ function App(props: AppProps) {
                 />
                 <Route
                   path="/Login"
-                  render={(props) => <Loginpage {...props} status={status} />}
+                  render={(props) => (
+                    <Loginpage
+                      {...props}
+                      status={status}
+                      setUserInfo={setUserInfo}
+                      handleClickVariant={handleClickVariant}
+                      setLoginOrNot={setLoginOrNot}
+                    />
+                  )}
                   exact
                 />
                 <Route

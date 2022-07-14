@@ -101,10 +101,13 @@ function KeepMountedModal({ setOpenModal, openModal }: any) {
 
 interface HomeProps extends RouteComponentProps {
   status: string;
+  UserInfo: any;
+  init: any;
+  setLoginOrNot: any;
 }
 
 const Homepage: React.FunctionComponent<HomeProps> = (props) => {
-  const { history, status } = props;
+  const { history, status, UserInfo, init, setLoginOrNot } = props;
   const [anchorEl, setAnchorEl] = useState(null);
   // const navigate = useNavigate();
   const [openModal, setOpenModal] = React.useState(false);
@@ -122,8 +125,12 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
   }, []);
 
   const startSession = () => {
-    // navigate("/Join");
-    history.push(`/Join`);
+    if (UserInfo.name) {
+      init(UserInfo.name);
+      history.push(`/video?topic=${devConfig.topic}${window.location.search}`);
+    } else {
+      history.push(`/Join`);
+    }
   };
 
   const createSession = () => {
@@ -132,7 +139,7 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
 
   return (
     <>
-      <Header />
+      <Header UserInfo={UserInfo} setisLoginOrNot={setLoginOrNot} />
       <KeepMountedModal setOpenModal={setOpenModal} openModal={openModal} />
       <Grid
         container

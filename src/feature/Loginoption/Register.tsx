@@ -1,5 +1,6 @@
 import { Box, Button, Grid, TextField, Typography } from "@material-ui/core";
 import axios from "axios";
+import { useSnackbar } from "notistack";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Apis, baseURL } from "../../Api";
@@ -22,29 +23,41 @@ function RegisterPage(props: any) {
     setRegisterData({ ...RegisterData, [e.target.name]: e.target.value });
   };
 
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleClickVariant = (variant: any) => {
+    // variant could be success, error, warning, info, or default
+    enqueueSnackbar("Register Success", { variant });
+  };
+
   const RegisterForm = async () => {
-    await axios
-      .post(Apis.Login, {
-        username: "pankaj.raj@oodles.io",
-        password: "pankaj",
-      })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    // if (
-    //   RegisterData.email &&
-    //   RegisterData.Fname &&
-    //   RegisterData.Lname &&
-    //   RegisterData.date &&
-    //   RegisterData.pword &&
-    //   RegisterData.cpword &&
-    //   RegisterData.invitecode
-    // ) {
-    //   // history.push("/");
-    // }
+    if (
+      RegisterData.email &&
+      RegisterData.Fname &&
+      RegisterData.Lname &&
+      RegisterData.date &&
+      RegisterData.pword &&
+      RegisterData.cpword &&
+      RegisterData.invitecode
+    ) {
+      const info = {
+        fullName: `${RegisterData.Fname + " " + RegisterData.Lname}`,
+        email: RegisterData.email,
+        password: RegisterData.pword,
+        dob: RegisterData.date,
+        inviteCode: RegisterData.invitecode,
+      };
+      await axios
+        .post(Apis.Register, { ...info })
+        .then(function (response) {
+          console.log(response);
+          handleClickVariant("success");
+          history.push("/Login");
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
   };
 
   return (
