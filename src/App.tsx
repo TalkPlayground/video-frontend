@@ -126,9 +126,11 @@ function App(props: AppProps) {
       await zmClient.join(topic, signature, nameData, password);
       const stream = zmClient.getMediaStream();
       setMediaStream(stream);
-      // setIsSupportGalleryView(stream.isSupportMultipleVideos());
-      console.log("first", stream);
-      setIsSupportGalleryView(true);
+      console.log(
+        "stream.isSupportMultipleVideos()",
+        stream.isSupportMultipleVideos()
+      );
+      setIsSupportGalleryView(stream.isSupportMultipleVideos());
       const chatClient = zmClient.getChatClient();
       setChatClient(chatClient);
       // history.push(`/video${window.location.search}`);
