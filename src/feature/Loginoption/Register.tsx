@@ -1,6 +1,8 @@
 import { Box, Button, Grid, TextField, Typography } from "@material-ui/core";
+import axios from "axios";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import { Apis, baseURL } from "../../Api";
 
 import HeaderIcon from "../../assets/app_image.png";
 
@@ -20,18 +22,29 @@ function RegisterPage(props: any) {
     setRegisterData({ ...RegisterData, [e.target.name]: e.target.value });
   };
 
-  const RegisterForm = () => {
-    if (
-      RegisterData.email &&
-      RegisterData.Fname &&
-      RegisterData.Lname &&
-      RegisterData.date &&
-      RegisterData.pword &&
-      RegisterData.cpword &&
-      RegisterData.invitecode
-    ) {
-      history.push("/");
-    }
+  const RegisterForm = async () => {
+    // await axios
+    //   .post(`${baseURL + Apis.Login}`, {
+    //     username: "pankaj.raj@oodles.io",
+    //     password: "pankaj",
+    //   })
+    //   .then(function (response) {
+    //     console.log(response);
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   });
+    // if (
+    //   RegisterData.email &&
+    //   RegisterData.Fname &&
+    //   RegisterData.Lname &&
+    //   RegisterData.date &&
+    //   RegisterData.pword &&
+    //   RegisterData.cpword &&
+    //   RegisterData.invitecode
+    // ) {
+    //   // history.push("/");
+    // }
   };
 
   return (
