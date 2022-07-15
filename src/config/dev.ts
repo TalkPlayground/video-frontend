@@ -11,7 +11,7 @@ export const devConfig = {
   sdkSecret: process.env.REACT_APP_ZOOM_SDK_SECRET,
   topic: topicInfo ? `${topicInfo}` :`${create_UUID()}`,
   // name: `${getExploreName()}-${Math.floor(Math.random() * 1000)}`,
-  name:topicInfo  ? `${getExploreName()}-${Math.floor(Math.random() * 1000)}` :"",
+  name:"",
   password: 'pass',
   signature: '',
 };

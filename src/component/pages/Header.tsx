@@ -3,6 +3,8 @@ import {
   Button,
   Grid,
   IconButton,
+  Menu,
+  MenuItem,
   Snackbar,
   Typography,
 } from "@material-ui/core";
@@ -16,10 +18,24 @@ import { useHistory } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import { useSnackbar } from "notistack";
 // import { useNavigate } from "react-router-dom";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 function Header({ UserInfo, setisLoginOrNot }: any) {
   const history = useHistory();
   const [LoginOrNot, setLoginOrNot] = useState(false);
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: any) => {
+    if (LoginOrNot) {
+      setAnchorEl(event.currentTarget);
+    } else {
+      history.push("/Loginoption");
+    }
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -44,6 +60,7 @@ function Header({ UserInfo, setisLoginOrNot }: any) {
     UserInfo.name = "";
     setisLoginOrNot(false);
     setLoginOrNot(false);
+    setAnchorEl(null);
     handleClickVariant("success");
   };
 
@@ -61,9 +78,14 @@ function Header({ UserInfo, setisLoginOrNot }: any) {
           <Button
             variant="outlined"
             style={{ textTransform: "inherit", color: "#949494" }}
-            onClick={() =>
-              accessToken ? Loggedout() : history.push("/Loginoption")
-            }
+            id="basic-button"
+            aria-controls={open ? "basic-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            // onClick={() =>
+            //   accessToken ? Loggedout() : history.push("/Loginoption")
+            // }
+            onClick={handleClick}
             startIcon={
               <img
                 src={Header_icon}
@@ -72,8 +94,36 @@ function Header({ UserInfo, setisLoginOrNot }: any) {
               />
             }
           >
-            {LoginOrNot ? "Logged In" : "Login to view insight"}
+            {LoginOrNot
+              ? `Hi ${UserInfo?.name.split(" ")[0]}`
+              : "Login to view insight"}
           </Button>
+
+          {/* <Button
+            id="basic-button"
+            aria-controls={open ? "basic-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            onClick={handleClick}
+          >
+            Dashboard
+          </Button> */}
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            style={{ marginTop: "2.5em" }}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+          >
+            {/* <MenuItem onClick={handleClose}>Logout</MenuItem> */}
+            <MenuItem className="mx-1" onClick={Loggedout} disableRipple>
+              <LogoutIcon style={{ marginRight: "10px", fontSize: "20px" }} />
+              <span style={{ fontSize: ".9rem" }}>Logout</span>
+            </MenuItem>
+          </Menu>
         </Box>
       </Grid>
     </Grid>

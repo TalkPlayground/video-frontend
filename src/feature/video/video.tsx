@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import classnames from "classnames";
 import { RouteComponentProps } from "react-router-dom";
 import ZoomContext from "../../context/zoom-context";
@@ -23,6 +23,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import MeetingDetails from "./components/MeetingDetails";
+import ChatContainer from "../chat/chat";
 
 interface VideoProps extends RouteComponentProps {
   DisplayDataInfo: any;
@@ -48,6 +49,8 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     zmClient,
     canvasDimension
   );
+
+  const [NewMsg, setNewMsg] = useState(false);
   const { visibleParticipants, layout: videoLayout } = useGalleryLayout(
     zmClient,
     mediaStream,
@@ -79,6 +82,15 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     contentDimension.width = Math.floor(width * ratio);
     contentDimension.height = Math.floor(height * ratio);
   }
+
+  useEffect(() => {
+    if (modalOpenClose) {
+      setNewMsg(false);
+    }
+    if (NewMsg && modalOpenClose) {
+      setNewMsg(false);
+    }
+  }, [modalOpenClose, NewMsg]);
 
   return (
     <div className="viewport">
@@ -163,13 +175,23 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
       </div>
 
       {/* <MeetingDetails modalOpenClose={modalOpenClose} /> */}
+      <div className={modalOpenClose ? "ChatTransition" : "ChatTransitionOpen"}>
+        <ChatContainer
+          modalOpenClose={modalOpenClose}
+          setmodalOpenClose={setmodalOpenClose}
+          setNewMsg={setNewMsg}
+        />
+      </div>
 
       <VideoFooter
         className="video-operations"
         sharing
         shareRef={selfShareRef}
-        setmodalOpenClose={setLinkShowCard}
-        modalOpenClose={LinkShowCard}
+        setmodalOpenClose={setmodalOpenClose}
+        modalOpenClose={modalOpenClose}
+        setLinkShowCard={setLinkShowCard}
+        LinkShowCard={LinkShowCard}
+        NewMsg={NewMsg}
       />
 
       {totalPage > 1 && (

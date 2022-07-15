@@ -28,6 +28,7 @@ import {
 } from "@material-ui/core";
 import MeetingDetails from "./components/MeetingDetails";
 import BasicCard from "../../component/pages/Linkcard";
+import ChatContainer from "../chat/chat";
 
 interface VideoProps extends RouteComponentProps {
   DisplayDataInfo: any;
@@ -53,6 +54,8 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     mediaStream,
     shareRef
   );
+
+  const [NewMsg, setNewMsg] = useState(false);
 
   const [LinkShowCard, setLinkShowCard] = useState(true);
   const isSharing = isRecieveSharing || isStartedShare;
@@ -140,6 +143,15 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
       setActiveVideo(mediaStream.getActiveVideoId());
     }
   });
+
+  useEffect(() => {
+    if (NewMsg && modalOpenClose) {
+      setNewMsg(false);
+    } else {
+      setNewMsg(false);
+    }
+  }, [modalOpenClose, NewMsg]);
+
   return (
     <div className="viewport">
       {LinkShowCard && (
@@ -195,12 +207,23 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
 
       {/* <MeetingDetails modalOpenClose={modalOpenClose} /> */}
 
+      <div className={modalOpenClose ? "ChatTransition" : "ChatTransitionOpen"}>
+        <ChatContainer
+          modalOpenClose={modalOpenClose}
+          setmodalOpenClose={setmodalOpenClose}
+          setNewMsg={setNewMsg}
+        />
+      </div>
+
       <VideoFooter
         className="video-operations"
         sharing
         shareRef={selfShareRef}
-        setmodalOpenClose={setLinkShowCard}
-        modalOpenClose={LinkShowCard}
+        setmodalOpenClose={setmodalOpenClose}
+        modalOpenClose={modalOpenClose}
+        setLinkShowCard={setLinkShowCard}
+        LinkShowCard={LinkShowCard}
+        NewMsg={NewMsg}
       />
     </div>
   );

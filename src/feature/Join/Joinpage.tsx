@@ -25,6 +25,8 @@ import { message, Modal } from "antd";
 import produce from "immer";
 import LoadingLayer from "../../component/loading-layer";
 import "./Joinpage.scss";
+import OtpInput from "react-otp-input";
+import { transform } from "lodash";
 // import { useNavigate } from "react-router-dom";
 // import { useDispatch, useSelector } from "react-redux";
 // import DisplayAction from "../redux/actions/DisplayAction";
@@ -41,6 +43,7 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
   const [openToast, setopenToast] = useState(false);
   const [nameValidation, setnameValidation] = useState(false);
   const [emailValidate, setemailValidate] = useState(false);
+  const [OTP, setOTP] = useState("");
 
   useEffect(() => {
     setTimeout(() => {
@@ -54,17 +57,21 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
     setnameValidation(false);
   }
 
-  const onCardClick = (type: string) => {
+  const [OpenOTP, setOpenOTP] = useState(false);
+
+  const onSubmitForm = (type: string) => {
+    init(DisplayDataInfo.Displayname);
+    history.push(`/${type}?topic=${devConfig.topic}${window.location.search}`);
+  };
+
+  const onCardClick = () => {
     if (
       DisplayDataInfo.Displayname?.length > 0 &&
       /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
         DisplayDataInfo.emailinfo
       )
     ) {
-      init(DisplayDataInfo.Displayname);
-      history.push(
-        `/${type}?topic=${devConfig.topic}${window.location.search}`
-      );
+      setOpenOTP(true);
     } else if (
       DisplayDataInfo.Displayname?.length == 0 &&
       DisplayDataInfo.emailinfo?.length == 0
@@ -110,48 +117,108 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
               Playground
             </Typography>
           </Grid>
-          <Grid
-            xs={12}
-            md={6}
-            className="d-flex flex-column justify-content-center align-items-center"
-          >
-            {/* <Box className="d-flex flex-column justify-content-center align-items-center"> */}
-            <TextField
-              error={nameValidation ? true : false}
-              id="filled-search"
-              label="Name to display"
-              type="string"
-              style={{ paddingBottom: "20px" }}
-              className="w-50"
-              variant="outlined"
-              autoComplete="off"
-              size="small"
-              name="Displayname"
-              onChange={DisplayNameData}
-            />
-            <TextField
-              error={emailValidate ? true : false}
-              size="small"
-              style={{ paddingBottom: "20px" }}
-              type="email"
-              className="w-50"
-              variant="outlined"
-              autoComplete="off"
-              label="Email"
-              name="emailinfo"
-              onChange={DisplayNameData}
-            />
-            <Button
-              id="demo-positioned-button"
-              size="small"
-              variant="contained"
-              className="w-25"
-              style={{ backgroundColor: "#494CE2", color: "white" }}
-              onClick={() => onCardClick("video")}
+          {!OpenOTP ? (
+            <Grid
+              xs={12}
+              md={6}
+              className="d-flex flex-column justify-content-center align-items-center"
+              style={{ transform: "rotateY(0deg)", transition: ".1s all" }}
             >
-              Join
-            </Button>
-          </Grid>
+              {/* <Box className="d-flex flex-column justify-content-center align-items-center"> */}
+              <TextField
+                error={nameValidation ? true : false}
+                id="filled-search"
+                label="Name to display"
+                type="string"
+                value={DisplayDataInfo.Displayname}
+                style={{ paddingBottom: "20px" }}
+                className="w-50"
+                variant="outlined"
+                autoComplete="off"
+                size="small"
+                name="Displayname"
+                onChange={DisplayNameData}
+              />
+              <TextField
+                error={emailValidate ? true : false}
+                size="small"
+                style={{ paddingBottom: "20px" }}
+                type="email"
+                className="w-50"
+                variant="outlined"
+                autoComplete="off"
+                label="Email"
+                name="emailinfo"
+                value={DisplayDataInfo.emailinfo}
+                onChange={DisplayNameData}
+              />
+
+              <Button
+                id="demo-positioned-button"
+                size="small"
+                variant="contained"
+                className="w-25"
+                style={{ backgroundColor: "#494CE2", color: "white" }}
+                // onClick={() => onCardClick("video")}
+                onClick={onCardClick}
+              >
+                OTP
+              </Button>
+            </Grid>
+          ) : (
+            <Grid
+              xs={12}
+              md={6}
+              className="d-flex flex-column justify-content-center align-items-center"
+              style={{ transform: "rotateY(360deg)", transition: ".1s all" }}
+            >
+              <h2 className="lebalOTP">
+                <span>OTP</span>
+              </h2>
+              {/* {OpenOTP && ( */}
+              <OtpInput
+                isInputNum={true}
+                value={OTP}
+                onChange={setOTP}
+                numInputs={6}
+                separator={<span style={{ width: "10px" }}></span>}
+                inputStyle="OTPField"
+              />
+              {/* )} */}
+              <Grid
+                container
+                className="d-flex justify-content-center align-items-center mt-4"
+              >
+                <Grid xs={3}>
+                  <Button
+                    // id="demo-positioned-button"
+                    size="small"
+                    color="inherit"
+                    variant="contained"
+                    className="w-25"
+                    // style={{ backgroundColor: "#494CE2", color: "white" }}
+                    onClick={() => setOpenOTP(!OpenOTP)}
+                    // onClick={onSubmitForm}
+                  >
+                    back
+                  </Button>
+                </Grid>
+                <Grid xs={3}>
+                  <Button
+                    id="demo-positioned-button"
+                    size="small"
+                    variant="contained"
+                    className="w-25"
+                    style={{ backgroundColor: "#494CE2", color: "white" }}
+                    onClick={() => onSubmitForm("video")}
+                    // onClick={onSubmitForm}
+                  >
+                    Join
+                  </Button>
+                </Grid>
+              </Grid>
+            </Grid>
+          )}
 
           <Grid xs={12}>
             <Box className="d-flex justify-content-end align-items-center pb-2 pr-4 ">

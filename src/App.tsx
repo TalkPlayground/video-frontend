@@ -10,6 +10,7 @@ import {
   Switch,
   Route,
   useHistory,
+  Redirect,
 } from "react-router-dom";
 import ZoomVideo, { ConnectionState } from "@zoom/videosdk";
 import { message, Modal } from "antd";
@@ -148,11 +149,15 @@ function App(props: AppProps) {
     }
   }, [UserInfo]);
 
+  // if (topicInfo?.length && !UserInfo.sub) {
+  //   return <Redirect to="/Join" />;
+  // }
+
   useEffect(() => {
-    if (topicInfo?.length) {
-      init(devConfig.name);
+    if (topicInfo?.length && UserInfo.name?.length) {
+      init(UserInfo.name);
     }
-  }, [topicInfo]);
+  }, [topicInfo, UserInfo]);
 
   const init = async (nameData: any) => {
     setIsLoading(true);
@@ -167,8 +172,7 @@ function App(props: AppProps) {
         "stream.isSupportMultipleVideos()",
         stream.isSupportMultipleVideos()
       );
-      // setIsSupportGalleryView(stream.isSupportMultipleVideos());
-      setIsSupportGalleryView(true);
+      setIsSupportGalleryView(stream.isSupportMultipleVideos());
       const chatClient = zmClient.getChatClient();
       setChatClient(chatClient);
       // history.push(`/video${window.location.search}`);
@@ -290,25 +294,30 @@ function App(props: AppProps) {
                   )}
                   exact
                 />
+
                 {/* <Route
                   path="/index.html"
                   render={(props) => <Home {...props} status={status} />}
                   exact
                 /> */}
                 <Route path="/preview" component={Preview} />
-                <Route
-                  path="/video"
-                  render={(props) =>
-                    isSupportGalleryView ? (
-                      <Video {...props} DisplayDataInfo={DisplayDataInfo} />
-                    ) : (
-                      <VideoSingle
-                        {...props}
-                        DisplayDataInfo={DisplayDataInfo}
-                      />
-                    )
-                  }
-                />
+                {UserInfo.name || DisplayDataInfo.Displayname || accessToken ? (
+                  <Route
+                    path="/video"
+                    render={(props) =>
+                      isSupportGalleryView ? (
+                        <Video {...props} DisplayDataInfo={DisplayDataInfo} />
+                      ) : (
+                        <VideoSingle
+                          {...props}
+                          DisplayDataInfo={DisplayDataInfo}
+                        />
+                      )
+                    }
+                  />
+                ) : (
+                  <Redirect to="/Join" />
+                )}
                 <Route path="/chat" component={Chat} />
               </Switch>
             </Router>

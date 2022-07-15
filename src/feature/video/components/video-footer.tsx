@@ -34,11 +34,23 @@ interface VideoFooterProps {
   sharing?: boolean;
   setmodalOpenClose: any;
   modalOpenClose: any;
+  setLinkShowCard: any;
+  LinkShowCard: any;
+  NewMsg: boolean;
 }
 const isAudioEnable = typeof AudioWorklet === "function";
 const VideoFooter = (props: VideoFooterProps) => {
-  const { className, shareRef, sharing, setmodalOpenClose, modalOpenClose } =
-    props;
+  const {
+    className,
+    shareRef,
+    sharing,
+    setmodalOpenClose,
+    modalOpenClose,
+    setLinkShowCard,
+    LinkShowCard,
+    NewMsg,
+  } = props;
+
   const [isStartedAudio, setIsStartedAudio] = useState(false);
   const [isStartedVideo, setIsStartedVideo] = useState(false);
   const [isStartedScreenShare, setIsStartedScreenShare] = useState(false);
@@ -282,9 +294,25 @@ const VideoFooter = (props: VideoFooterProps) => {
         <Tooltip title="Meeting details">
           <IconButton
             className="ml-2 HoverIcon"
-            onClick={() => setmodalOpenClose(!modalOpenClose)}
+            onClick={() => {
+              setmodalOpenClose(false);
+              setLinkShowCard(!LinkShowCard);
+            }}
           >
             <InfoOutlinedIcon style={{ fill: "#fff" }} />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Chat with everyone">
+          <IconButton
+            className="ml-2 HoverIcon"
+            onClick={() => {
+              setmodalOpenClose(!modalOpenClose);
+              setLinkShowCard(false);
+            }}
+          >
+            <Badge variant={NewMsg ? "dot" : "standard"} color="info">
+              <CommentOutlinedIcon style={{ fill: "#fff" }} />
+            </Badge>
           </IconButton>
         </Tooltip>
         {/* <Tooltip title="Show everyone">
@@ -292,11 +320,6 @@ const VideoFooter = (props: VideoFooterProps) => {
             <Badge badgeContent={4} color="info">
               <GroupOutlinedIcon style={{ fill: "#fff" }} color="action" />
             </Badge>
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Chat with everyone">
-          <IconButton className="ml-2 HoverIcon">
-            <CommentOutlinedIcon style={{ fill: "#fff" }} />
           </IconButton>
         </Tooltip>
         <Tooltip title="Activities">
