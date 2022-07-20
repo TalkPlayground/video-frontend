@@ -29,6 +29,9 @@ import {
 import MeetingDetails from "./components/MeetingDetails";
 import BasicCard from "../../component/pages/Linkcard";
 import ChatContainer from "../chat/chat";
+import axios from "axios";
+import { devConfig } from "../../config/dev";
+import { useSnackbar } from "notistack";
 
 interface VideoProps extends RouteComponentProps {
   DisplayDataInfo: any;
@@ -56,6 +59,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   );
 
   const [NewMsg, setNewMsg] = useState(false);
+  const [RecordingStatus, setRecordingStatus] = useState(false);
 
   const [LinkShowCard, setLinkShowCard] = useState(true);
   const isSharing = isRecieveSharing || isStartedShare;
@@ -152,6 +156,15 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     }
   }, [modalOpenClose, NewMsg]);
 
+  const { enqueueSnackbar } = useSnackbar();
+
+  const StartStopRecording = async (data: boolean) => {
+    setRecordingStatus(data);
+    enqueueSnackbar(`${data ? "Start Recording" : "Stop Recording"}`, {
+      variant: "info",
+    });
+  };
+
   return (
     <div className="viewport">
       {LinkShowCard && (
@@ -224,6 +237,8 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         setLinkShowCard={setLinkShowCard}
         LinkShowCard={LinkShowCard}
         NewMsg={NewMsg}
+        StartStopRecording={StartStopRecording}
+        RecordingStatus={RecordingStatus}
       />
     </div>
   );

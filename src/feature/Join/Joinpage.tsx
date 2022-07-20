@@ -27,6 +27,9 @@ import LoadingLayer from "../../component/loading-layer";
 import "./Joinpage.scss";
 import OtpInput from "react-otp-input";
 import { transform } from "lodash";
+import axios from "axios";
+import { Apis, getQueryString } from "../../Api";
+import { useSnackbar } from "notistack";
 // import { useNavigate } from "react-router-dom";
 // import { useDispatch, useSelector } from "react-redux";
 // import DisplayAction from "../redux/actions/DisplayAction";
@@ -57,11 +60,43 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
     setnameValidation(false);
   }
 
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleClickVariant = (variant: any) => {
+    // variant could be success, error, warning, info, or default
+    enqueueSnackbar("Joined Successfully", { variant });
+  };
+
   const [OpenOTP, setOpenOTP] = useState(false);
 
-  const onSubmitForm = (type: string) => {
-    init(DisplayDataInfo.Displayname);
+  const zmClient = useContext(zoomContext);
+
+  const onSubmitForm = async (type: string) => {
+    init(`${DisplayDataInfo.Displayname}-${DisplayDataInfo.emailinfo}`);
     history.push(`/${type}?topic=${devConfig.topic}${window.location.search}`);
+    // await axios
+    //   .post(
+    //     Apis.JoinSession +
+    //       "?" +
+    //       getQueryString({
+    //         name: DisplayDataInfo.Displayname,
+    //         email: DisplayDataInfo.emailinfo,
+    //       })
+    //   )
+    //   .then(function (response) {
+    //     console.log(response);
+    //     handleClickVariant("success");
+    //     // history.push("/Login");
+    //     init(DisplayDataInfo.Displayname);
+    //     history.push(
+    //       `/${type}?topic=${devConfig.topic}${window.location.search}`
+    //     );
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //     setemailValidate(true);
+    //     setnameValidation(true);
+    //   });
   };
 
   const onCardClick = () => {
@@ -94,16 +129,23 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
   return (
     <>
       <Header />
-      <Grid className="d-flex justify-content-center">
+      {/* <Grid xs={8} className="d-flex justify-content-center border rounded"> */}
+      <Grid className="d-flex justify-content-center  align-items-center h-75">
         <Grid
           container
-          className="border rounded mx-5"
-          style={{ width: "60rem", marginTop: "5em" }}
+          // direction="column"
+          // alignItems="center"
+          // justifyContent="center"
+          className="border rounded py-5"
+          // xs={12}
+          sm={12}
+          md={8}
         >
           <Grid
             xs={12}
+            sm={6}
             md={6}
-            className="flex flex-col justify-content-center py-5 align-items-center "
+            className="flex flex-col justify-content-center  align-items-center "
           >
             <img src={HeaderIcon} alt="header_logo" className="Joinpagelogo" />
             <Typography
@@ -113,13 +155,15 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
                 lineHeight: "43.3px",
                 color: "#434343",
               }}
+              className="pb-3"
             >
               Playground
             </Typography>
           </Grid>
-          {!OpenOTP ? (
+          {true ? (
             <Grid
               xs={12}
+              sm={6}
               md={6}
               className="d-flex flex-column justify-content-center align-items-center"
               style={{ transform: "rotateY(0deg)", transition: ".1s all" }}
@@ -159,10 +203,10 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
                 variant="contained"
                 className="w-25"
                 style={{ backgroundColor: "#494CE2", color: "white" }}
-                // onClick={() => onCardClick("video")}
-                onClick={onCardClick}
+                onClick={() => onSubmitForm("video")}
+                // onClick={onCardClick}
               >
-                OTP
+                {/* OTP */}Join
               </Button>
             </Grid>
           ) : (
@@ -219,19 +263,18 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
               </Grid>
             </Grid>
           )}
-
-          <Grid xs={12}>
-            <Box className="d-flex justify-content-end align-items-center pb-2 pr-4 ">
-              <Box className=" hover:text-[#494CE2] d-flex align-items-center">
-                <SettingsIcon fontSize="small" />
-                <Typography variant="caption" className="pl-1">
-                  Settings
-                </Typography>
-              </Box>
-            </Box>
-          </Grid>
         </Grid>
       </Grid>
+      {/* <Grid xs={12}>
+        <Box className="d-flex justify-content-end align-items-center pb-2 pr-4 ">
+          <Box className=" hover:text-[#494CE2] d-flex align-items-center">
+            <SettingsIcon fontSize="small" />
+            <Typography variant="caption" className="pl-1">
+              Settings
+            </Typography>
+          </Box>
+        </Box>
+      </Grid> */}
       <Snackbar
         open={openToast}
         id="JoinMeetingLink"

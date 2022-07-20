@@ -27,6 +27,7 @@ import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
 import LockClockOutlinedIcon from "@mui/icons-material/LockClockOutlined";
 import ClosedCaptionOffOutlinedIcon from "@mui/icons-material/ClosedCaptionOffOutlined";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
+import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 
 interface VideoFooterProps {
   className?: string;
@@ -37,6 +38,8 @@ interface VideoFooterProps {
   setLinkShowCard: any;
   LinkShowCard: any;
   NewMsg: boolean;
+  StartStopRecording: any;
+  RecordingStatus: boolean;
 }
 const isAudioEnable = typeof AudioWorklet === "function";
 const VideoFooter = (props: VideoFooterProps) => {
@@ -49,6 +52,8 @@ const VideoFooter = (props: VideoFooterProps) => {
     setLinkShowCard,
     LinkShowCard,
     NewMsg,
+    StartStopRecording,
+    RecordingStatus,
   } = props;
 
   const [isStartedAudio, setIsStartedAudio] = useState(false);
@@ -313,6 +318,19 @@ const VideoFooter = (props: VideoFooterProps) => {
             <Badge variant={NewMsg ? "dot" : "standard"} color="info">
               <CommentOutlinedIcon style={{ fill: "#fff" }} />
             </Badge>
+          </IconButton>
+        </Tooltip>
+        <Tooltip title={RecordingStatus ? "Stop Recording" : "Start Recording"}>
+          <IconButton
+            onClick={() => {
+              StartStopRecording(!RecordingStatus);
+            }}
+            className="ml-2 HoverIcon"
+          >
+            <RadioButtonCheckedIcon
+              style={{ fill: RecordingStatus ? "red" : "#fff" }}
+              color="action"
+            />
           </IconButton>
         </Tooltip>
         {/* <Tooltip title="Show everyone">

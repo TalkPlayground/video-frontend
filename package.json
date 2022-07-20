@@ -16,9 +16,11 @@
     "@zoom/videosdk": "^1.1.6",
     "antd": "^4.14.1",
     "axios": "^0.27.2",
+    "axios-proxy-builder": "^0.1.2",
     "classnames": "^2.2.6",
     "crypto-js": "^4.0.0",
     "dotenv": "^10.0.0",
+    "http-proxy-middleware": "^2.0.6",
     "images": "file:./img/",
     "immer": "^8.0.1",
     "js-base64": "^3.6.0",
@@ -39,7 +41,6 @@
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
-  "proxy": "https://meet.talkplayground.com",
   "eslintConfig": {
     "extends": [
       "react-app",

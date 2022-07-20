@@ -24,6 +24,10 @@ import {
 } from "@material-ui/core";
 import MeetingDetails from "./components/MeetingDetails";
 import ChatContainer from "../chat/chat";
+import axios from "axios";
+import { devConfig } from "../../config/dev";
+import { useSnackbar } from "notistack";
+import { Apis, getQueryString } from "../../Api";
 
 interface VideoProps extends RouteComponentProps {
   DisplayDataInfo: any;
@@ -71,6 +75,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   );
 
   const [modalOpenClose, setmodalOpenClose] = useState(false);
+  const [RecordingStatus, setRecordingStatus] = useState(false);
 
   const isSharing = isRecieveSharing || isStartedShare;
   const contentDimension = sharedContentDimension;
@@ -91,6 +96,73 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
       setNewMsg(false);
     }
   }, [modalOpenClose, NewMsg]);
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const JoinSessionApi = async () => {
+    const info = {
+      ...zmClient.getSessionInfo(),
+    };
+    await axios
+      .post(
+        "/api/v1/user/session/join" +
+          "?" +
+          getQueryString({
+            name: DisplayDataInfo.Displayname,
+            email: DisplayDataInfo.emailinfo,
+            sessionId: info.sessionId,
+          })
+      )
+      .then(function (response) {
+        console.log(response);
+        // handleClickVariant("success");
+        // history.push("/Login");
+        // init(DisplayDataInfo.Displayname);
+        // history.push(
+        //   `/${type}?topic=${devConfig.topic}${window.location.search}`
+        // );
+      })
+      .catch(function (error) {
+        console.log(error);
+        // setemailValidate(true);
+        // setnameValidation(true);
+      });
+  };
+
+  useEffect(() => {
+    JoinSessionApi();
+  }, []);
+
+  const StartStopRecording = async (data: boolean) => {
+    setRecordingStatus(data);
+    enqueueSnackbar(`${data ? "Start Recording" : "Stop Recording"}`, {
+      variant: "info",
+    });
+    // let config = {
+    //   headers: {
+    //     Authorization: `Bearer `,
+    //   },
+    // };
+    // console.log("first", zmClient.getSessionInfo());
+    // const info = {
+    //   ...zmClient.getSessionInfo(),
+    // };
+    // await axios
+    //   .patch(
+    //     "/v2/videosdk/sessions/q7J413h8RDGXi4fqdRqX8A==/events",
+    //     {
+    //       method: "recording.start",
+    //     },
+    //     config
+    //   )
+    //   .then(function (response) {
+    //     console.log(response);
+    //     // history.push("/Login");
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   });
+  };
 
   return (
     <div className="viewport">
@@ -192,6 +264,8 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         setLinkShowCard={setLinkShowCard}
         LinkShowCard={LinkShowCard}
         NewMsg={NewMsg}
+        StartStopRecording={StartStopRecording}
+        RecordingStatus={RecordingStatus}
       />
 
       {totalPage > 1 && (

@@ -175,6 +175,8 @@ function App(props: AppProps) {
       setIsSupportGalleryView(stream.isSupportMultipleVideos());
       const chatClient = zmClient.getChatClient();
       setChatClient(chatClient);
+      console.log(zmClient.getSessionInfo());
+
       // history.push(`/video${window.location.search}`);
       setIsLoading(false);
     } catch (e: any) {

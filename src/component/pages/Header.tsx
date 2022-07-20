@@ -94,9 +94,11 @@ function Header({ UserInfo, setisLoginOrNot }: any) {
               />
             }
           >
-            {LoginOrNot
-              ? `Hi ${UserInfo?.name.split(" ")[0]}`
-              : "Login to view insight"}
+            <span className={LoginOrNot ? "text-capitalize" : ""}>
+              {LoginOrNot
+                ? `Hi ${UserInfo?.name.split(" ")[0]}`
+                : "Login to view insight"}
+            </span>
           </Button>
 
           {/* <Button

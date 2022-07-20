@@ -3,7 +3,7 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Apis } from "../../Api";
+import { Apis, baseURL } from "../../Api";
 
 import HeaderIcon from "../../assets/app_image.png";
 
@@ -55,8 +55,9 @@ function Loginpage(props: any) {
         username: emailData,
         password: passwordData,
       };
+
       await axios
-        .post(Apis.Login, { ...info })
+        .post("/api/v1/user/login", { ...info })
         .then(function (response) {
           console.log(response);
           localStorage.setItem("accessToken", response.data.data.accessToken);

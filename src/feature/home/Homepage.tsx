@@ -135,117 +135,116 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
 
   const createSession = () => {
     setOpenModal(true);
+    setAnchorEl(null);
   };
 
   return (
     <>
       <Header UserInfo={UserInfo} setisLoginOrNot={setLoginOrNot} />
       <KeepMountedModal setOpenModal={setOpenModal} openModal={openModal} />
-      <Grid
-        container
-        className="px-5 d-flex justify-items-center align-items-center h-75"
-      >
-        <Grid xs={12} md={6} className=" text-left">
-          <Typography
-            style={{
-              fontSize: "32px",
-              fontWeight: 500,
-              lineHeight: "43.3px",
-              color: "black",
-            }}
-            className="pt-4 px-5"
-          >
-            The video platform for connection.
-          </Typography>
-          <Typography
-            style={{
-              fontSize: "32px",
-              fontWeight: 500,
-              lineHeight: "43.3px",
-              color: "black",
-            }}
-            className="px-5"
-          >
-            Free and available for all.
-          </Typography>
-          <Typography
-            style={{
-              fontSize: "22px",
-              fontWeight: 300,
-              lineHeight: "31.51px",
-              // color: "gray",
-            }}
-            className="pb-4 pt-1 px-5 bg-red-600"
-          >
-            Designed specifically for building emotional <br /> awareness. Free
-            and available for all.
-          </Typography>
-          <Box className="mt-3 pb-10 px-5">
-            <Button
-              id="demo-positioned-button"
-              aria-controls={open ? "demo-positioned-menu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? "true" : undefined}
-              onClick={handleClick}
-              startIcon={<VideocamOutlinedIcon />}
-              variant="contained"
-              style={{ backgroundColor: "#494CE2", color: "#fff" }}
-            >
-              <span className="text-capitalize">New Meeting</span>
-            </Button>
-            <Menu
-              id="demo-positioned-menu"
-              aria-labelledby="demo-positioned-button"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "left",
+      <Grid className="d-flex justify-content-center  h-75">
+        <Grid container xs={12} md={11} className="my-5 py-4 ">
+          <Grid xs={12} md={6} className=" text-left">
+            <Typography
+              style={{
+                fontSize: "32px",
+                fontWeight: 500,
+                lineHeight: "43.3px",
+                color: "black",
               }}
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              style={{ marginLeft: "38px" }}
+              className="pt-4 px-5"
             >
-              <MenuItem onClick={startSession} className="py-1 mb-1">
-                <VideocamOutlinedIcon className="mr-2" />
-                <ListItemText
-                  primary={
-                    <span className="capitalize text-xs">
-                      Start a session now
-                    </span>
-                  }
-                />
-              </MenuItem>
-              <MenuItem onClick={handleClose} className="py-1">
-                <LinkIcon className="mr-2" />
-                <ListItemText
-                  onClick={createSession}
-                  primary={
-                    <span className="capitalize text-xs">
-                      Create a session for later
-                    </span>
-                  }
-                />
-              </MenuItem>
-            </Menu>
-          </Box>
-          <Divider className="ml-5 mt-3" />
-          <Typography className="pt-3 px-5" style={{ fontSize: "15px" }}>
-            <span className="LearnMore pr-1" style={{ color: "#494CE2" }}>
-              Learn more
-            </span>
-            about Playground
-          </Typography>
-        </Grid>
-        <Grid xs={12} md={6}>
-          <img
-            className="rounded HomepagePhoto"
-            src={HomepagePhoto}
-            alt="HomepagePhoto"
-          />
+              The video platform for connection.
+            </Typography>
+            <Typography
+              style={{
+                fontSize: "32px",
+                fontWeight: 500,
+                lineHeight: "43.3px",
+                color: "black",
+              }}
+              className="px-5"
+            >
+              Free and available for all.
+            </Typography>
+            <Typography
+              style={{
+                fontSize: "22px",
+                fontWeight: 300,
+                lineHeight: "31.51px",
+                // color: "gray",
+              }}
+              className="pb-4 pt-1 px-5 bg-red-600"
+            >
+              Designed specifically for building emotional <br /> awareness.
+              Free and available for all.
+            </Typography>
+            <Box className="mt-3 pb-10 px-5">
+              <Button
+                id="demo-positioned-button"
+                aria-controls={open ? "demo-positioned-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? "true" : undefined}
+                onClick={handleClick}
+                startIcon={<VideocamOutlinedIcon />}
+                variant="contained"
+                style={{ backgroundColor: "#494CE2", color: "#fff" }}
+              >
+                <span className="text-capitalize">New Meeting</span>
+              </Button>
+              <Menu
+                id="demo-positioned-menu"
+                aria-labelledby="demo-positioned-button"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                style={{ marginLeft: "38px" }}
+              >
+                <MenuItem onClick={startSession} className="py-1 mb-1">
+                  <VideocamOutlinedIcon className="mr-2" />
+                  <ListItemText
+                    primary={
+                      <span className="capitalize text-xs">
+                        Start a session now
+                      </span>
+                    }
+                  />
+                </MenuItem>
+                <MenuItem onClick={createSession} className="py-1">
+                  <LinkIcon className="mr-2" />
+                  <ListItemText
+                    primary={
+                      <span className="capitalize text-xs">
+                        Create a session for later
+                      </span>
+                    }
+                  />
+                </MenuItem>
+              </Menu>
+            </Box>
+            <Divider className="ml-5 mt-3" />
+            <Typography className="pt-3 px-5" style={{ fontSize: "15px" }}>
+              <span className="LearnMore pr-1" style={{ color: "#494CE2" }}>
+                Learn more
+              </span>
+              about Playground
+            </Typography>
+          </Grid>
+          <Grid xs={12} md={6}>
+            <img
+              className="rounded HomepagePhoto"
+              src={HomepagePhoto}
+              alt="HomepagePhoto"
+            />
+          </Grid>
         </Grid>
       </Grid>
     </>
