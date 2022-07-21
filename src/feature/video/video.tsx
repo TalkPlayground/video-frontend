@@ -106,14 +106,10 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     };
     var a = false;
     await axios
-      .post(
-        "/api/v1/user/session/store" +
-          "?" +
-          getQueryString({
-            userId: UserId,
-            sessionId: info.sessionId,
-          })
-      )
+      .post("/api/v1/user/session/store", {
+        userId: UserId,
+        sessionId: info.sessionId,
+      })
       .then(function (response) {
         console.log(response);
         a = true;
@@ -156,14 +152,10 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
       ...zmClient.getSessionInfo(),
     };
     await axios
-      .post(
-        "/api/v1/user/session/recording" +
-          "?" +
-          getQueryString({
-            sessionId: info.sessionId,
-            status: data,
-          })
-      )
+      .post("/api/v1/user/session/recording", {
+        sessionId: info.sessionId,
+        status: data,
+      })
       .then(function (response) {
         console.log(response);
         // history.push("/Login");
