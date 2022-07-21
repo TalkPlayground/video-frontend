@@ -36,6 +36,7 @@ import { devConfig, topicInfo } from "./config/dev";
 import { getExploreName } from "./utils/platform";
 import jwt_decode from "jwt-decode";
 import { useSnackbar } from "notistack";
+import { supabase } from "./Api";
 
 interface AppProps {
   meetingArgs: {
@@ -128,6 +129,7 @@ function App(props: AppProps) {
       // var decoded = jwt_decode(accessToken);
       // if (decoded) {
       setUserInfo(jwt_decode(accessToken));
+
       // handleClickVariant("success");
       // }
     }

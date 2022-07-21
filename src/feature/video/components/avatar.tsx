@@ -25,10 +25,18 @@ const Avatar = (props: AvatarProps) => {
           {audio === "computer" && muted && (
             <AudioMutedOutlined style={{ color: "#f00" }} />
           )}
-          {bVideoOn && <span>{displayName}</span>}
+          {bVideoOn && (
+            <span>
+              {displayName?.split("-")[displayName?.split("-")?.length - 1]}
+            </span>
+          )}
         </div>
       )}
-      {!bVideoOn && <p className="center-name">{displayName?.split("-")[0]}</p>}
+      {!bVideoOn && (
+        <p className="center-name">
+          {displayName?.split("-")[displayName?.split("-")?.length - 1]}
+        </p>
+      )}
     </div>
   );
 };

@@ -100,21 +100,23 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const JoinSessionApi = async () => {
+    var UserId = localStorage.getItem("UserID");
     const info = {
       ...zmClient.getSessionInfo(),
     };
+    var a = false;
     await axios
       .post(
-        "/api/v1/user/session/join" +
+        "/api/v1/user/session/store" +
           "?" +
           getQueryString({
-            name: DisplayDataInfo.Displayname,
-            email: DisplayDataInfo.emailinfo,
+            userId: UserId,
             sessionId: info.sessionId,
           })
       )
       .then(function (response) {
         console.log(response);
+        a = true;
         // handleClickVariant("success");
         // history.push("/Login");
         // init(DisplayDataInfo.Displayname);
@@ -127,41 +129,52 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         // setemailValidate(true);
         // setnameValidation(true);
       });
+    if (a) {
+      return a;
+    }
   };
 
   useEffect(() => {
-    JoinSessionApi();
+    const startAPi = async () => {
+      const data: any = await JoinSessionApi();
+      console.log("sss", data);
+      if (data) {
+        StartStopRecording(!RecordingStatus);
+      }
+    };
+    startAPi();
   }, []);
 
   const StartStopRecording = async (data: boolean) => {
-    setRecordingStatus(data);
-    enqueueSnackbar(`${data ? "Start Recording" : "Stop Recording"}`, {
-      variant: "info",
-    });
     // let config = {
     //   headers: {
     //     Authorization: `Bearer `,
     //   },
     // };
     // console.log("first", zmClient.getSessionInfo());
-    // const info = {
-    //   ...zmClient.getSessionInfo(),
-    // };
-    // await axios
-    //   .patch(
-    //     "/v2/videosdk/sessions/q7J413h8RDGXi4fqdRqX8A==/events",
-    //     {
-    //       method: "recording.start",
-    //     },
-    //     config
-    //   )
-    //   .then(function (response) {
-    //     console.log(response);
-    //     // history.push("/Login");
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //   });
+    const info = {
+      ...zmClient.getSessionInfo(),
+    };
+    await axios
+      .post(
+        "/api/v1/user/session/recording" +
+          "?" +
+          getQueryString({
+            sessionId: info.sessionId,
+            status: data,
+          })
+      )
+      .then(function (response) {
+        console.log(response);
+        // history.push("/Login");
+        setRecordingStatus(data);
+        enqueueSnackbar(`${data ? "Recording Started" : "Recording Stoped"}`, {
+          variant: "info",
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
   return (

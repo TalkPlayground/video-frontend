@@ -9,6 +9,7 @@ import ZoomContext from "./context/zoom-context";
 import { devConfig } from "./config/dev";
 import { generateVideoToken } from "./utils/util";
 import { SnackbarProvider } from "notistack";
+import { initStytch, StytchProvider } from "@stytch/stytch-react";
 
 let meetingArgs: any = Object.fromEntries(new URLSearchParams(location.search));
 if (
@@ -31,12 +32,21 @@ if (!meetingArgs.signature && meetingArgs.sdkSecret && meetingArgs.topic) {
 }
 
 const zmClient = ZoomVideo.createClient();
+
+// const stytch = initStytch(
+//   "public-token-test-9cc718d0-b097-4a72-bacd-3d8c120f98ec"
+// );
+
+// console.log("ss", stytch);
+
 ReactDOM.render(
   <React.StrictMode>
     <ZoomContext.Provider value={zmClient}>
+      {/* <StytchProvider stytch={stytch}> */}
       <SnackbarProvider maxSnack={3}>
         <App meetingArgs={meetingArgs as any} />
       </SnackbarProvider>
+      {/* </StytchProvider> */}
     </ZoomContext.Provider>
   </React.StrictMode>,
   document.getElementById("root")

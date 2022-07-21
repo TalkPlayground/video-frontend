@@ -3,7 +3,7 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Apis, baseURL } from "../../Api";
+import { Apis, baseURL, supabase } from "../../Api";
 
 import HeaderIcon from "../../assets/app_image.png";
 
@@ -31,32 +31,45 @@ function RegisterPage(props: any) {
   };
 
   const RegisterForm = async () => {
+    // RegisterData.pword &&
+    // RegisterData.cpword &&
+    // RegisterData.invitecode
     if (
       RegisterData.email &&
       RegisterData.Fname &&
       RegisterData.Lname &&
       RegisterData.date &&
-      RegisterData.pword &&
-      RegisterData.cpword &&
-      RegisterData.invitecode
+      RegisterData.pword
     ) {
-      const info = {
-        fullName: `${RegisterData.Fname + " " + RegisterData.Lname}`,
-        email: RegisterData.email,
-        password: RegisterData.pword,
-        dob: RegisterData.date,
-        inviteCode: RegisterData.invitecode,
-      };
-      await axios
-        .post(Apis.Register, { ...info })
-        .then(function (response) {
-          console.log(response);
-          handleClickVariant("success");
-          history.push("/Login");
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      await supabase.auth.signUp(
+        {
+          email: RegisterData.email,
+          password: RegisterData.pword,
+        },
+        {
+          data: {
+            fullname: RegisterData.Fname + " " + RegisterData.Lname,
+            Dob: RegisterData.date,
+          },
+        }
+      );
+      //   const info = {
+      //     fullName: `${RegisterData.Fname + " " + RegisterData.Lname}`,
+      //     email: RegisterData.email,
+      //     password: RegisterData.pword,
+      //     dob: RegisterData.date,
+      //     inviteCode: RegisterData.invitecode,
+      //   };
+      //   await axios
+      //     .post(Apis.Register, { ...info })
+      //     .then(function (response) {
+      //       console.log(response);
+      //       handleClickVariant("success");
+      //       history.push("/Login");
+      //     })
+      //     .catch(function (error) {
+      //       console.log(error);
+      //     });
     }
   };
 
@@ -152,7 +165,7 @@ function RegisterPage(props: any) {
             onChange={inputFormData}
           />
         </Grid>
-        <Grid xs={12} className="pb-2">
+        {/*<Grid xs={12} className="pb-2">
           <TextField
             id="filled-search"
             label="Confirm Password"
@@ -177,7 +190,7 @@ function RegisterPage(props: any) {
             autoComplete="off"
             onChange={inputFormData}
           />
-        </Grid>
+        </Grid> */}
         {/* <Grid xs={12}></Grid>
         <Grid xs={12}></Grid> */}
         <Box className="mt-3">

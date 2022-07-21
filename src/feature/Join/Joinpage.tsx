@@ -28,7 +28,7 @@ import "./Joinpage.scss";
 import OtpInput from "react-otp-input";
 import { transform } from "lodash";
 import axios from "axios";
-import { Apis, getQueryString } from "../../Api";
+import { Apis, getQueryString, supabase } from "../../Api";
 import { useSnackbar } from "notistack";
 // import { useNavigate } from "react-router-dom";
 // import { useDispatch, useSelector } from "react-redux";
@@ -60,6 +60,17 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
     setnameValidation(false);
   }
 
+  const user = supabase.auth.user();
+
+  useEffect(() => {
+    if (user) {
+      setDisplayDataInfo({
+        Displayname: `${user.user_metadata.fullname}`,
+        emailinfo: `${user.email}`,
+      });
+    }
+  }, [user]);
+
   const { enqueueSnackbar } = useSnackbar();
 
   const handleClickVariant = (variant: any) => {
@@ -72,31 +83,40 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
   const zmClient = useContext(zoomContext);
 
   const onSubmitForm = async (type: string) => {
-    init(`${DisplayDataInfo.Displayname}-${DisplayDataInfo.emailinfo}`);
-    history.push(`/${type}?topic=${devConfig.topic}${window.location.search}`);
-    // await axios
-    //   .post(
-    //     Apis.JoinSession +
-    //       "?" +
-    //       getQueryString({
-    //         name: DisplayDataInfo.Displayname,
-    //         email: DisplayDataInfo.emailinfo,
-    //       })
-    //   )
-    //   .then(function (response) {
-    //     console.log(response);
-    //     handleClickVariant("success");
-    //     // history.push("/Login");
-    //     init(DisplayDataInfo.Displayname);
-    //     history.push(
-    //       `/${type}?topic=${devConfig.topic}${window.location.search}`
-    //     );
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //     setemailValidate(true);
-    //     setnameValidation(true);
-    //   });
+    // init(`abcd123-${DisplayDataInfo.Displayname}-${DisplayDataInfo.emailinfo}`);
+    // history.push(`/${type}?topic=${devConfig.topic}${window.location.search}`);
+    const info = {
+      ...zmClient.getSessionInfo(),
+    };
+    console.log("first", info);
+    await axios
+      .post(
+        "/api/v1/user/session/join" +
+          "?" +
+          getQueryString({
+            name: DisplayDataInfo.Displayname,
+            email: DisplayDataInfo.emailinfo,
+          })
+      )
+      .then(function (response) {
+        console.log(response);
+        handleClickVariant("success");
+        // history.push("/Login");
+        // init(DisplayDataInfo.Displayname);
+        // history.push(
+        //   `/${type}?topic=${devConfig.topic}${window.location.search}`
+        // );
+        localStorage.setItem("UserID", `${response.data.data}`);
+        init(`${response.data.data}-${DisplayDataInfo.Displayname}`);
+        history.push(
+          `/${type}?topic=${devConfig.topic}${window.location.search}`
+        );
+      })
+      .catch(function (error) {
+        console.log(error);
+        setemailValidate(true);
+        setnameValidation(true);
+      });
   };
 
   const onCardClick = () => {
@@ -195,6 +215,7 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
                 name="emailinfo"
                 value={DisplayDataInfo.emailinfo}
                 onChange={DisplayNameData}
+                disabled={user ? true : false}
               />
 
               <Button

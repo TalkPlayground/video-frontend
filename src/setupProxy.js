@@ -19,11 +19,11 @@ module.exports = function (app) {
     })
   );
 
-  app.use(
-    "/",
-    createProxyMiddleware({
-      target: "https://api.zoom.us/v2",
-      changeOrigin: true,
-    })
-  );
+  // app.use(
+  //   "/",
+  //   createProxyMiddleware({
+  //     target: "https://api.zoom.us/v2",
+  //     changeOrigin: true,
+  //   })
+  // );
 };

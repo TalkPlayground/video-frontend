@@ -19,10 +19,16 @@ import jwt_decode from "jwt-decode";
 import { useSnackbar } from "notistack";
 // import { useNavigate } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { supabase } from "../../Api";
 
 function Header({ UserInfo, setisLoginOrNot }: any) {
   const history = useHistory();
   const [LoginOrNot, setLoginOrNot] = useState(false);
+
+  const [loading, setLoading] = useState(true);
+  const [username, setUsername] = useState(null);
+  const [website, setWebsite] = useState(null);
+  const [avatar_url, setAvatarUrl] = useState(null);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -55,14 +61,68 @@ function Header({ UserInfo, setisLoginOrNot }: any) {
     enqueueSnackbar("Logout successfully", { variant });
   };
 
-  const Loggedout = () => {
+  const Loggedout = async () => {
     localStorage.removeItem("accessToken");
-    UserInfo.name = "";
-    setisLoginOrNot(false);
+    await supabase.auth.signOut();
+    // setisLoginOrNot(false);
     setLoginOrNot(false);
     setAnchorEl(null);
     handleClickVariant("success");
   };
+
+  const getProfile = async (info: any) => {
+    try {
+      setLoading(true);
+
+      var { data, error, status } = await supabase
+        .from("users")
+        .select(`username, website, avatar_url`)
+        .eq("id", info?.id)
+        .single();
+      console.log("user?.id", data, info?.id);
+      if (error && status !== 406) {
+        throw error;
+      }
+
+      console.log("first");
+      if (data) {
+        console.log("DDD", data);
+        setUsername(data.username);
+        setWebsite(data.website);
+        setAvatarUrl(data.avatar_url);
+      }
+    } catch (error: any) {
+      // alert(error.message);
+    } finally {
+      console.log("first======");
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // if (user) {
+    //   setLoginOrNot(true);
+    //   getProfile(user);
+    // }
+    // async function getdata() {
+    // const { user, error } = await supabase.auth.api.getUser(
+    //   "ACCESS_TOKEN_JWT"
+    // );
+    const user = supabase.auth.user();
+    const session = supabase.auth.session();
+    console.log("ssee", session, user);
+    if (user) {
+      // const user = supabase.auth.api.getUser(session.access_token);
+      setLoginOrNot(true);
+    } else {
+      supabase.auth.signOut();
+      setLoginOrNot(false);
+    }
+
+    // }
+
+    // getdata();
+  });
 
   return (
     <Grid container className="align-items-center py-2 px-5">
@@ -95,9 +155,7 @@ function Header({ UserInfo, setisLoginOrNot }: any) {
             }
           >
             <span className={LoginOrNot ? "text-capitalize" : ""}>
-              {LoginOrNot
-                ? `Hi ${UserInfo?.name.split(" ")[0]}`
-                : "Login to view insight"}
+              {LoginOrNot ? `Logged In` : "Login to view insight"}
             </span>
           </Button>
 

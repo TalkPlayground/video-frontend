@@ -1,16 +1,18 @@
 import { Box, Button, Grid, TextField, Typography } from "@material-ui/core";
+import { useStytch } from "@stytch/stytch-react";
+import { createClient } from "@supabase/supabase-js";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Apis, baseURL } from "../../Api";
+import { Apis, baseURL, supabase } from "../../Api";
 
 import HeaderIcon from "../../assets/app_image.png";
 
 function Loginpage(props: any) {
   const history = useHistory();
   const { setUserInfo, setLoginOrNot } = props;
-  const [emailData, setemailData] = useState("");
+  const [email, setemailData] = useState("");
   const [passwordData, setpasswordData] = useState("");
   const [emailValidate, setemailValidate] = useState(false);
   const [passwordValidation, setpasswordValidation] = useState(false);
@@ -19,7 +21,7 @@ function Loginpage(props: any) {
 
   useEffect(() => {
     setemailValidate(false);
-  }, [emailData]);
+  }, [email]);
 
   useEffect(() => {
     setpasswordValidation(false);
@@ -48,37 +50,37 @@ function Loginpage(props: any) {
 
   const LoginData = async () => {
     if (
-      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(emailData) &&
-      validatePassword(passwordData)
+      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)
+      // &&
+      // validatePassword(passwordData)
     ) {
-      const info = {
-        username: emailData,
-        password: passwordData,
-      };
-
-      await axios
-        .post("/api/v1/user/login", { ...info })
-        .then(function (response) {
-          console.log(response);
-          localStorage.setItem("accessToken", response.data.data.accessToken);
-          // var decoded = jwt_decode(response.data.data.accessToken);
-          // setUserInfo(decoded);
-          setLoginOrNot(true);
-          handleClickVariant("success");
-          history.push("/");
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      const user = await supabase.auth.signIn({ email });
+      console.log("daata", user);
+      // const info = {
+      //   username: email,
+      //   password: passwordData,
+      // };
+      // await axios
+      //   .post("/api/v1/user/login", { ...info })
+      //   .then(function (response) {
+      //     console.log(response);
+      //     localStorage.setItem("accessToken", response.data.data.accessToken);
+      //     // var decoded = jwt_decode(response.data.data.accessToken);
+      //     // setUserInfo(decoded);
+      //     setLoginOrNot(true);
+      //     handleClickVariant("success");
+      //     history.push("/");
+      //   })
+      //   .catch(function (error) {
+      //     console.log(error);
+      //   });
     } else if (
-      !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(emailData) &&
+      !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email) &&
       !passwordData
     ) {
       setemailValidate(true);
       setpasswordValidation(true);
-    } else if (
-      !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(emailData)
-    ) {
+    } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
       setemailValidate(true);
     }
     if (!passwordData || !validatePassword(passwordData)) {
@@ -116,7 +118,7 @@ function Loginpage(props: any) {
           autoComplete="off"
           onChange={(e) => setemailData(e.target.value)}
         />
-        <TextField
+        {/* <TextField
           error={passwordValidation ? true : false}
           size="small"
           style={{ paddingBottom: "20px" }}
@@ -138,7 +140,7 @@ function Loginpage(props: any) {
           // helperText={
           //   passwordValidation ? "password must be in between 6 to 10" : false
           // }
-        />
+        /> */}
         <Box>
           <Button
             variant="contained"
