@@ -149,7 +149,7 @@ function Loginpage(props: any) {
                 className="w-20"
                 onClick={LoginData}
               >
-                <span className="text-capitalize">Login</span>
+                <span className="text-capitalize">Send Email</span>
               </Button>
             </Box>
           </>
@@ -163,7 +163,7 @@ function Loginpage(props: any) {
               variant="contained"
               onClick={() => setIsError(false)}
             >
-              <span className="text-capitalize">Login Again</span>
+              <span className="text-capitalize">Send Email Again</span>
             </Button>
             <h6
               style={{ color: "rgb(73, 76, 226)", cursor: "pointer" }}

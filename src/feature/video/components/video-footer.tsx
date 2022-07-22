@@ -285,6 +285,7 @@ const VideoFooter = (props: VideoFooterProps) => {
           }}
           onClick={() => {
             StartStopRecording(!RecordingStatus).then(() => {
+              localStorage.removeItem("UserID");
               history.push("/");
               window.location.reload();
             });

@@ -63,10 +63,10 @@ function Header({ UserInfo, setisLoginOrNot }: any) {
 
   const Loggedout = async () => {
     localStorage.removeItem("accessToken");
-    await supabase.auth.signOut();
-    // setisLoginOrNot(false);
     setLoginOrNot(false);
     setAnchorEl(null);
+    await supabase.auth.signOut();
+    // setisLoginOrNot(false);
     handleClickVariant("success");
   };
 

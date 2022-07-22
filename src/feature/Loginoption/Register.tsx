@@ -205,7 +205,7 @@ function RegisterPage(props: any) {
             className="w-20"
             onClick={RegisterForm}
           >
-            <span className="text-capitalize text-sm">Register</span>
+            <span className="text-capitalize text-sm">Send Email</span>
           </Button>
         </Box>
       </Grid>
