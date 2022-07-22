@@ -65,7 +65,9 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
   useEffect(() => {
     if (user) {
       setDisplayDataInfo({
-        Displayname: `${user.user_metadata.fullname}`,
+        Displayname: `${
+          user?.user_metadata?.fullname ? user?.user_metadata?.fullname : ""
+        }`,
         emailinfo: `${user.email}`,
       });
     }
@@ -156,7 +158,7 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
           // direction="column"
           // alignItems="center"
           // justifyContent="center"
-          className="border rounded py-5"
+          className="border rounded pt-5"
           // xs={12}
           sm={12}
           md={8}
@@ -284,18 +286,18 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
               </Grid>
             </Grid>
           )}
+          <Grid xs={12}>
+            <Box className="d-flex justify-content-end align-items-center pb-2 pt-4 pr-4 ">
+              <Box className=" hover:text-[#494CE2] d-flex align-items-center">
+                <SettingsIcon fontSize="small" />
+                <Typography variant="caption" className="pl-1">
+                  Settings
+                </Typography>
+              </Box>
+            </Box>
+          </Grid>
         </Grid>
       </Grid>
-      {/* <Grid xs={12}>
-        <Box className="d-flex justify-content-end align-items-center pb-2 pr-4 ">
-          <Box className=" hover:text-[#494CE2] d-flex align-items-center">
-            <SettingsIcon fontSize="small" />
-            <Typography variant="caption" className="pl-1">
-              Settings
-            </Typography>
-          </Box>
-        </Box>
-      </Grid> */}
       <Snackbar
         open={openToast}
         id="JoinMeetingLink"

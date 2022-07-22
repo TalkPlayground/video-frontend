@@ -47,6 +47,7 @@ function RegisterPage(props: any) {
           password: RegisterData.pword,
         },
         {
+          redirectTo: window.location.origin,
           data: {
             fullname: RegisterData.Fname + " " + RegisterData.Lname,
             Dob: RegisterData.date,
@@ -107,7 +108,7 @@ function RegisterPage(props: any) {
             variant="outlined"
             size="small"
             name="email"
-            autoComplete="off"
+            value={RegisterData.email}
             onChange={inputFormData}
           />
         </Grid>
@@ -121,6 +122,7 @@ function RegisterPage(props: any) {
               variant="outlined"
               size="small"
               name="Fname"
+              value={RegisterData.Fname}
               autoComplete="off"
               onChange={inputFormData}
             />
@@ -134,6 +136,7 @@ function RegisterPage(props: any) {
               variant="outlined"
               size="small"
               name="Lname"
+              value={RegisterData.Lname}
               autoComplete="off"
               onChange={inputFormData}
             />
@@ -148,6 +151,7 @@ function RegisterPage(props: any) {
             variant="outlined"
             size="small"
             name="date"
+            value={RegisterData.date}
             autoComplete="off"
             onChange={inputFormData}
           />
@@ -161,6 +165,7 @@ function RegisterPage(props: any) {
             variant="outlined"
             size="small"
             name="pword"
+            value={RegisterData.pword}
             autoComplete="off"
             onChange={inputFormData}
           />

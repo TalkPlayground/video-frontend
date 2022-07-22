@@ -28,6 +28,7 @@ import LockClockOutlinedIcon from "@mui/icons-material/LockClockOutlined";
 import ClosedCaptionOffOutlinedIcon from "@mui/icons-material/ClosedCaptionOffOutlined";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
+import { useHistory } from "react-router-dom";
 
 interface VideoFooterProps {
   className?: string;
@@ -43,6 +44,8 @@ interface VideoFooterProps {
 }
 const isAudioEnable = typeof AudioWorklet === "function";
 const VideoFooter = (props: VideoFooterProps) => {
+  const history = useHistory();
+
   const {
     className,
     shareRef,
@@ -273,15 +276,24 @@ const VideoFooter = (props: VideoFooterProps) => {
             <MoreVertOutlinedIcon style={{ fill: "#fff" }} />
           </IconButton>
         </Tooltip> */}
-        <a
+        <Typography
           className="rounded-pill ml-3"
-          style={{ padding: "8px 16px", backgroundColor: "#ea4335" }}
-          href="/"
+          style={{
+            padding: "8px 16px",
+            backgroundColor: "#ea4335",
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            StartStopRecording(!RecordingStatus).then(() => {
+              history.push("/");
+              window.location.reload();
+            });
+          }}
         >
           {/* <Tooltip title={"Call Ended"} style={{ backgroundColor: "black" }}> */}
           <CallEndIcon style={{ fill: "#fff" }} />
           {/* </Tooltip> */}
-        </a>
+        </Typography>
         {/* <a className="exit" href="/">
         <i className="far fa-times-circle"></i>{" "}
       </a> */}

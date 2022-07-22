@@ -1,4 +1,12 @@
-import { Box, Button, Grid, TextField, Typography } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  Chip,
+  Grid,
+  IconButton,
+  TextField,
+  Typography,
+} from "@material-ui/core";
 import { useStytch } from "@stytch/stytch-react";
 import { createClient } from "@supabase/supabase-js";
 import axios from "axios";
@@ -16,6 +24,8 @@ function Loginpage(props: any) {
   const [passwordData, setpasswordData] = useState("");
   const [emailValidate, setemailValidate] = useState(false);
   const [passwordValidation, setpasswordValidation] = useState(false);
+  const [IsError, setIsError] = useState(false);
+  const [SendingEmail, setSendingEmail] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -54,8 +64,19 @@ function Loginpage(props: any) {
       // &&
       // validatePassword(passwordData)
     ) {
-      const user = await supabase.auth.signIn({ email });
+      const user = await supabase.auth.signIn(
+        { email },
+        {
+          shouldCreateUser: false,
+          redirectTo: window.location.origin,
+        }
+      );
       console.log("daata", user);
+      if (user.error?.message) {
+        setIsError(true);
+      } else {
+        setSendingEmail(true);
+      }
       // const info = {
       //   username: email,
       //   password: passwordData,
@@ -106,19 +127,68 @@ function Loginpage(props: any) {
         >
           Playground
         </Typography>
-        <TextField
-          error={emailValidate ? true : false}
-          id="filled-search"
-          label="Email"
-          type="email"
-          style={{ paddingBottom: "20px" }}
-          className="w-72"
-          variant="outlined"
-          size="small"
-          autoComplete="off"
-          onChange={(e) => setemailData(e.target.value)}
-        />
-        {/* <TextField
+        {!IsError && !SendingEmail ? (
+          <>
+            <TextField
+              error={emailValidate ? true : false}
+              id="filled-search"
+              label="Email"
+              type="email"
+              style={{ paddingBottom: "20px" }}
+              className="w-72"
+              variant="outlined"
+              size="small"
+              autoComplete="off"
+              onChange={(e) => setemailData(e.target.value)}
+            />
+
+            <Box>
+              <Button
+                variant="contained"
+                size="small"
+                className="w-20"
+                onClick={LoginData}
+              >
+                <span className="text-capitalize">Login</span>
+              </Button>
+            </Box>
+          </>
+        ) : IsError ? (
+          <>
+            <Button
+              color="primary"
+              size="small"
+              className="mb-3 px-3"
+              style={{ borderRadius: "50px" }}
+              variant="contained"
+              onClick={() => setIsError(false)}
+            >
+              <span className="text-capitalize">Login Again</span>
+            </Button>
+            <h6
+              style={{ color: "rgb(73, 76, 226)", cursor: "pointer" }}
+              onClick={() => history.push("/Register")}
+            >
+              Don't have an Account? SignUp
+            </h6>
+          </>
+        ) : SendingEmail ? (
+          <>
+            <img
+              src="https://c.tenor.com/0ceXa2Dg8ywAAAAC/email-sent.gif"
+              height={200}
+            />
+          </>
+        ) : null}
+      </Grid>
+    </Grid>
+  );
+}
+
+export default Loginpage;
+
+{
+  /* <TextField
           error={passwordValidation ? true : false}
           size="small"
           style={{ paddingBottom: "20px" }}
@@ -140,20 +210,5 @@ function Loginpage(props: any) {
           // helperText={
           //   passwordValidation ? "password must be in between 6 to 10" : false
           // }
-        /> */}
-        <Box>
-          <Button
-            variant="contained"
-            size="small"
-            className="w-20"
-            onClick={LoginData}
-          >
-            <span className="text-capitalize">Login</span>
-          </Button>
-        </Box>
-      </Grid>
-    </Grid>
-  );
+        /> */
 }
-
-export default Loginpage;
