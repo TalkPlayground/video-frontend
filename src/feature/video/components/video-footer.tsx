@@ -284,11 +284,17 @@ const VideoFooter = (props: VideoFooterProps) => {
             cursor: "pointer",
           }}
           onClick={() => {
-            StartStopRecording(!RecordingStatus).then(() => {
+            if (RecordingStatus) {
+              StartStopRecording(!RecordingStatus).then(() => {
+                localStorage.removeItem("UserID");
+                history.push("/");
+                window.location.reload();
+              });
+            } else {
               localStorage.removeItem("UserID");
               history.push("/");
               window.location.reload();
-            });
+            }
           }}
         >
           {/* <Tooltip title={"Call Ended"} style={{ backgroundColor: "black" }}> */}

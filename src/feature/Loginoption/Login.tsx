@@ -1,9 +1,9 @@
 import {
   Box,
   Button,
-  Chip,
   Grid,
   IconButton,
+  makeStyles,
   TextField,
   Typography,
 } from "@material-ui/core";
@@ -17,8 +17,20 @@ import { Apis, baseURL, supabase } from "../../Api";
 
 import HeaderIcon from "../../assets/app_image.png";
 
+const useStyles = makeStyles({
+  root: {
+    color: "rgb(73, 76, 226)",
+    cursor: "pointer",
+    "&:hover": {
+      color: "rgb(73, 76, 226)",
+      textDecoration: "underline",
+    },
+  },
+});
+
 function Loginpage(props: any) {
   const history = useHistory();
+  const classes = useStyles();
   const { setUserInfo, setLoginOrNot } = props;
   const [email, setemailData] = useState("");
   const [passwordData, setpasswordData] = useState("");
@@ -75,6 +87,7 @@ function Loginpage(props: any) {
       if (user.error?.message) {
         setIsError(true);
       } else {
+        enqueueSnackbar(`Email Sended`, { variant: "success" });
         setSendingEmail(true);
       }
       // const info = {
@@ -165,12 +178,14 @@ function Loginpage(props: any) {
             >
               <span className="text-capitalize">Send Email Again</span>
             </Button>
-            <h6
-              style={{ color: "rgb(73, 76, 226)", cursor: "pointer" }}
+            <span
+              // style={{ color: "rgb(73, 76, 226)", cursor: "pointer" }}
+              className={classes.root}
+              // href="/Register"
               onClick={() => history.push("/Register")}
             >
-              Don't have an Account? SignUp
-            </h6>
+              Don't have an Account? Sign up
+            </span>
           </>
         ) : SendingEmail ? (
           <>

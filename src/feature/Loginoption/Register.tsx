@@ -9,6 +9,7 @@ import HeaderIcon from "../../assets/app_image.png";
 
 function RegisterPage(props: any) {
   const history = useHistory();
+  const [SendingEmail, setSendingEmail] = useState(false);
   const [RegisterData, setRegisterData] = useState({
     email: "",
     Fname: "",
@@ -20,6 +21,17 @@ function RegisterPage(props: any) {
   });
 
   const inputFormData = (e: any) => {
+    if (e.target.name === "email") {
+      setemailValidate(false);
+    } else if (e.target.name === "Fname") {
+      setFnameValid(false);
+    } else if (e.target.name === "Lname") {
+      setLnameValid(false);
+    } else if (e.target.name === "date") {
+      setDateValid(false);
+    } else if (e.target.name === "pword") {
+      setpasswordValidation(false);
+    }
     setRegisterData({ ...RegisterData, [e.target.name]: e.target.value });
   };
 
@@ -29,6 +41,12 @@ function RegisterPage(props: any) {
     // variant could be success, error, warning, info, or default
     enqueueSnackbar("Register Success", { variant });
   };
+
+  const [emailValidate, setemailValidate] = useState(false);
+  const [FnameValid, setFnameValid] = useState(false);
+  const [LnameValid, setLnameValid] = useState(false);
+  const [DateValid, setDateValid] = useState(false);
+  const [passwordValidation, setpasswordValidation] = useState(false);
 
   const RegisterForm = async () => {
     // RegisterData.pword &&
@@ -41,7 +59,7 @@ function RegisterPage(props: any) {
       RegisterData.date &&
       RegisterData.pword
     ) {
-      await supabase.auth.signUp(
+      const user = await supabase.auth.signUp(
         {
           email: RegisterData.email,
           password: RegisterData.pword,
@@ -54,6 +72,13 @@ function RegisterPage(props: any) {
           },
         }
       );
+
+      if (!user.error?.message) {
+        setSendingEmail(true);
+        enqueueSnackbar(`Email Sended`, { variant: "success" });
+      } else {
+        enqueueSnackbar(`${user.error?.message}`, { variant: "info" });
+      }
       //   const info = {
       //     fullName: `${RegisterData.Fname + " " + RegisterData.Lname}`,
       //     email: RegisterData.email,
@@ -71,6 +96,23 @@ function RegisterPage(props: any) {
       //     .catch(function (error) {
       //       console.log(error);
       //     });
+    }
+    if (
+      !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(RegisterData.email)
+    ) {
+      setemailValidate(true);
+    }
+    if (!RegisterData.Fname) {
+      setFnameValid(true);
+    }
+    if (!RegisterData.Lname) {
+      setLnameValid(true);
+    }
+    if (!RegisterData.date) {
+      setDateValid(true);
+    }
+    if (!RegisterData.pword) {
+      setpasswordValidation(true);
     }
   };
 
@@ -99,77 +141,103 @@ function RegisterPage(props: any) {
             Playground
           </Typography>
         </Grid>
-        <Grid xs={12} className="pb-2">
-          <TextField
-            id="filled-search"
-            label="Email"
-            type="email"
-            className="w-100"
-            variant="outlined"
-            size="small"
-            name="email"
-            value={RegisterData.email}
-            onChange={inputFormData}
-          />
-        </Grid>
-        <Grid container className=" pb-2">
-          <Grid xs={6} className="pr-1">
-            <TextField
-              id="filled-search"
-              label="First Name"
-              type="string"
-              className="w-100"
-              variant="outlined"
-              size="small"
-              name="Fname"
-              value={RegisterData.Fname}
-              autoComplete="off"
-              onChange={inputFormData}
+        {!SendingEmail ? (
+          <>
+            <Grid xs={12} className="pb-2">
+              <TextField
+                id="filled-search"
+                label="Email"
+                type="email"
+                className="w-100"
+                variant="outlined"
+                size="small"
+                name="email"
+                value={RegisterData.email}
+                onChange={inputFormData}
+                error={emailValidate ? true : false}
+              />
+            </Grid>
+            <Grid container className=" pb-2">
+              <Grid xs={6} className="pr-1">
+                <TextField
+                  id="filled-search"
+                  label="First Name"
+                  type="string"
+                  className="w-100"
+                  variant="outlined"
+                  size="small"
+                  name="Fname"
+                  value={RegisterData.Fname}
+                  autoComplete="off"
+                  onChange={inputFormData}
+                  error={FnameValid ? true : false}
+                />
+              </Grid>
+              <Grid xs={6} className="pl-1">
+                <TextField
+                  id="filled-search"
+                  label="Last Name"
+                  type="string"
+                  className="w-100"
+                  variant="outlined"
+                  size="small"
+                  name="Lname"
+                  value={RegisterData.Lname}
+                  autoComplete="off"
+                  onChange={inputFormData}
+                  error={LnameValid ? true : false}
+                />
+              </Grid>
+            </Grid>
+            <Grid xs={12} className="pb-2">
+              <TextField
+                id="filled-search"
+                // label="Email"
+                type="date"
+                className="w-100"
+                variant="outlined"
+                size="small"
+                name="date"
+                value={RegisterData.date}
+                autoComplete="off"
+                onChange={inputFormData}
+                error={DateValid ? true : false}
+              />
+            </Grid>
+            <Grid xs={12} className="pb-2">
+              <TextField
+                id="filled-search"
+                label="Password"
+                type="password"
+                className="w-100"
+                variant="outlined"
+                size="small"
+                name="pword"
+                value={RegisterData.pword}
+                autoComplete="off"
+                onChange={inputFormData}
+                error={passwordValidation ? true : false}
+              />
+            </Grid>
+            <Box className="mt-3">
+              <Button
+                variant="contained"
+                size="small"
+                className="w-20"
+                onClick={RegisterForm}
+              >
+                <span className="text-capitalize text-sm">Send Email</span>
+              </Button>
+            </Box>
+          </>
+        ) : (
+          <>
+            <img
+              src="https://c.tenor.com/0ceXa2Dg8ywAAAAC/email-sent.gif"
+              height={200}
             />
-          </Grid>
-          <Grid xs={6} className="pl-1">
-            <TextField
-              id="filled-search"
-              label="Last Name"
-              type="string"
-              className="w-100"
-              variant="outlined"
-              size="small"
-              name="Lname"
-              value={RegisterData.Lname}
-              autoComplete="off"
-              onChange={inputFormData}
-            />
-          </Grid>
-        </Grid>
-        <Grid xs={12} className="pb-2">
-          <TextField
-            id="filled-search"
-            // label="Email"
-            type="date"
-            className="w-100"
-            variant="outlined"
-            size="small"
-            name="date"
-            value={RegisterData.date}
-            autoComplete="off"
-            onChange={inputFormData}
-          />
-        </Grid>
-        <Grid xs={12} className="pb-2">
-          <TextField
-            id="filled-search"
-            label="Password"
-            type="password"
-            className="w-100"
-            variant="outlined"
-            size="small"
-            name="pword"
-            value={RegisterData.pword}
-            autoComplete="off"
-            onChange={inputFormData}
-          />
-        </Grid>
+          </>
+        )}
         {/*<Grid xs={12} className="pb-2">
           <TextField
             id="filled-search"
@@ -198,16 +266,6 @@ function RegisterPage(props: any) {
         </Grid> */}
         {/* <Grid xs={12}></Grid>
         <Grid xs={12}></Grid> */}
-        <Box className="mt-3">
-          <Button
-            variant="contained"
-            size="small"
-            className="w-20"
-            onClick={RegisterForm}
-          >
-            <span className="text-capitalize text-sm">Send Email</span>
-          </Button>
-        </Box>
       </Grid>
     </Grid>
   );
