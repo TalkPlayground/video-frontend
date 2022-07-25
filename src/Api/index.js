@@ -20,6 +20,6 @@ export const getQueryString = (params) => {
 };
 
 export const supabase = createClient(
-  `${process.env.REACT_PUBLIC_SUPABASE_URL}`,
-  `${process.env.REACT_PUBLIC_SUPABASE_KEY}`
+  "https://lpenohbnnyugfldiqxtu.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxwZW5vaGJubnl1Z2ZsZGlxeHR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2NTg3MjE4OTksImV4cCI6MTk3NDI5Nzg5OX0.WGQG8bbLisvSdGhGjdIy0E5dQ8DZ1LVOkUK6Fxrz-jM"
 );
