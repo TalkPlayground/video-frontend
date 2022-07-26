@@ -17,7 +17,7 @@ import { MediaDevice } from "../video-types";
 import "./video-footer.scss";
 import CallEndIcon from "@mui/icons-material/CallEnd";
 import { IconButton, Badge } from "@mui/material";
-import { Typography } from "@material-ui/core";
+import { Menu, MenuItem, Typography } from "@material-ui/core";
 import moment from "moment";
 import { topicInfo } from "../../../config/dev";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
@@ -41,6 +41,7 @@ interface VideoFooterProps {
   NewMsg: boolean;
   StartStopRecording: any;
   RecordingStatus: boolean;
+  handleselfView: any;
 }
 const isAudioEnable = typeof AudioWorklet === "function";
 const VideoFooter = (props: VideoFooterProps) => {
@@ -57,6 +58,7 @@ const VideoFooter = (props: VideoFooterProps) => {
     NewMsg,
     StartStopRecording,
     RecordingStatus,
+    handleselfView,
   } = props;
 
   const [isStartedAudio, setIsStartedAudio] = useState(false);
@@ -196,6 +198,32 @@ const VideoFooter = (props: VideoFooterProps) => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [HideSelfView, setHideSelfView] = useState(false);
+
+  useEffect(() => {}, [HideSelfView]);
+
+  const open = Boolean(anchorEl);
+  const handleClick = (event: any) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    // if (HideSelfView) {
+    // setAllvisibleParticipants(visibleParticipants);
+    // const index = visibleParticipants.findIndex(
+    //   (e: any) => e.userId === info.userId
+    // );
+    // visibleParticipants.splice(index, 1);
+    // console.log("00000", visibleParticipants, index);
+
+    // visibleParticipants?.filter((e: any) => console.log(e.userId, info.userId));
+    // } else {
+    //   setVisibleParticipants(AllvisibleParticipants);
+    //   setAllvisibleParticipants(null);
+    // }
+    setAnchorEl(null);
+  };
+
   return (
     <div className={classNames("video-footer", className)}>
       <div className="d-flex footer-left">
@@ -266,16 +294,52 @@ const VideoFooter = (props: VideoFooterProps) => {
             onScreenShareClick={onScreenShareClick}
           />
         )}
-        {/* <Tooltip title="More Option">
-          <IconButton
-            // className={isMuted ? "microphone-button" : "microphone-button"}
-            className="ml-3 screen-share-button"
-            style={{ backgroundColor: true ? "#3c4043" : "#ea4335" }}
-            // onClick={onMicrophoneClick}
-          >
-            <MoreVertOutlinedIcon style={{ fill: "#fff" }} />
-          </IconButton>
-        </Tooltip> */}
+        {/* <Tooltip title="More Option"> */}
+        <IconButton
+          // className={isMuted ? "microphone-button" : "microphone-button"}
+          className="ml-3 screen-share-button"
+          style={{ backgroundColor: true ? "#3c4043" : "#ea4335" }}
+          // onClick={onMicrophoneClick}
+          aria-controls={open ? "basic-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? "true" : undefined}
+          onClick={handleClick}
+        >
+          <MoreVertOutlinedIcon style={{ fill: "#fff" }} />
+        </IconButton>
+        <Menu
+          id="basic-menu"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          MenuListProps={{
+            "aria-labelledby": "basic-button",
+          }}
+          style={{ marginBottom: "-18px" }}
+        >
+          {!HideSelfView ? (
+            <MenuItem
+              onClick={() => {
+                handleselfView(!HideSelfView);
+                setHideSelfView(!HideSelfView);
+                setAnchorEl(null);
+              }}
+            >
+              Hide Self view
+            </MenuItem>
+          ) : (
+            <MenuItem
+              onClick={() => {
+                handleselfView(!HideSelfView);
+                setHideSelfView(!HideSelfView);
+                setAnchorEl(null);
+              }}
+            >
+              Show Self view
+            </MenuItem>
+          )}
+        </Menu>
+        {/* </Tooltip> */}
         <Typography
           className="rounded-pill ml-3"
           style={{

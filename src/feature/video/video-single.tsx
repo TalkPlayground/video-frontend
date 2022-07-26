@@ -24,6 +24,7 @@ import {
   Card,
   CardActions,
   CardContent,
+  Menu,
   Typography,
 } from "@material-ui/core";
 import MeetingDetails from "./components/MeetingDetails";
@@ -32,6 +33,7 @@ import ChatContainer from "../chat/chat";
 import axios from "axios";
 import { devConfig } from "../../config/dev";
 import { useSnackbar } from "notistack";
+import { MenuItem } from "@mui/material";
 
 interface VideoProps extends RouteComponentProps {
   DisplayDataInfo: any;
@@ -239,6 +241,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         NewMsg={NewMsg}
         StartStopRecording={StartStopRecording}
         RecordingStatus={RecordingStatus}
+        handleselfView={null}
       />
     </div>
   );

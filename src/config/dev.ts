@@ -6,6 +6,9 @@ const urlParams = new URLSearchParams(queryString);
 export const topicInfo = urlParams.get('topic')
 
 
+console.log(
+  "log", process.env.REACT_APP_ZOOM_JWT_KEY
+);
 export const devConfig = {
   sdkKey: process.env.REACT_APP_ZOOM_SDK_KEY,
   sdkSecret: process.env.REACT_APP_ZOOM_SDK_SECRET,

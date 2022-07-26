@@ -1,5 +1,6 @@
 import { Box, Button, Grid, TextField, Typography } from "@material-ui/core";
 import axios from "axios";
+import moment from "moment";
 import { useSnackbar } from "notistack";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -32,7 +33,16 @@ function RegisterPage(props: any) {
     } else if (e.target.name === "pword") {
       setpasswordValidation(false);
     }
-    setRegisterData({ ...RegisterData, [e.target.name]: e.target.value });
+    if (e.target.name === "date") {
+      if (moment(e.target.value).isAfter(moment().endOf("day"))) {
+        enqueueSnackbar(`Cannot select the future Date`, { variant: "error" });
+        setDateValid(true);
+      } else {
+        setRegisterData({ ...RegisterData, [e.target.name]: e.target.value });
+      }
+    } else {
+      setRegisterData({ ...RegisterData, [e.target.name]: e.target.value });
+    }
   };
 
   const { enqueueSnackbar } = useSnackbar();

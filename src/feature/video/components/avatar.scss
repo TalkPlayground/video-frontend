@@ -8,6 +8,16 @@
   &.avatar-active {
     outline: 3px solid #d4e280;
   }
+  .video-option{
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 10px 10px;
+    cursor: pointer;
+    &:hover{
+      cursor: pointer;
+    }
+  }
   .corner-name {
     position: absolute;
     left: 0;

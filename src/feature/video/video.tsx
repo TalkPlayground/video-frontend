@@ -20,6 +20,7 @@ import {
   CardActions,
   CardContent,
   Drawer,
+  Menu,
   Typography,
 } from "@material-ui/core";
 import MeetingDetails from "./components/MeetingDetails";
@@ -28,6 +29,8 @@ import axios from "axios";
 import { devConfig } from "../../config/dev";
 import { useSnackbar } from "notistack";
 import { Apis, getQueryString } from "../../Api";
+import { MenuItem } from "@mui/material";
+import { AnyArray } from "immer/dist/internal";
 
 interface VideoProps extends RouteComponentProps {
   DisplayDataInfo: any;
@@ -55,7 +58,13 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   );
 
   const [NewMsg, setNewMsg] = useState(false);
-  const { visibleParticipants, layout: videoLayout } = useGalleryLayout(
+
+  const [selfViewGalleryLayout, setselfViewGalleryLayout] = useState(false);
+  const {
+    visibleParticipants,
+    setVisibleParticipants,
+    layout: videoLayout,
+  } = useGalleryLayout(
     zmClient,
     mediaStream,
     isVideoDecodeReady,
@@ -66,6 +75,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
       pageSize,
       totalPage,
       totalSize,
+      selfViewGalleryLayout,
     }
   );
   const { isRecieveSharing, isStartedShare, sharedContentDimension } = useShare(
@@ -142,20 +152,27 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   }, []);
 
   const StartStopRecording = async (data: boolean) => {
-    // let config = {
-    //   headers: {
-    //     Authorization: `Bearer `,
-    //   },
-    // };
+    console.log(
+      "process.env.ZOMM_VIDEO_SDK_JWT_TOKEN}",
+      process.env.REACT_APP_ZOOM_JWT_KEY
+    );
+    let config = {
+      headers: {
+        Authorization: `Bearer ${process.env.REACT_APP_ZOOM_JWT_KEY}`,
+      },
+    };
     // console.log("first", zmClient.getSessionInfo());
     const info = {
       ...zmClient.getSessionInfo(),
     };
     await axios
-      .post("/api/v1/user/session/recording", {
-        sessionId: info.sessionId,
-        status: data,
-      })
+      .patch(
+        `https://api.zoom.us/v2/videosdk/sessions/${info.sessionId}/events`,
+        {
+          method: data ? "recording.start" : "recording.stop",
+        },
+        config
+      )
       .then(function (response) {
         console.log(response);
         // history.push("/Login");
@@ -167,6 +184,35 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
       .catch(function (error) {
         console.log(error);
       });
+  };
+
+  const [RenderShowHide, setRenderShowHide] = useState(false);
+  const [AllvisibleParticipants, setAllvisibleParticipants] =
+    useState<AnyArray>([]);
+
+  const info = {
+    ...zmClient.getSessionInfo(),
+  };
+
+  const handleselfView = (data: any) => {
+    if (data) {
+      var index = visibleParticipants.findIndex(
+        (e: any) => e.userId === info.userId
+      );
+      AllvisibleParticipants.push(visibleParticipants[index]);
+
+      setRenderShowHide(true);
+      visibleParticipants.splice(index, 1);
+
+      console.log("cccc", visibleParticipants, AllvisibleParticipants, data);
+      setselfViewGalleryLayout(true);
+    } else {
+      setselfViewGalleryLayout(false);
+      console.log("dddd", visibleParticipants, AllvisibleParticipants, data);
+      visibleParticipants.push(AllvisibleParticipants[0]);
+      setRenderShowHide(false);
+      setAllvisibleParticipants([]);
+    }
   };
 
   return (
@@ -226,7 +272,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
           ref={videoRef}
         />
         <ul className="avatar-list">
-          {visibleParticipants.map((user, index) => {
+          {visibleParticipants?.map((user, index) => {
             if (index > videoLayout.length - 1) {
               return null;
             }
@@ -247,7 +293,6 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
               />
             );
           })}
-          ;
         </ul>
       </div>
 
@@ -271,6 +316,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         NewMsg={NewMsg}
         StartStopRecording={StartStopRecording}
         RecordingStatus={RecordingStatus}
+        handleselfView={handleselfView}
       />
 
       {totalPage > 1 && (
