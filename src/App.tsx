@@ -10,6 +10,7 @@ import {
   Switch,
   Route,
   useHistory,
+  Redirect,
 } from "react-router-dom";
 import ZoomVideo, { ConnectionState } from "@zoom/videosdk";
 import { message, Modal } from "antd";
@@ -33,6 +34,9 @@ import Loginpage from "./feature/Loginoption/Login";
 import RegisterPage from "./feature/Loginoption/Register";
 import { devConfig, topicInfo } from "./config/dev";
 import { getExploreName } from "./utils/platform";
+import jwt_decode from "jwt-decode";
+import { useSnackbar } from "notistack";
+import { supabase } from "./Api";
 
 interface AppProps {
   meetingArgs: {
@@ -103,14 +107,59 @@ function App(props: AppProps) {
   const [chatClient, setChatClient] = useState<ChatClient | null>(null);
   const [isSupportGalleryView, setIsSupportGalleryView] =
     useState<boolean>(true);
-  const zmClient = useContext(ZoomContext);
+  const [UserInfo, setUserInfo] = useState({
+    exp: "",
+    name: "",
+    sub: "",
+    userId: "",
+  });
+
+  const [LoginOrNot, setLoginOrNot] = useState(false);
+
+  const [DisplayDataInfo, setDisplayDataInfo] = useState({
+    Displayname: "",
+    emailinfo: "",
+  });
+
+  const accessToken = localStorage.getItem("accessToken");
 
   useEffect(() => {
-    console.log("devConfig", devConfig);
-    if (topicInfo?.length) {
-      init(`${getExploreName()}-${Math.floor(Math.random() * 1000)}`);
+    if (!UserInfo.name && accessToken) {
+      console.log(" njnknk");
+      // var decoded = jwt_decode(accessToken);
+      // if (decoded) {
+      setUserInfo(jwt_decode(accessToken));
+
+      // handleClickVariant("success");
+      // }
     }
-  }, [topicInfo]);
+  }, [accessToken, LoginOrNot]);
+
+  const zmClient = useContext(ZoomContext);
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleClickVariant = (variant: any) => {
+    // variant could be success, error, warning, info, or default
+    enqueueSnackbar("Logged In", { variant });
+  };
+
+  useEffect(() => {
+    console.log("UserInfo", UserInfo);
+    if (UserInfo) {
+      setDisplayDataInfo({ ...DisplayDataInfo, emailinfo: UserInfo.sub });
+    }
+  }, [UserInfo]);
+
+  // if (topicInfo?.length && !UserInfo.sub) {
+  //   return <Redirect to="/Join" />;
+  // }
+
+  useEffect(() => {
+    if (topicInfo?.length && UserInfo.name?.length) {
+      init(UserInfo.name);
+    }
+  }, [topicInfo, UserInfo]);
 
   const init = async (nameData: any) => {
     setIsLoading(true);
@@ -121,9 +170,15 @@ function App(props: AppProps) {
       await zmClient.join(topic, signature, nameData, password);
       const stream = zmClient.getMediaStream();
       setMediaStream(stream);
+      console.log(
+        "stream.isSupportMultipleVideos()",
+        stream.isSupportMultipleVideos()
+      );
       setIsSupportGalleryView(stream.isSupportMultipleVideos());
       const chatClient = zmClient.getChatClient();
       setChatClient(chatClient);
+      console.log(zmClient.getSessionInfo());
+
       // history.push(`/video${window.location.search}`);
       setIsLoading(false);
     } catch (e: any) {
@@ -194,13 +249,27 @@ function App(props: AppProps) {
               <Switch>
                 <Route
                   path="/"
-                  render={(props) => <Homepage {...props} status={status} />}
+                  render={(props) => (
+                    <Homepage
+                      {...props}
+                      status={status}
+                      UserInfo={UserInfo}
+                      init={init}
+                      setLoginOrNot={setLoginOrNot}
+                    />
+                  )}
                   exact
                 />
                 <Route
                   path="/Join"
                   render={(props) => (
-                    <Joinpage {...props} status={status} init={init} />
+                    <Joinpage
+                      {...props}
+                      status={status}
+                      init={init}
+                      setDisplayDataInfo={setDisplayDataInfo}
+                      DisplayDataInfo={DisplayDataInfo}
+                    />
                   )}
                   exact
                 />
@@ -211,7 +280,15 @@ function App(props: AppProps) {
                 />
                 <Route
                   path="/Login"
-                  render={(props) => <Loginpage {...props} status={status} />}
+                  render={(props) => (
+                    <Loginpage
+                      {...props}
+                      status={status}
+                      setUserInfo={setUserInfo}
+                      handleClickVariant={handleClickVariant}
+                      setLoginOrNot={setLoginOrNot}
+                    />
+                  )}
                   exact
                 />
                 <Route
@@ -221,16 +298,30 @@ function App(props: AppProps) {
                   )}
                   exact
                 />
+
                 {/* <Route
                   path="/index.html"
                   render={(props) => <Home {...props} status={status} />}
                   exact
                 /> */}
                 <Route path="/preview" component={Preview} />
-                <Route
-                  path="/video"
-                  component={isSupportGalleryView ? Video : VideoSingle}
-                />
+                {UserInfo.name || DisplayDataInfo.Displayname || accessToken ? (
+                  <Route
+                    path="/video"
+                    render={(props) =>
+                      isSupportGalleryView ? (
+                        <Video {...props} DisplayDataInfo={DisplayDataInfo} />
+                      ) : (
+                        <VideoSingle
+                          {...props}
+                          DisplayDataInfo={DisplayDataInfo}
+                        />
+                      )
+                    }
+                  />
+                ) : (
+                  <Redirect to="/Join" />
+                )}
                 <Route path="/chat" component={Chat} />
               </Switch>
             </Router>

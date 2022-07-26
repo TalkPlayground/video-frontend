@@ -14,20 +14,21 @@ export function useGalleryLayout(
   isVideoDecodeReady: boolean,
   videoRef: MutableRefObject<HTMLCanvasElement | null>,
   dimension: Dimension,
-  pagination: Pagination,
+  pagination: any,
 ) {
   const [visibleParticipants, setVisibleParticipants] = useState<Participant[]>([]);
   const [layout, setLayout] = useState<CellLayout[]>([]);
   const [subscribedVideos, setSubscribedVideos] = useState<number[]>([]);
-  const { page, pageSize, totalPage, totalSize } = pagination;
+  const { page, pageSize, totalPage, totalSize,selfViewGalleryLayout } = pagination;
   let size = pageSize;
   if (page === totalPage - 1) {
     size = Math.min(size, totalSize % pageSize || size);
   }
 
+
   useEffect(() => {
-    setLayout(getVideoLayout(dimension.width, dimension.height, size));
-  }, [dimension, size]);
+    setLayout(getVideoLayout(dimension.width, dimension.height, selfViewGalleryLayout ? size - 1 : size));
+  }, [dimension, size,selfViewGalleryLayout]);
   const onParticipantsChange = useCallback(() => {
     const participants = zmClient.getAllUser();
     const currentUser = zmClient.getCurrentUserInfo();
@@ -75,6 +76,7 @@ export function useGalleryLayout(
   );
   return {
     visibleParticipants,
+    setVisibleParticipants,
     layout,
   };
 }

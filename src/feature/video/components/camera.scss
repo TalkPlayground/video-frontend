@@ -1,12 +1,15 @@
 .camere-button {
   font-size: 20px;
-  color: #fff;
+  color: #fff !important;
   margin-left: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 45px !important;
+  width: 40px !important;
   height: 40px !important;
+  &:focus{
+    outline: none !important;
+  }
   > *{
     font-size: 28px !important;
   }

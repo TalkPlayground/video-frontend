@@ -10,7 +10,11 @@ import CloseIcon from "@mui/icons-material/Close";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { devConfig } from "../../config/dev";
 
-export default function BasicCard({ setLinkShowCard, LinkShowCard }: any) {
+export default function BasicCard({
+  setLinkShowCard,
+  LinkShowCard,
+  DisplayDataInfo,
+}: any) {
   const url = `${window.location.origin}/video?topic=${devConfig.topic}`;
 
   const cardOpen = () => {
@@ -22,7 +26,7 @@ export default function BasicCard({ setLinkShowCard, LinkShowCard }: any) {
       className="position-absolute"
       style={{
         bottom: "80px",
-        left: "50px",
+        right: "30px",
         zIndex: 10,
         textAlign: "left",
       }}
@@ -30,21 +34,17 @@ export default function BasicCard({ setLinkShowCard, LinkShowCard }: any) {
       <Card sx={{ minWidth: 275, borderRadius: 4 }}>
         <CardContent>
           <Box className="d-flex align-items-center justify-content-between">
-            <Typography
-              sx={{ fontSize: 18, fontWeight: "bold" }}
-              color="black"
-              gutterBottom
-            >
+            <p style={{ fontSize: 18, fontWeight: "bold", color: "black" }}>
               Your meeting's ready
-            </Typography>
+            </p>
             <IconButton onClick={cardOpen}>
               <CloseIcon className="cursor-pointer" />
             </IconButton>
           </Box>
-          <Typography sx={{ fontSize: 14 }} variant="h6" component="div">
+          <p style={{ fontSize: 14 }}>
             Or share this joining info with others you want in
             <br /> the meeting
-          </Typography>
+          </p>
           <Box className="d-flex bg-secondary text-white px-2 mt-3 rounded justify-content-between align-items-center ">
             <p>{url?.length > 38 ? url.slice(0, 38) + "..." : url}</p>
 
@@ -57,12 +57,9 @@ export default function BasicCard({ setLinkShowCard, LinkShowCard }: any) {
           </Box>
         </CardContent>
         <CardActions>
-          <Typography
-            sx={{ fontSize: 12 }}
-            className="text-secondary pl-2 mb-4"
-          >
-            Joined as Shivam.kumar@oodles.io
-          </Typography>
+          <p style={{ fontSize: 12 }} className="text-secondary pl-2 mb-4">
+            Joined as {DisplayDataInfo.emailinfo}
+          </p>
         </CardActions>
       </Card>
     </Box>

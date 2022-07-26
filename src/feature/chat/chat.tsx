@@ -1,31 +1,52 @@
-import React, { useCallback, useContext, useEffect, useState, useRef } from 'react';
-import produce from 'immer';
-import { Input } from 'antd';
-import { ChatPrivilege } from '@zoom/videosdk';
-import ZoomContext from '../../context/zoom-context';
-import { ChatReceiver, ChatRecord } from './chat-types';
-import { useParticipantsChange } from './hooks/useParticipantsChange';
-import ChatContext from '../../context/chat-context';
-import ChatMessageItem from './component/chat-message-item';
-import ChatReceiverContainer from './component/chat-receiver';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
+import produce from "immer";
+import { Input } from "antd";
+import { ChatPrivilege } from "@zoom/videosdk";
+import ZoomContext from "../../context/zoom-context";
+import { ChatReceiver, ChatRecord } from "./chat-types";
+import { useParticipantsChange } from "./hooks/useParticipantsChange";
+import ChatContext from "../../context/chat-context";
+import ChatMessageItem from "./component/chat-message-item";
+import ChatReceiverContainer from "./component/chat-receiver";
+import CloseIcon from "@mui/icons-material/Close";
 
-import { useMount } from '../../hooks';
-import './chat.scss';
+import { useMount } from "../../hooks";
+import "./chat.scss";
+import { IconButton } from "@material-ui/core";
 const { TextArea } = Input;
-const ChatContainer = () => {
+const ChatContainer = ({
+  modalOpenClose,
+  setmodalOpenClose,
+  setNewMsg,
+}: any) => {
   const zmClient = useContext(ZoomContext);
   const chatClient = useContext(ChatContext);
   const [chatRecords, setChatRecords] = useState<ChatRecord[]>([]);
   const [currentUserId, setCurrentUserId] = useState<number>(0);
   const [chatReceivers, setChatReceivers] = useState<ChatReceiver[]>([]);
   const [chatPrivilege, setChatPrivilege] = useState<ChatPrivilege>(
-    ChatPrivilege.All,
+    ChatPrivilege.All
   );
   const [chatUser, setChatUser] = useState<ChatReceiver | null>(null);
   const [isHost, setIsHost] = useState<boolean>(false);
   const [isManager, setIsManager] = useState<boolean>(false);
-  const [chatDraft, setChatDraft] = useState<string>('');
+  const [chatDraft, setChatDraft] = useState<string>("");
   const chatWrapRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (chatRecords?.length > 0) {
+      console.log("first", chatRecords);
+
+      setNewMsg(true);
+    }
+  }, [chatRecords?.length]);
+
   const onChatMessage = useCallback(
     (payload: ChatRecord) => {
       setChatRecords(
@@ -41,7 +62,10 @@ const ChatContainer = () => {
               if (Array.isArray(lastRecord.message)) {
                 lastRecord.message.push(payload.message as string);
               } else {
-                lastRecord.message = [lastRecord.message, payload.message as string];
+                lastRecord.message = [
+                  lastRecord.message,
+                  payload.message as string,
+                ];
               }
             } else {
               records.push(payload);
@@ -49,13 +73,13 @@ const ChatContainer = () => {
           } else {
             records.push(payload);
           }
-        }),
+        })
       );
       if (chatWrapRef.current) {
         chatWrapRef.current.scrollTo(0, chatWrapRef.current.scrollHeight);
       }
     },
-    [chatWrapRef],
+    [chatWrapRef]
   );
   const onChatPrivilegeChange = useCallback(
     (payload) => {
@@ -64,24 +88,24 @@ const ChatContainer = () => {
         setChatReceivers(chatClient.getReceivers());
       }
     },
-    [chatClient],
+    [chatClient]
   );
   const onChatInput = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       setChatDraft(event.target.value);
     },
-    [],
+    []
   );
   useEffect(() => {
-    zmClient.on('chat-on-message', onChatMessage);
+    zmClient.on("chat-on-message", onChatMessage);
     return () => {
-      zmClient.off('chat-on-message', onChatMessage);
+      zmClient.off("chat-on-message", onChatMessage);
     };
   }, [zmClient, onChatMessage]);
   useEffect(() => {
-    zmClient.on('chat-privilege-change', onChatPrivilegeChange);
+    zmClient.on("chat-privilege-change", onChatPrivilegeChange);
     return () => {
-      zmClient.off('chat-privilege-change', onChatPrivilegeChange);
+      zmClient.off("chat-privilege-change", onChatPrivilegeChange);
     };
   }, [zmClient, onChatPrivilegeChange]);
   useParticipantsChange(zmClient, () => {
@@ -94,7 +118,7 @@ const ChatContainer = () => {
   useEffect(() => {
     if (chatUser) {
       const index = chatReceivers.findIndex(
-        (user) => user.userId === chatUser.userId,
+        (user) => user.userId === chatUser.userId
       );
       if (index === -1) {
         setChatUser(chatReceivers[0]);
@@ -112,17 +136,17 @@ const ChatContainer = () => {
         setChatUser(user);
       }
     },
-    [chatReceivers],
+    [chatReceivers]
   );
   const sendMessage = useCallback(
     (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
       event.preventDefault();
       if (chatUser && chatDraft) {
         chatClient?.send(chatDraft, chatUser?.userId);
-        setChatDraft('');
+        setChatDraft("");
       }
     },
-    [chatClient, chatDraft, chatUser],
+    [chatClient, chatDraft, chatUser]
   );
   useMount(() => {
     setCurrentUserId(zmClient.getSessionInfo().userId);
@@ -131,10 +155,18 @@ const ChatContainer = () => {
     }
   });
   return (
-    <div className="chat-container">
+    <div
+      className="chat-container"
+      style={{ display: modalOpenClose ? "flex" : "none" }}
+    >
       <div className="chat-wrap">
-        <a className="exit-chat" href="/"> <i className="far fa-times-circle"></i> </a>
-        <h2>Chat</h2>
+        {/* <a className="exit-chat" href="/"> <i className="far fa-times-circle"></i> </a> */}
+        <div className="d-flex justify-content-between align-items-center px-3">
+          <p style={{ fontSize: 18, color: "black" }}>In-call messages</p>
+          <IconButton onClick={() => setmodalOpenClose(false)}>
+            <CloseIcon className="cursor-pointer" />
+          </IconButton>
+        </div>
         <div className="chat-message-wrap" ref={chatWrapRef}>
           {chatRecords.map((record) => (
             <ChatMessageItem
@@ -159,7 +191,7 @@ const ChatContainer = () => {
                 onPressEnter={sendMessage}
                 onChange={onChatInput}
                 value={chatDraft}
-                placeholder="Type message here ..."
+                placeholder="Send a message to everyone"
               />
             </div>
           </>

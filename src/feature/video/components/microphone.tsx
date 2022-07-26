@@ -12,6 +12,8 @@ import { IconFont } from "../../../component/icon-font";
 import "./microphone.scss";
 import { MediaDevice } from "../video-types";
 import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice";
+import MicOffIcon from "@mui/icons-material/MicOff";
+import { IconButton } from "@mui/material";
 
 const { Button: DropdownButton } = Dropdown;
 interface MicrophoneButtonProps {
@@ -122,7 +124,18 @@ const MicrophoneButton = (props: MicrophoneButtonProps) => {
         </DropdownButton>
       ) : ( */}
       <Tooltip title={tooltipText}>
-        <Button
+        <IconButton
+          className={isMuted ? "microphone-button" : "microphone-button"}
+          style={{ backgroundColor: !isMuted ? "#3c4043" : "#ea4335 " }}
+          onClick={onMicrophoneClick}
+        >
+          {isMuted ? (
+            <MicOffIcon style={{ fill: "#fff" }} />
+          ) : (
+            <KeyboardVoiceIcon />
+          )}
+        </IconButton>
+        {/* <Button
           className={
             isMuted ? "microphone-button bg-danger" : "microphone-button"
           }
@@ -131,7 +144,7 @@ const MicrophoneButton = (props: MicrophoneButtonProps) => {
           ghost
           shape="circle"
           onClick={onMicrophoneClick}
-        />
+        /> */}
       </Tooltip>
       {/* )} */}
     </div>

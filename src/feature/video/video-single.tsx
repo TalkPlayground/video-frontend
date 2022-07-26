@@ -5,22 +5,42 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
-} from 'react';
-import { RouteComponentProps } from 'react-router-dom';
-import { VideoQuality, VideoActiveState } from '@zoom/videosdk';
-import classnames from 'classnames';
-import ZoomContext from '../../context/zoom-context';
-import ZoomMediaContext from '../../context/media-context';
-import Avatar from './components/avatar';
-import VideoFooter from './components/video-footer';
-import { useShare } from './hooks/useShare';
-import { useParticipantsChange } from './hooks/useParticipantsChange';
-import { useCanvasDimension } from './hooks/useCanvasDimension';
-import { usePrevious, useMount } from '../../hooks';
-import { Participant } from '../../index-types';
-import './video.scss';
+} from "react";
+import { RouteComponentProps } from "react-router-dom";
+import { VideoQuality, VideoActiveState } from "@zoom/videosdk";
+import classnames from "classnames";
+import ZoomContext from "../../context/zoom-context";
+import ZoomMediaContext from "../../context/media-context";
+import Avatar from "./components/avatar";
+import VideoFooter from "./components/video-footer";
+import { useShare } from "./hooks/useShare";
+import { useParticipantsChange } from "./hooks/useParticipantsChange";
+import { useCanvasDimension } from "./hooks/useCanvasDimension";
+import { usePrevious, useMount } from "../../hooks";
+import { Participant } from "../../index-types";
+import "./video.scss";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  Menu,
+  Typography,
+} from "@material-ui/core";
+import MeetingDetails from "./components/MeetingDetails";
+import BasicCard from "../../component/pages/Linkcard";
+import ChatContainer from "../chat/chat";
+import axios from "axios";
+import { devConfig } from "../../config/dev";
+import { useSnackbar } from "notistack";
+import { MenuItem } from "@mui/material";
 
-const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => {
+interface VideoProps extends RouteComponentProps {
+  DisplayDataInfo: any;
+}
+
+const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
+  const { DisplayDataInfo } = props;
   const zmClient = useContext(ZoomContext);
   const {
     mediaStream,
@@ -37,16 +57,19 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
   const { isRecieveSharing, isStartedShare, sharedContentDimension } = useShare(
     zmClient,
     mediaStream,
-    shareRef,
+    shareRef
   );
+
+  const [NewMsg, setNewMsg] = useState(false);
+  const [RecordingStatus, setRecordingStatus] = useState(false);
+
+  const [LinkShowCard, setLinkShowCard] = useState(true);
   const isSharing = isRecieveSharing || isStartedShare;
   const contentDimension = sharedContentDimension;
   if (isSharing && shareContainerRef.current) {
     const { width, height } = sharedContentDimension;
-    const {
-      width: containerWidth,
-      height: containerHeight,
-    } = shareContainerRef.current.getBoundingClientRect();
+    const { width: containerWidth, height: containerHeight } =
+      shareContainerRef.current.getBoundingClientRect();
     const ratio = Math.min(containerWidth / width, containerHeight / height, 1);
     contentDimension.width = Math.floor(width * ratio);
     contentDimension.height = Math.floor(height * ratio);
@@ -70,13 +93,15 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
     }
   }, []);
   useEffect(() => {
-    zmClient.on('video-active-change', onActiveVideoChange);
-    zmClient.on('active-speaker', onActiveSpeakerChange);
+    zmClient.on("video-active-change", onActiveVideoChange);
+    zmClient.on("active-speaker", onActiveSpeakerChange);
     return () => {
-      zmClient.off('video-active-change', onActiveVideoChange);
-      zmClient.off('active-speaker', onActiveSpeakerChange);
+      zmClient.off("video-active-change", onActiveVideoChange);
+      zmClient.off("active-speaker", onActiveSpeakerChange);
     };
   }, [zmClient, onActiveVideoChange, onActiveSpeakerChange]);
+
+  const [modalOpenClose, setmodalOpenClose] = useState(false);
 
   const activeUser = useMemo(() => {
     let user = undefined;
@@ -106,7 +131,7 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
           canvasDimension.height,
           0,
           0,
-          VideoQuality.Video_360P as any,
+          VideoQuality.Video_360P as any
         );
       } else if (activeVideo === 0 && previousActiveVideo) {
         mediaStream.stopRenderVideo(videoRef.current, previousActiveVideo);
@@ -124,11 +149,36 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
       setActiveVideo(mediaStream.getActiveVideoId());
     }
   });
+
+  useEffect(() => {
+    if (NewMsg && modalOpenClose) {
+      setNewMsg(false);
+    } else {
+      setNewMsg(false);
+    }
+  }, [modalOpenClose, NewMsg]);
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const StartStopRecording = async (data: boolean) => {
+    setRecordingStatus(data);
+    enqueueSnackbar(`${data ? "Start Recording" : "Stop Recording"}`, {
+      variant: "info",
+    });
+  };
+
   return (
     <div className="viewport">
+      {LinkShowCard && (
+        <BasicCard
+          setLinkShowCard={setLinkShowCard}
+          LinkShowCard={LinkShowCard}
+          DisplayDataInfo={DisplayDataInfo}
+        />
+      )}
       <div
-        className={classnames('share-container', {
-          'in-sharing': isSharing,
+        className={classnames("share-container", {
+          "in-sharing": isSharing,
         })}
         ref={shareContainerRef}
       >
@@ -140,18 +190,18 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
           }}
         >
           <canvas
-            className={classnames('share-canvas', { hidden: isStartedShare })}
+            className={classnames("share-canvas", { hidden: isStartedShare })}
             ref={shareRef}
           />
           <canvas
-            className={classnames('share-canvas', { hidden: isRecieveSharing })}
+            className={classnames("share-canvas", { hidden: isRecieveSharing })}
             ref={selfShareRef}
           />
         </div>
       </div>
       <div
-        className={classnames('video-container', {
-          'in-sharing': isSharing,
+        className={classnames("video-container", {
+          "in-sharing": isSharing,
         })}
       >
         <canvas
@@ -169,7 +219,30 @@ const VideoContainer: React.FunctionComponent<RouteComponentProps> = (props) => 
           />
         )}
       </div>
-      <VideoFooter className="video-operations" sharing shareRef={selfShareRef} />
+
+      {/* <MeetingDetails modalOpenClose={modalOpenClose} /> */}
+
+      <div className={modalOpenClose ? "ChatTransition" : "ChatTransitionOpen"}>
+        <ChatContainer
+          modalOpenClose={modalOpenClose}
+          setmodalOpenClose={setmodalOpenClose}
+          setNewMsg={setNewMsg}
+        />
+      </div>
+
+      <VideoFooter
+        className="video-operations"
+        sharing
+        shareRef={selfShareRef}
+        setmodalOpenClose={setmodalOpenClose}
+        modalOpenClose={modalOpenClose}
+        setLinkShowCard={setLinkShowCard}
+        LinkShowCard={LinkShowCard}
+        NewMsg={NewMsg}
+        StartStopRecording={StartStopRecording}
+        RecordingStatus={RecordingStatus}
+        handleselfView={null}
+      />
     </div>
   );
 };
