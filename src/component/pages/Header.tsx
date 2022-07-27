@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Drawer,
   Grid,
   IconButton,
   Menu,
@@ -20,15 +21,15 @@ import { useSnackbar } from "notistack";
 // import { useNavigate } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { supabase } from "../../Api";
+import MenuIcon from "@mui/icons-material/Menu";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 function Header({ UserInfo, setisLoginOrNot }: any) {
   const history = useHistory();
   const [LoginOrNot, setLoginOrNot] = useState(false);
 
-  const [loading, setLoading] = useState(true);
-  const [username, setUsername] = useState(null);
-  const [website, setWebsite] = useState(null);
-  const [avatar_url, setAvatarUrl] = useState(null);
+  const [openDrawer, setopenDrawer] = useState(false);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -64,39 +65,11 @@ function Header({ UserInfo, setisLoginOrNot }: any) {
   const Loggedout = async () => {
     localStorage.removeItem("accessToken");
     setLoginOrNot(false);
+    setopenDrawer(false);
     setAnchorEl(null);
     await supabase.auth.signOut();
     // setisLoginOrNot(false);
     handleClickVariant("success");
-  };
-
-  const getProfile = async (info: any) => {
-    try {
-      setLoading(true);
-
-      var { data, error, status } = await supabase
-        .from("users")
-        .select(`username, website, avatar_url`)
-        .eq("id", info?.id)
-        .single();
-      console.log("user?.id", data, info?.id);
-      if (error && status !== 406) {
-        throw error;
-      }
-
-      console.log("first");
-      if (data) {
-        console.log("DDD", data);
-        setUsername(data.username);
-        setWebsite(data.website);
-        setAvatarUrl(data.avatar_url);
-      }
-    } catch (error: any) {
-      // alert(error.message);
-    } finally {
-      console.log("first======");
-      setLoading(false);
-    }
   };
 
   useEffect(() => {
@@ -126,11 +99,14 @@ function Header({ UserInfo, setisLoginOrNot }: any) {
 
   return (
     <Grid container className="align-items-center py-2 px-5">
-      <Grid xs={12} md={6} className="d-flex justify-items-start">
+      <Grid xs={6} md={6} className="d-flex justify-items-start">
         <img src={Header_logo} className="Header_logo" alt="Header_logo" />
       </Grid>
-      <Grid xs={12} md={6} className="d-flex justify-content-end">
-        <Box className="d-flex align-items-center">
+      <Grid xs={6} md={6} className="d-flex justify-content-end">
+        <Box
+          className="align-items-center"
+          sx={{ display: { xs: "none", sm: "flex" } }}
+        >
           <Typography className="pr-4">
             {moment().format("LT")} <span className="px-1">&#8226;</span>
             {moment().format("dddd, MMMM DD")}
@@ -185,7 +161,64 @@ function Header({ UserInfo, setisLoginOrNot }: any) {
             </MenuItem>
           </Menu>
         </Box>
+        <Box sx={{ display: { xs: "block", sm: "none" } }}>
+          <IconButton onClick={() => setopenDrawer(!openDrawer)}>
+            <MenuIcon fontSize="large" style={{ cursor: "pointer" }} />
+          </IconButton>
+        </Box>
       </Grid>
+      <Drawer anchor="right" open={openDrawer}>
+        <Box
+          sx={{ width: 250 }}
+          className="d-flex flex-column align-items-start h-100"
+        >
+          <IconButton onClick={() => setopenDrawer(!openDrawer)}>
+            <ArrowForwardIosIcon
+              fontSize="small"
+              style={{ cursor: "pointer" }}
+            />
+          </IconButton>
+          <Box className="w-100" style={{ flex: 1 }}>
+            <Typography
+              className="text-center py-2 mt-2"
+              style={{ backgroundColor: "#494CE2", color: "#fff" }}
+            >
+              {moment().format("LT")} <span className="px-1">&#8226;</span>
+              {moment().format("dddd, MMMM DD")}
+            </Typography>
+            <img
+              src={Header_logo}
+              className="Header_logo my-2"
+              alt="Header_logo"
+            />
+          </Box>
+          <Box
+            className={`w-100 my-2 px-3 py-2 d-flex align-items-center ${
+              LoginOrNot && "bg-danger"
+            } text-white`}
+            style={{
+              cursor: "pointer",
+              backgroundColor: !LoginOrNot ? "#494CE2" : "",
+              color: "#fff",
+            }}
+            onClick={LoginOrNot ? Loggedout : handleClick}
+          >
+            {LoginOrNot ? (
+              <>
+                <LogoutIcon style={{ marginRight: "10px", fontSize: "20px" }} />
+                <span style={{ fontSize: "1.2rem" }}>Logout</span>
+              </>
+            ) : (
+              <>
+                <AccountCircleIcon
+                  style={{ marginRight: "10px", fontSize: "25px" }}
+                />
+                <span style={{ fontSize: "1.2rem" }}>Login</span>
+              </>
+            )}
+          </Box>
+        </Box>
+      </Drawer>
     </Grid>
   );
 }

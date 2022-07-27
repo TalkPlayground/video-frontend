@@ -17,7 +17,7 @@ import { MediaDevice } from "../video-types";
 import "./video-footer.scss";
 import CallEndIcon from "@mui/icons-material/CallEnd";
 import { IconButton, Badge } from "@mui/material";
-import { Menu, MenuItem, Typography } from "@material-ui/core";
+import { Box, Menu, MenuItem, Typography } from "@material-ui/core";
 import moment from "moment";
 import { topicInfo } from "../../../config/dev";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
@@ -74,6 +74,8 @@ const VideoFooter = (props: VideoFooterProps) => {
   const { mediaStream } = useContext(ZoomMediaContext);
   const zmClient = useContext(ZoomContext);
 
+  const [MirrorView, setMirrorView] = useState(true);
+
   const [onCaptionClick, setonCaptionClick] = useState(false);
 
   useEffect(() => {
@@ -89,6 +91,7 @@ const VideoFooter = (props: VideoFooterProps) => {
       await mediaStream?.startVideo();
       setIsStartedVideo(true);
       await mediaStream?.mirrorVideo(false);
+      setMirrorView(false);
     }
   }, [mediaStream, isStartedVideo]);
   const onMicrophoneClick = useCallback(async () => {
@@ -208,49 +211,44 @@ const VideoFooter = (props: VideoFooterProps) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
-    // if (HideSelfView) {
-    // setAllvisibleParticipants(visibleParticipants);
-    // const index = visibleParticipants.findIndex(
-    //   (e: any) => e.userId === info.userId
-    // );
-    // visibleParticipants.splice(index, 1);
-    // console.log("00000", visibleParticipants, index);
-
-    // visibleParticipants?.filter((e: any) => console.log(e.userId, info.userId));
-    // } else {
-    //   setVisibleParticipants(AllvisibleParticipants);
-    //   setAllvisibleParticipants(null);
-    // }
     setAnchorEl(null);
+  };
+
+  const handleMirrorView = async (data: boolean) => {
+    await mediaStream?.mirrorVideo(data);
+    setMirrorView(data);
   };
 
   return (
     <div className={classNames("video-footer", className)}>
       <div className="d-flex footer-left">
-        <Typography
-          variant="subtitle1"
+        <Box
           className="text-white px-3"
-          style={{ borderRight: "1px solid white", fontWeight: "bold" }}
+          style={{ fontWeight: "bold" }}
+          sx={{
+            display: { xs: "none", sm: "block" },
+            borderRight: { md: "1px solid white" },
+          }}
         >
           {moment().format("LT")}
-        </Typography>
+        </Box>
 
         {topicInfo ? (
-          <Typography
-            variant="subtitle1"
+          <Box
             className="text-white px-3 "
             style={{ fontWeight: "bold" }}
+            sx={{ display: { xs: "none", md: "block" } }}
           >
             {topicInfo}
-          </Typography>
+          </Box>
         ) : (
-          <Typography
-            variant="subtitle1"
-            className="text-white px-3"
+          <Box
+            className="text-white px-3 "
             style={{ fontWeight: "bold" }}
+            sx={{ display: { xs: "none", md: "block" } }}
           >
             {urlParams.get("topic")}
-          </Typography>
+          </Box>
         )}
       </div>
       <div className="d-flex footer-center justify-content-center">
@@ -317,6 +315,15 @@ const VideoFooter = (props: VideoFooterProps) => {
           }}
           style={{ marginBottom: "-18px" }}
         >
+          <MenuItem
+            disabled={isStartedVideo ? false : true}
+            onClick={() => {
+              handleMirrorView(!MirrorView);
+              setAnchorEl(null);
+            }}
+          >
+            {MirrorView ? "Off Mirror View" : "On mirror View"}
+          </MenuItem>
           {!HideSelfView ? (
             <MenuItem
               onClick={() => {
@@ -347,14 +354,16 @@ const VideoFooter = (props: VideoFooterProps) => {
             backgroundColor: "#ea4335",
             cursor: "pointer",
           }}
-          onClick={() => {
+          onClick={async () => {
             if (RecordingStatus) {
-              StartStopRecording(!RecordingStatus).then(() => {
+              StartStopRecording(!RecordingStatus).then(async () => {
+                zmClient.leave();
                 localStorage.removeItem("UserID");
                 history.push("/");
                 window.location.reload();
               });
             } else {
+              zmClient.leave();
               localStorage.removeItem("UserID");
               history.push("/");
               window.location.reload();

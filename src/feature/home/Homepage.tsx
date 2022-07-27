@@ -24,6 +24,7 @@ import Header from "../../component/pages/Header";
 import { RouteComponentProps } from "react-router-dom";
 import "../../index.css";
 import { devConfig } from "../../config/dev";
+import nosleep from "nosleep.js";
 
 const style = {
   position: "absolute",
@@ -125,6 +126,7 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
   }, []);
 
   const startSession = () => {
+    // noSleep.disable();
     if (UserInfo.name) {
       init(UserInfo.name);
       history.push(`/video?topic=${devConfig.topic}${window.location.search}`);
@@ -133,7 +135,10 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
     }
   };
 
+  var noSleep = new nosleep();
+
   const createSession = () => {
+    // noSleep.enable();
     setOpenModal(true);
     setAnchorEl(null);
   };
