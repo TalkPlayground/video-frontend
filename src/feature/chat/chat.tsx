@@ -154,6 +154,7 @@ const ChatContainer = ({
       setChatPrivilege(chatClient.getPrivilege());
     }
   });
+
   return (
     <div
       className="chat-container"

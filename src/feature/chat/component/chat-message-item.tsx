@@ -41,7 +41,11 @@ const ChatMessageItem = (props: ChatMessageItemProps) => {
           className={classNames("chat-message-info", { myself: isCurrentUser })}
         >
           <p className="chat-message-receiver">
-            <p className="pr-2">{isCurrentUser ? "" : sender.name}</p>
+            <p className="pr-2">
+              {isCurrentUser
+                ? ""
+                : sender.name.split("-")[sender.name.split("-")?.length - 1]}
+            </p>
             {/* <span>To</span>
             <a
               href="#"

@@ -1,4 +1,13 @@
-import { Box, Button, Grid, TextField, Typography } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@material-ui/core";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
 import moment from "moment";
 import { useSnackbar } from "notistack";
@@ -126,6 +135,12 @@ function RegisterPage(props: any) {
     }
   };
 
+  const [PassShowHide, setPassShowHide] = useState(false);
+
+  const handleClickShowPassword = () => {
+    setPassShowHide(!PassShowHide);
+  };
+
   return (
     <Grid className="d-flex flex-column  justify-content-center align-items-center px-4">
       <Grid
@@ -218,7 +233,7 @@ function RegisterPage(props: any) {
               <TextField
                 id="filled-search"
                 label="Password"
-                type="password"
+                type={PassShowHide ? "text" : "password"}
                 className="w-100"
                 variant="outlined"
                 size="small"
@@ -227,6 +242,19 @@ function RegisterPage(props: any) {
                 autoComplete="off"
                 onChange={inputFormData}
                 error={passwordValidation ? true : false}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        // onMouseDown={handleMouseDownPassword}
+                      >
+                        {PassShowHide ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
             </Grid>
             <Box className="mt-3">

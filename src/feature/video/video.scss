@@ -84,12 +84,13 @@
 
 .ChatTransition{
   // display: none;
-  width: 25vw;
+  width: 26vw;
   transition: width .4s ;
 }
 
 .ChatTransitionOpen{
   width: 0vw;
+  transition: width .4s ;
   // width: 0%;
   // display: "";
 }
