@@ -152,27 +152,24 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   }, []);
 
   const StartStopRecording = async (data: boolean) => {
-    console.log(
-      "process.env.ZOMM_VIDEO_SDK_JWT_TOKEN}",
-      process.env.REACT_APP_ZOOM_JWT_KEY
-    );
-    let config = {
-      headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_ZOOM_JWT_KEY}`,
-      },
-    };
+    // console.log(
+    //   "process.env.ZOMM_VIDEO_SDK_JWT_TOKEN}",
+    //   process.env.REACT_APP_ZOOM_JWT_KEY
+    // );
+    // let config = {
+    //   headers: {
+    //     Authorization: `Bearer ${process.env.REACT_APP_ZOOM_JWT_KEY}`,
+    //   },
+    // };
     // console.log("first", zmClient.getSessionInfo());
     const info = {
       ...zmClient.getSessionInfo(),
     };
     await axios
-      .patch(
-        `https://api.zoom.us/v2/videosdk/sessions/${info.sessionId}/events`,
-        {
-          method: data ? "recording.start" : "recording.stop",
-        },
-        config
-      )
+      .post("/api/v1/user/session/recording", {
+        sessionId: info.sessionId,
+        status: data,
+      })
       .then(function (response) {
         console.log(response);
         // history.push("/Login");
