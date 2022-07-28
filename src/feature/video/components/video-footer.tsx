@@ -204,7 +204,9 @@ const VideoFooter = (props: VideoFooterProps) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [HideSelfView, setHideSelfView] = useState(false);
 
-  useEffect(() => {}, [HideSelfView]);
+  window.onbeforeunload = function () {
+    zmClient.leave();
+  };
 
   const open = Boolean(anchorEl);
   const handleClick = (event: any) => {
@@ -218,6 +220,11 @@ const VideoFooter = (props: VideoFooterProps) => {
     await mediaStream?.mirrorVideo(data);
     setMirrorView(data);
   };
+
+  useEffect(() => {
+    mediaStream?.stopVideo();
+    setIsStartedVideo(false);
+  }, [HideSelfView]);
 
   return (
     <div className={classNames("video-footer", className)}>
@@ -327,6 +334,10 @@ const VideoFooter = (props: VideoFooterProps) => {
           {!HideSelfView ? (
             <MenuItem
               onClick={() => {
+                if (isStartedVideo) {
+                  mediaStream?.stopVideo();
+                  setIsStartedVideo(false);
+                }
                 handleselfView(!HideSelfView);
                 setHideSelfView(!HideSelfView);
                 setAnchorEl(null);

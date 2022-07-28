@@ -98,6 +98,15 @@ function RegisterPage(props: any) {
       } else {
         enqueueSnackbar(`${user.error?.message}`, { variant: "info" });
       }
+      setRegisterData({
+        email: "",
+        Fname: "",
+        Lname: "",
+        date: "",
+        pword: "",
+        cpword: "",
+        invitecode: "",
+      });
       //   const info = {
       //     fullName: `${RegisterData.Fname + " " + RegisterData.Lname}`,
       //     email: RegisterData.email,

@@ -172,11 +172,10 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
       })
       .then(function (response) {
         console.log(response);
-        // history.push("/Login");
         setRecordingStatus(data);
-        enqueueSnackbar(`${data ? "Recording Started" : "Recording Stoped"}`, {
-          variant: "info",
-        });
+        if (data) {
+          enqueueSnackbar("Recording Started", { variant: "info" });
+        }
       })
       .catch(function (error) {
         console.log(error);

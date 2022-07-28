@@ -83,7 +83,6 @@ function Header({ UserInfo, setisLoginOrNot }: any) {
     // );
     const user = supabase.auth.user();
     const session = supabase.auth.session();
-    console.log("ssee", session, user);
     if (user) {
       // const user = supabase.auth.api.getUser(session.access_token);
       setLoginOrNot(true);
