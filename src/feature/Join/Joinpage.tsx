@@ -5,8 +5,8 @@ import React, {
   useReducer,
   useState,
 } from "react";
-import { Grid, Typography, Box } from "@material-ui/core";
-import { Button, IconButton } from "@mui/material";
+import { Grid, Typography, Box, makeStyles } from "@material-ui/core";
+import { Button, IconButton, Tooltip } from "@mui/material";
 
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import TextField from "@mui/material/TextField";
@@ -30,6 +30,9 @@ import { transform } from "lodash";
 import axios from "axios";
 import { Apis, getQueryString, supabase } from "../../Api";
 import { useSnackbar } from "notistack";
+import { CloseCircleFilled } from "@ant-design/icons";
+
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 // import { useNavigate } from "react-router-dom";
 // import { useDispatch, useSelector } from "react-redux";
 // import DisplayAction from "../redux/actions/DisplayAction";
@@ -41,12 +44,24 @@ interface JoinProps extends RouteComponentProps {
   setDisplayDataInfo: any;
 }
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    "&.css-1eqdgzv-MuiPaper-root-MuiSnackbarContent-root": {
+      padding: "0px 16px",
+      color: "#919499",
+      backgroundColor: "#fff",
+    },
+  },
+}));
+
 const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
   const { history, init, setDisplayDataInfo, DisplayDataInfo } = props;
   const [openToast, setopenToast] = useState(false);
   const [nameValidation, setnameValidation] = useState(false);
   const [emailValidate, setemailValidate] = useState(false);
   const [OTP, setOTP] = useState("");
+
+  const classes = useStyles();
 
   useEffect(() => {
     setTimeout(() => {
@@ -73,7 +88,20 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
     }
   }, [user]);
 
-  const { enqueueSnackbar } = useSnackbar();
+  const [UrlShowJoin, setUrlShowJoin] = useState("true");
+  const [UrlCloseID, setUrlCloseID] = useState(0);
+
+  useEffect(() => {
+    if (UrlShowJoin === "true") {
+      enqueueSnackbar(`${url}`, {
+        action,
+        variant: "default",
+        persist: true,
+      });
+    }
+  }, [UrlShowJoin]);
+
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const handleClickVariant = (variant: any) => {
     // variant could be success, error, warning, info, or default
@@ -85,12 +113,12 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
   const zmClient = useContext(zoomContext);
 
   const onSubmitForm = async (type: string) => {
+    closeSnackbar(UrlCloseID);
     // init(`abcd123-${DisplayDataInfo.Displayname}-${DisplayDataInfo.emailinfo}`);
     // history.push(`/${type}?topic=${devConfig.topic}${window.location.search}`);
     const info = {
       ...zmClient.getSessionInfo(),
     };
-    console.log("first", info);
     await axios
       .post(
         "/api/v1/user/session/join" +
@@ -147,7 +175,32 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
     }
   };
 
+  const action = (snackbarId: any) => (
+    <>
+      {setUrlCloseID(snackbarId)}
+      <IconButton onClick={() => navigator.clipboard.writeText(url)}>
+        <ContentCopyIcon
+          style={{ fill: "#919499" }}
+          className="cursor-pointer"
+        />
+      </IconButton>
+      <IconButton>
+        <CloseCircleFilled
+          style={{ fill: "#fff" }}
+          className="cursor-pointer"
+          onClick={() => {
+            closeSnackbar(snackbarId);
+            setTimeout(() => {
+              setUrlShowJoin(snackbarId);
+            }, 500);
+          }}
+        />
+      </IconButton>
+    </>
+  );
+
   const url = `${window.location.origin}/video?topic=${devConfig.topic}`;
+
   return (
     <>
       <Header />
@@ -298,19 +351,21 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
           </Grid>
         </Grid>
       </Grid>
-      <Snackbar
-        open={openToast}
-        id="JoinMeetingLink"
-        message={
-          <Box className="d-flex justify-content-between align-items-center ">
-            <p>{url?.length > 50 ? url.slice(0, 50) + "..." : url}</p>
 
-            <IconButton onClick={() => navigator.clipboard.writeText(url)}>
-              <ContentCopyIcon className="cursor-pointer" />
-            </IconButton>
-          </Box>
-        }
-      />
+      {UrlShowJoin !== "true" && (
+        <Tooltip title="Copy URL">
+          <IconButton
+            className="d-flex ml-5 mt-4"
+            style={{ backgroundColor: "rgb(73, 76, 226)", color: "#fff" }}
+            onClick={() => setUrlShowJoin("true")}
+          >
+            <ArrowForwardIosIcon
+              fontSize="small"
+              style={{ cursor: "pointer" }}
+            />
+          </IconButton>
+        </Tooltip>
+      )}
     </>
   );
 };

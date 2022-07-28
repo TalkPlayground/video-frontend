@@ -43,14 +43,17 @@ button:focus {
   outline: none !important;
 }
 
-.css-1exqwzz-MuiSnackbarContent-message {
+/* .css-1exqwzz-MuiSnackbarContent-message {
   padding: 0 !important;
 }
 #JoinMeetingLink .css-1eqdgzv-MuiPaper-root-MuiSnackbarContent-root {
   padding: 0px 16px !important;
-  color: #919499;
-  background-color: #fff;
-}
+} */
+/* .SnackbarItem-variantInfo {
+  background-color: #fff !important;
+  color: #919499 !important;
+} */
+
 .OTPField {
   width: 2em !important;
   margin-bottom: 20px;

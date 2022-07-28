@@ -70,7 +70,10 @@ function Loginpage(props: any) {
     enqueueSnackbar("Logged In", { variant });
   };
 
+  const [LoginStart, setLoginStart] = useState(false);
+
   const LoginData = async () => {
+    setLoginStart(true);
     if (
       /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)
       // &&
@@ -86,10 +89,12 @@ function Loginpage(props: any) {
       console.log("daata", user);
       if (user.error?.message) {
         setIsError(true);
+        setLoginStart(false);
       } else {
         enqueueSnackbar(`Email Sended`, { variant: "success" });
         setSendingEmail(true);
       }
+      setemailData("");
       // const info = {
       //   username: email,
       //   password: passwordData,
@@ -114,12 +119,15 @@ function Loginpage(props: any) {
     ) {
       setemailValidate(true);
       setpasswordValidation(true);
+      setLoginStart(false);
     } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
       setemailValidate(true);
+      setLoginStart(false);
     }
     if (!passwordData || !validatePassword(passwordData)) {
       setpasswordValidation(true);
       var pdata = validatePassword(passwordData);
+      setLoginStart(false);
     }
   };
 
@@ -157,6 +165,7 @@ function Loginpage(props: any) {
 
             <Box>
               <Button
+                disabled={LoginStart}
                 variant="contained"
                 size="small"
                 className="w-20"
@@ -174,7 +183,10 @@ function Loginpage(props: any) {
               className="mb-3 px-3"
               style={{ borderRadius: "50px" }}
               variant="contained"
-              onClick={() => setIsError(false)}
+              onClick={() => {
+                setIsError(false);
+                setLoginStart(false);
+              }}
             >
               <span className="text-capitalize">Send Email Again</span>
             </Button>

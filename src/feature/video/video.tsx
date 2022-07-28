@@ -31,6 +31,7 @@ import { useSnackbar } from "notistack";
 import { Apis, getQueryString } from "../../Api";
 import { MenuItem } from "@mui/material";
 import { AnyArray } from "immer/dist/internal";
+import nosleep from "nosleep.js";
 
 interface VideoProps extends RouteComponentProps {
   DisplayDataInfo: any;
@@ -98,6 +99,8 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     contentDimension.height = Math.floor(height * ratio);
   }
 
+  var noSleep = new nosleep();
+
   useEffect(() => {
     if (modalOpenClose) {
       setNewMsg(false);
@@ -141,6 +144,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   };
 
   useEffect(() => {
+    noSleep.enable();
     const startAPi = async () => {
       const data: any = await JoinSessionApi();
       console.log("sss", data);

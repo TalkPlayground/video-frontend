@@ -66,8 +66,10 @@ function RegisterPage(props: any) {
   const [LnameValid, setLnameValid] = useState(false);
   const [DateValid, setDateValid] = useState(false);
   const [passwordValidation, setpasswordValidation] = useState(false);
+  const [SendRegister, setSendRegister] = useState(false);
 
   const RegisterForm = async () => {
+    setSendRegister(true);
     // RegisterData.pword &&
     // RegisterData.cpword &&
     // RegisterData.invitecode
@@ -124,23 +126,29 @@ function RegisterPage(props: any) {
       //     .catch(function (error) {
       //       console.log(error);
       //     });
+      setSendRegister(false);
     }
     if (
       !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(RegisterData.email)
     ) {
       setemailValidate(true);
+      setSendRegister(false);
     }
     if (!RegisterData.Fname) {
       setFnameValid(true);
+      setSendRegister(false);
     }
     if (!RegisterData.Lname) {
       setLnameValid(true);
+      setSendRegister(false);
     }
     if (!RegisterData.date) {
       setDateValid(true);
+      setSendRegister(false);
     }
     if (!RegisterData.pword) {
       setpasswordValidation(true);
+      setSendRegister(false);
     }
   };
 
@@ -268,6 +276,7 @@ function RegisterPage(props: any) {
             </Grid>
             <Box className="mt-3">
               <Button
+                disabled={SendRegister}
                 variant="contained"
                 size="small"
                 className="w-20"

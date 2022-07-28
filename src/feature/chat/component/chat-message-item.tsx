@@ -67,7 +67,10 @@ const ChatMessageItem = (props: ChatMessageItemProps) => {
           })}
         >
           {chatMessage.map((text, index) => (
-            <li className={classNames("chat-message-text")} key={index}>
+            <li
+              className={classNames("chat-message-text text-left")}
+              key={index}
+            >
               {text}
             </li>
           ))}

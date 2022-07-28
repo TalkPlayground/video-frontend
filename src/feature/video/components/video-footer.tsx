@@ -29,6 +29,7 @@ import ClosedCaptionOffOutlinedIcon from "@mui/icons-material/ClosedCaptionOffOu
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import { useHistory } from "react-router-dom";
+import nosleep from "nosleep.js";
 
 interface VideoFooterProps {
   className?: string;
@@ -77,6 +78,8 @@ const VideoFooter = (props: VideoFooterProps) => {
   const [MirrorView, setMirrorView] = useState(true);
 
   const [onCaptionClick, setonCaptionClick] = useState(false);
+
+  var noSleep = new nosleep();
 
   useEffect(() => {
     // onCameraClick();
@@ -369,12 +372,14 @@ const VideoFooter = (props: VideoFooterProps) => {
             if (RecordingStatus) {
               StartStopRecording(!RecordingStatus).then(async () => {
                 zmClient.leave();
+                noSleep.disable();
                 localStorage.removeItem("UserID");
                 history.push("/");
                 window.location.reload();
               });
             } else {
               zmClient.leave();
+              noSleep.disable();
               localStorage.removeItem("UserID");
               history.push("/");
               window.location.reload();
