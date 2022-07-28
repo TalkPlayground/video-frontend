@@ -69,64 +69,71 @@ function RegisterPage(props: any) {
   const [SendRegister, setSendRegister] = useState(false);
 
   const RegisterForm = async () => {
+    var letterNumber = /^[0-9a-zA-Z]+$/;
+    const a = moment([moment(RegisterData.date).format("YYYY,MM,DD")]);
+    const b = moment([moment().format("YYYY,MM,DD")]);
     setSendRegister(true);
     // RegisterData.pword &&
     // RegisterData.cpword &&
     // RegisterData.invitecode
     if (
-      RegisterData.email &&
-      RegisterData.Fname &&
-      RegisterData.Lname &&
-      RegisterData.date &&
-      RegisterData.pword
+      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
+        RegisterData.email
+      ) &&
+      RegisterData.Fname.match(letterNumber) &&
+      RegisterData.Lname.match(letterNumber) &&
+      b.diff(a, "year") > 5 &&
+      RegisterData.pword.match(letterNumber)
     ) {
-      const user = await supabase.auth.signUp(
-        {
-          email: RegisterData.email,
-          password: RegisterData.pword,
-        },
-        {
-          redirectTo: window.location.origin,
-          data: {
-            fullname: RegisterData.Fname + " " + RegisterData.Lname,
-            Dob: RegisterData.date,
-          },
-        }
-      );
+      const info = {
+        fullName: `${RegisterData.Fname + " " + RegisterData.Lname}`,
+        email: RegisterData.email,
+        password: RegisterData.pword,
+        dob: RegisterData.date,
+      };
+      await axios
+        .post(Apis.Register, { ...info })
+        .then(async function (response) {
+          if (response.data.data) {
+            const user = await supabase.auth.signUp(
+              {
+                email: RegisterData.email,
+                password: RegisterData.pword,
+              },
+              {
+                redirectTo: window.location.origin,
+                data: {
+                  fullname: RegisterData.Fname + " " + RegisterData.Lname,
+                  Dob: RegisterData.date,
+                },
+              }
+            );
 
-      if (!user.error?.message) {
-        setSendingEmail(true);
-        enqueueSnackbar(`Email Sended`, { variant: "success" });
-      } else {
-        enqueueSnackbar(`${user.error?.message}`, { variant: "info" });
-      }
-      setRegisterData({
-        email: "",
-        Fname: "",
-        Lname: "",
-        date: "",
-        pword: "",
-        cpword: "",
-        invitecode: "",
-      });
-      //   const info = {
-      //     fullName: `${RegisterData.Fname + " " + RegisterData.Lname}`,
-      //     email: RegisterData.email,
-      //     password: RegisterData.pword,
-      //     dob: RegisterData.date,
-      //     inviteCode: RegisterData.invitecode,
-      //   };
-      //   await axios
-      //     .post(Apis.Register, { ...info })
-      //     .then(function (response) {
-      //       console.log(response);
-      //       handleClickVariant("success");
-      //       history.push("/Login");
-      //     })
-      //     .catch(function (error) {
-      //       console.log(error);
-      //     });
-      setSendRegister(false);
+            if (!user.error?.message) {
+              setSendingEmail(true);
+              enqueueSnackbar(`Email Sended`, { variant: "success" });
+              setRegisterData({
+                email: "",
+                Fname: "",
+                Lname: "",
+                date: "",
+                pword: "",
+                cpword: "",
+                invitecode: "",
+              });
+            } else {
+              enqueueSnackbar(`${user.error?.message}`, { variant: "info" });
+            }
+
+            setSendRegister(false);
+          } else {
+            enqueueSnackbar(`${response.data.message}`, { variant: "error" });
+            setSendRegister(false);
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     }
     if (
       !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(RegisterData.email)
@@ -134,19 +141,20 @@ function RegisterPage(props: any) {
       setemailValidate(true);
       setSendRegister(false);
     }
-    if (!RegisterData.Fname) {
+    if (!RegisterData.Fname.match(letterNumber)) {
       setFnameValid(true);
       setSendRegister(false);
     }
-    if (!RegisterData.Lname) {
+    if (!RegisterData.Lname.match(letterNumber)) {
       setLnameValid(true);
       setSendRegister(false);
     }
-    if (!RegisterData.date) {
+    if (!RegisterData.date || b.diff(a, "year") <= 5) {
       setDateValid(true);
       setSendRegister(false);
+      enqueueSnackbar(`Enter Age greater then 5 Year`, { variant: "info" });
     }
-    if (!RegisterData.pword) {
+    if (!RegisterData.pword.match(letterNumber)) {
       setpasswordValidation(true);
       setSendRegister(false);
     }

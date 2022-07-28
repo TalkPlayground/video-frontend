@@ -97,6 +97,7 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
         action,
         variant: "default",
         persist: true,
+        preventDuplicate: true,
       });
     }
   }, [UrlShowJoin]);

@@ -224,11 +224,6 @@ const VideoFooter = (props: VideoFooterProps) => {
     setMirrorView(data);
   };
 
-  useEffect(() => {
-    mediaStream?.stopVideo();
-    setIsStartedVideo(false);
-  }, [HideSelfView]);
-
   return (
     <div className={classNames("video-footer", className)}>
       <div className="d-flex footer-left">
@@ -337,10 +332,6 @@ const VideoFooter = (props: VideoFooterProps) => {
           {!HideSelfView ? (
             <MenuItem
               onClick={() => {
-                if (isStartedVideo) {
-                  mediaStream?.stopVideo();
-                  setIsStartedVideo(false);
-                }
                 handleselfView(!HideSelfView);
                 setHideSelfView(!HideSelfView);
                 setAnchorEl(null);
