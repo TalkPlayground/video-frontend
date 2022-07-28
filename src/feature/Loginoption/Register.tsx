@@ -69,7 +69,7 @@ function RegisterPage(props: any) {
   const [SendRegister, setSendRegister] = useState(false);
 
   const RegisterForm = async () => {
-    var letterNumber = /^[0-9a-zA-Z]+$/;
+    var letterNumber = /^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/;
     const a = moment([moment(RegisterData.date).format("YYYY,MM,DD")]);
     const b = moment([moment().format("YYYY,MM,DD")]);
     setSendRegister(true);
