@@ -31,6 +31,16 @@ export function useGalleryLayout(
   }, [dimension, size,selfViewGalleryLayout]);
   const onParticipantsChange = useCallback(() => {
     const participants = zmClient.getAllUser();
+    if(selfViewGalleryLayout){
+      console.log("pageParticipants s")
+      const info = {
+        ...zmClient.getSessionInfo(),
+      };
+      var index = participants.findIndex(
+        (e: any) => e.userId === info.userId
+      );
+      participants.splice(index, 1);
+    }
     const currentUser = zmClient.getCurrentUserInfo();
     if (currentUser && participants.length > 0) {
       let pageParticipants: any[] = [];
@@ -45,13 +55,15 @@ export function useGalleryLayout(
           (_user, index) => Math.floor(index / pageSize) === page,
         );
       }
+     
+      console.log("pageParticipants",pageParticipants)
       setVisibleParticipants(pageParticipants);
       const videoParticipants = pageParticipants
         .filter((user) => user.bVideoOn)
         .map((user) => user.userId);
       setSubscribedVideos(videoParticipants);
     }
-  }, [zmClient, page, pageSize]);
+  }, [zmClient, page, pageSize,selfViewGalleryLayout]);
   useEffect(() => {
     zmClient.on('user-added', onParticipantsChange);
     zmClient.on('user-removed', onParticipantsChange);
@@ -64,7 +76,7 @@ export function useGalleryLayout(
   }, [zmClient, onParticipantsChange]);
   useEffect(() => {
     onParticipantsChange();
-  }, [onParticipantsChange]);
+  }, [onParticipantsChange,selfViewGalleryLayout]);
 
   useRenderVideo(
     mediaStream,
