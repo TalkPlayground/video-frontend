@@ -331,6 +331,7 @@ const VideoFooter = (props: VideoFooterProps) => {
           </MenuItem>
           {!HideSelfView ? (
             <MenuItem
+              disabled={zmClient.getAllUser()?.length > 1 ? false : true}
               onClick={() => {
                 handleselfView(!HideSelfView);
                 setHideSelfView(!HideSelfView);

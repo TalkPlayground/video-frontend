@@ -15,12 +15,15 @@ import "./video.scss";
 import { isSupportWebCodecs } from "../../utils/platform";
 import BasicCard from "../../component/pages/Linkcard";
 import {
+  Box,
   Button,
   Card,
   CardActions,
   CardContent,
   Drawer,
   Menu,
+  Paper,
+  Slide,
   Typography,
 } from "@material-ui/core";
 import MeetingDetails from "./components/MeetingDetails";
@@ -29,7 +32,7 @@ import axios from "axios";
 import { devConfig } from "../../config/dev";
 import { useSnackbar } from "notistack";
 import { Apis, getQueryString } from "../../Api";
-import { MenuItem } from "@mui/material";
+import { Alert, MenuItem } from "@mui/material";
 import { AnyArray } from "immer/dist/internal";
 import nosleep from "nosleep.js";
 
@@ -190,12 +193,24 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   const [AllvisibleParticipants, setAllvisibleParticipants] =
     useState<AnyArray>([]);
 
+  const [ShowAlert, setShowAlert] = useState(false);
+
   const info = {
     ...zmClient.getSessionInfo(),
   };
 
+  useEffect(() => {
+    if (ShowAlert) {
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 1000);
+    }
+  }, [ShowAlert]);
+
   const handleselfView = (data: any) => {
     if (data) {
+      setShowAlert(true);
+      setselfViewGalleryLayout(true);
       var index = visibleParticipants.findIndex(
         (e: any) => e.userId === info.userId
       );
@@ -205,7 +220,6 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
       visibleParticipants.splice(index, 1);
 
       console.log("cccc", visibleParticipants, AllvisibleParticipants, data);
-      setselfViewGalleryLayout(true);
     } else {
       setselfViewGalleryLayout(false);
       console.log("dddd", visibleParticipants, AllvisibleParticipants, data);
@@ -214,6 +228,8 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
       setAllvisibleParticipants([]);
     }
   };
+
+  const containerRef = React.useRef(null);
 
   return (
     <div className="viewport">
@@ -296,14 +312,21 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         </ul>
       </div>
 
-      {/* <MeetingDetails modalOpenClose={modalOpenClose} /> */}
-      <div className={modalOpenClose ? "ChatTransition" : "ChatTransitionOpen"}>
-        <ChatContainer
-          modalOpenClose={modalOpenClose}
-          setmodalOpenClose={setmodalOpenClose}
-          setNewMsg={setNewMsg}
-        />
-      </div>
+      <Slide direction="left" in={ShowAlert} mountOnEnter unmountOnExit>
+        <Box>
+          <Alert>Hide Self View</Alert>
+        </Box>
+      </Slide>
+
+      <Slide direction="left" in={modalOpenClose} mountOnEnter unmountOnExit>
+        <Box>
+          <ChatContainer
+            modalOpenClose={true}
+            setmodalOpenClose={setmodalOpenClose}
+            setNewMsg={setNewMsg}
+          />
+        </Box>
+      </Slide>
 
       <VideoFooter
         className="video-operations"

@@ -156,10 +156,7 @@ const ChatContainer = ({
   });
 
   return (
-    <div
-      className="chat-container"
-      style={{ display: modalOpenClose ? "flex" : "none" }}
-    >
+    <div className="chat-container">
       <div className="chat-wrap">
         {/* <a className="exit-chat" href="/"> <i className="far fa-times-circle"></i> </a> */}
         <div className="d-flex justify-content-between align-items-center px-3">
