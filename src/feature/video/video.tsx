@@ -127,7 +127,6 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         sessionId: info.sessionId,
       })
       .then(function (response) {
-        console.log(response);
         a = true;
         // handleClickVariant("success");
         // history.push("/Login");
@@ -150,7 +149,6 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     noSleep.enable();
     const startAPi = async () => {
       const data: any = await JoinSessionApi();
-      console.log("sss", data);
       if (data) {
         StartStopRecording(!RecordingStatus);
       }
@@ -178,7 +176,6 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         status: data,
       })
       .then(function (response) {
-        console.log(response);
         setRecordingStatus(data);
         if (data) {
           enqueueSnackbar("Recording Started", { variant: "info" });
@@ -218,11 +215,8 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
 
       setRenderShowHide(true);
       visibleParticipants.splice(index, 1);
-
-      console.log("cccc", visibleParticipants, AllvisibleParticipants, data);
     } else {
       setselfViewGalleryLayout(false);
-      console.log("dddd", visibleParticipants, AllvisibleParticipants, data);
       visibleParticipants.push(AllvisibleParticipants[0]);
       setRenderShowHide(false);
       setAllvisibleParticipants([]);

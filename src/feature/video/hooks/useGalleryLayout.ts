@@ -42,12 +42,6 @@ export function useGalleryLayout(
     const info = {
       ...zmClient.getSessionInfo(),
     };
-    // if(selfViewGalleryLayout){
-    //   console.log("pageParticipants s")
-    // var index = participants.findIndex((e: any) => e.userId === info.userId);
-    //   console.log("DDS",participants,index)
-    //   participants.splice(index, 1);
-    // }
     const currentUser = zmClient.getCurrentUserInfo();
     if (currentUser && participants.length > 0) {
       let pageParticipants: any[] = [];
@@ -76,8 +70,6 @@ export function useGalleryLayout(
           (_user, index) => Math.floor(index / pageSize) === page
         );
       }
-
-      console.log("pageParticipants", pageParticipants);
       setVisibleParticipants(pageParticipants);
       const videoParticipants = pageParticipants
         .filter((user) => user.bVideoOn)

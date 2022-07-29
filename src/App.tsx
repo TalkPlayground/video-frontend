@@ -125,7 +125,6 @@ function App(props: AppProps) {
 
   useEffect(() => {
     if (!UserInfo.name && accessToken) {
-      console.log(" njnknk");
       // var decoded = jwt_decode(accessToken);
       // if (decoded) {
       setUserInfo(jwt_decode(accessToken));
@@ -145,7 +144,6 @@ function App(props: AppProps) {
   };
 
   useEffect(() => {
-    console.log("UserInfo", UserInfo);
     if (UserInfo) {
       setDisplayDataInfo({ ...DisplayDataInfo, emailinfo: UserInfo.sub });
     }
@@ -163,21 +161,15 @@ function App(props: AppProps) {
 
   const init = async (nameData: any) => {
     setIsLoading(true);
-    console.log("name", nameData);
     await zmClient.init("en-US", `${window.location.origin}/lib`, "zoom.us");
     try {
       setLoadingText("Joining the session...");
       await zmClient.join(topic, signature, nameData, password);
       const stream = zmClient.getMediaStream();
       setMediaStream(stream);
-      console.log(
-        "stream.isSupportMultipleVideos()",
-        stream.isSupportMultipleVideos()
-      );
       setIsSupportGalleryView(stream.isSupportMultipleVideos());
       const chatClient = zmClient.getChatClient();
       setChatClient(chatClient);
-      console.log(zmClient.getSessionInfo());
 
       // history.push(`/video${window.location.search}`);
       setIsLoading(false);

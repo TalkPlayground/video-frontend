@@ -41,8 +41,6 @@ const ChatContainer = ({
 
   useEffect(() => {
     if (chatRecords?.length > 0) {
-      console.log("first", chatRecords);
-
       setNewMsg(true);
     }
   }, [chatRecords?.length]);

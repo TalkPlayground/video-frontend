@@ -86,7 +86,6 @@ function Loginpage(props: any) {
           redirectTo: window.location.origin,
         }
       );
-      console.log("daata", user);
       if (user.error?.message) {
         setIsError(true);
         setLoginStart(false);

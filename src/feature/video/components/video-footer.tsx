@@ -93,8 +93,8 @@ const VideoFooter = (props: VideoFooterProps) => {
     } else {
       await mediaStream?.startVideo();
       setIsStartedVideo(true);
-      await mediaStream?.mirrorVideo(false);
-      setMirrorView(false);
+      // await mediaStream?.mirrorVideo(false);
+      // setMirrorView(false);
     }
   }, [mediaStream, isStartedVideo]);
   const onMicrophoneClick = useCallback(async () => {
@@ -320,7 +320,7 @@ const VideoFooter = (props: VideoFooterProps) => {
           }}
           style={{ marginBottom: "-18px" }}
         >
-          <MenuItem
+          {/* <MenuItem
             disabled={isStartedVideo ? false : true}
             onClick={() => {
               handleMirrorView(!MirrorView);
@@ -328,7 +328,7 @@ const VideoFooter = (props: VideoFooterProps) => {
             }}
           >
             {MirrorView ? "Off Mirror View" : "On mirror View"}
-          </MenuItem>
+          </MenuItem> */}
           {!HideSelfView ? (
             <MenuItem
               disabled={zmClient.getAllUser()?.length > 1 ? false : true}
@@ -422,9 +422,9 @@ const VideoFooter = (props: VideoFooterProps) => {
         </Tooltip>
         <Tooltip title={RecordingStatus ? "Stop Recording" : "Start Recording"}>
           <IconButton
-            onClick={() => {
-              StartStopRecording(!RecordingStatus);
-            }}
+            // onClick={() => {
+            //   StartStopRecording(!RecordingStatus);
+            // }}
             className="ml-2 HoverIcon"
           >
             <RadioButtonCheckedIcon

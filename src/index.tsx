@@ -33,12 +33,6 @@ if (!meetingArgs.signature && meetingArgs.sdkSecret && meetingArgs.topic) {
 
 const zmClient = ZoomVideo.createClient();
 
-// const stytch = initStytch(
-//   "public-token-test-9cc718d0-b097-4a72-bacd-3d8c120f98ec"
-// );
-
-// console.log("ss", stytch);
-
 ReactDOM.render(
   <React.StrictMode>
     <ZoomContext.Provider value={zmClient}>

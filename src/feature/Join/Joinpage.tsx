@@ -130,7 +130,6 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
           })
       )
       .then(function (response) {
-        console.log(response);
         handleClickVariant("success");
         // history.push("/Login");
         // init(DisplayDataInfo.Displayname);
