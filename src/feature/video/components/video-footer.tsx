@@ -91,10 +91,10 @@ const VideoFooter = (props: VideoFooterProps) => {
       await mediaStream?.stopVideo();
       setIsStartedVideo(false);
     } else {
-      await mediaStream?.startVideo();
+      await mediaStream?.startVideo({ hd: true });
       setIsStartedVideo(true);
-      // await mediaStream?.mirrorVideo(false);
-      // setMirrorView(false);
+      await mediaStream?.mirrorVideo(true);
+      setMirrorView(true);
     }
   }, [mediaStream, isStartedVideo]);
   const onMicrophoneClick = useCallback(async () => {

@@ -34,18 +34,32 @@
       // border-bottom: 1px solid #eee;
     }
     .chat-message-box {
-      height: 36px;
-      // max-height: 50px;
+      min-height: 46px;
+
+      max-height: 60px;
       box-sizing: border-box;
       padding: 0 5px;
+      background-color: #f1f3f4;
+      border-radius: 50px;
       >textarea {
         padding: 5px 20px;
         height: 100%;
         width: 100%;
         resize: none;
         border-radius: 50px;
+        background-color: #f1f3f4;
+        border: none;
+        &:focus{
+          outline: none;
+        }
       }
+     
     }
+  }
+
+ 
+  textarea::-webkit-scrollbar{
+    display: none;
   }
   .chat-disabled {
     height: 155px;

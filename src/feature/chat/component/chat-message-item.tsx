@@ -5,6 +5,7 @@ import { Button } from "antd";
 import classNames from "classnames";
 import { ChatRecord } from "../chat-types";
 import "./chat-message-item.scss";
+import moment from "moment";
 interface ChatMessageItemProps {
   record: ChatRecord;
   currentUserId: number;
@@ -21,29 +22,32 @@ const ChatMessageItem = (props: ChatMessageItemProps) => {
     }
   }, [isCurrentUser, sender, setChatUser]);
   const chatMessage = Array.isArray(message) ? message : [message];
+  // <Button
+  //   className="chat-message-avatar"
+  //   onClick={onAvatarClick}
+  //   ghost
+  //   shape="circle"
+  //   size="large"
+  // >
+  //   {/* {avatar ? (
+  //     <img src={avatar} className="chat-message-avatar-img" alt="" />
+  //   ) : ( */}
+  //   <UserOutlined />
+  //   {/* )} */}
+  // </Button>
   return (
     <div className={classNames("chat-message-item", { myself: isCurrentUser })}>
-      <Button
-        className="chat-message-avatar"
-        onClick={onAvatarClick}
-        ghost
-        shape="circle"
-        size="large"
-      >
-        {/* {avatar ? (
-          <img src={avatar} className="chat-message-avatar-img" alt="" />
-        ) : ( */}
-        <UserOutlined />
-        {/* )} */}
-      </Button>
       <div className="chat-message-content">
         <div
           className={classNames("chat-message-info", { myself: isCurrentUser })}
         >
           <p className="chat-message-receiver">
-            <p className="pr-2">
+            <p
+              className="pr-2"
+              style={{ fontWeight: "bold", textTransform: "capitalize" }}
+            >
               {isCurrentUser
-                ? ""
+                ? "You"
                 : sender.name.split("-")[sender.name.split("-")?.length - 1]}
             </p>
             {/* <span>To</span>
@@ -58,7 +62,8 @@ const ChatMessageItem = (props: ChatMessageItemProps) => {
             </a> */}
           </p>
           <p className="chat-message-time">
-            {new Date(timestamp).toLocaleTimeString()}
+            {/* {new Date(timestamp).toLocaleTimeString()} */}
+            {moment(timestamp).local().format("hh:mm A")}
           </p>
         </div>
         <ul
@@ -67,12 +72,12 @@ const ChatMessageItem = (props: ChatMessageItemProps) => {
           })}
         >
           {chatMessage.map((text, index) => (
-            <li
+            <pre
               className={classNames("chat-message-text text-left")}
               key={index}
             >
               {text}
-            </li>
+            </pre>
           ))}
         </ul>
       </div>

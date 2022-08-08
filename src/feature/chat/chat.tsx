@@ -15,10 +15,16 @@ import ChatContext from "../../context/chat-context";
 import ChatMessageItem from "./component/chat-message-item";
 import ChatReceiverContainer from "./component/chat-receiver";
 import CloseIcon from "@mui/icons-material/Close";
+import SendIcon from "@mui/icons-material/Send";
 
 import { useMount } from "../../hooks";
 import "./chat.scss";
-import { IconButton } from "@material-ui/core";
+import {
+  IconButton,
+  InputAdornment,
+  TextareaAutosize,
+} from "@material-ui/core";
+import { Visibility } from "@mui/icons-material";
 const { TextArea } = Input;
 const ChatContainer = ({
   modalOpenClose,
@@ -90,6 +96,7 @@ const ChatContainer = ({
   );
   const onChatInput = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      // console.log("first", event);
       setChatDraft(event.target.value);
     },
     []
@@ -136,8 +143,16 @@ const ChatContainer = ({
     },
     [chatReceivers]
   );
+  const KeyActionButton = (e: any) => {
+    console.log("first", e);
+    if (!e.shiftKey && e.key == "Enter") {
+      sendMessage(e);
+    }
+  };
+
   const sendMessage = useCallback(
-    (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    (event: any) => {
+      console.log("e", event);
       event.preventDefault();
       if (chatUser && chatDraft) {
         chatClient?.send(chatDraft, chatUser?.userId);
@@ -155,7 +170,7 @@ const ChatContainer = ({
 
   return (
     <div className="chat-container">
-      <div className="chat-wrap">
+      <div className="chat-wrap px-2">
         {/* <a className="exit-chat" href="/"> <i className="far fa-times-circle"></i> </a> */}
         <div className="d-flex justify-content-between align-items-center px-3">
           <p style={{ fontSize: 18, color: "black" }}>In-call messages</p>
@@ -182,13 +197,34 @@ const ChatContainer = ({
               chatPrivilege={chatPrivilege}
               setChatUser={setChatUserId}
             />
-            <div className="chat-message-box">
-              <TextArea
+            <div className="chat-message-box d-flex align-items-center">
+              {/* <TextArea
                 onPressEnter={sendMessage}
                 onChange={onChatInput}
-                value={chatDraft}
                 placeholder="Send a message to everyone"
+              /> */}
+              <TextareaAutosize
+                value={chatDraft}
+                maxRows={2}
+                aria-label="maximum height"
+                placeholder="Send a message to everyone"
+                onChange={onChatInput}
+                className="py-2"
+                onKeyPress={(e) => KeyActionButton(e)}
               />
+              <IconButton
+                onClick={(e) => sendMessage(e)}
+                disabled={chatDraft?.length > 0 ? false : true}
+              >
+                <SendIcon
+                  style={{
+                    fill:
+                      chatDraft?.length > 0
+                        ? "rgb(73, 76, 226)"
+                        : "rgba(60,64,67,.38)",
+                  }}
+                />
+              </IconButton>
             </div>
           </>
         ) : (
