@@ -22,6 +22,7 @@ import "./chat.scss";
 import {
   IconButton,
   InputAdornment,
+  Slide,
   TextareaAutosize,
 } from "@material-ui/core";
 import { Visibility } from "@mui/icons-material";
@@ -29,11 +30,12 @@ const { TextArea } = Input;
 const ChatContainer = ({
   modalOpenClose,
   setmodalOpenClose,
+  setChatRecords,
+  chatRecords,
   setNewMsg,
 }: any) => {
   const zmClient = useContext(ZoomContext);
   const chatClient = useContext(ChatContext);
-  const [chatRecords, setChatRecords] = useState<ChatRecord[]>([]);
   const [currentUserId, setCurrentUserId] = useState<number>(0);
   const [chatReceivers, setChatReceivers] = useState<ChatReceiver[]>([]);
   const [chatPrivilege, setChatPrivilege] = useState<ChatPrivilege>(
@@ -44,12 +46,6 @@ const ChatContainer = ({
   const [isManager, setIsManager] = useState<boolean>(false);
   const [chatDraft, setChatDraft] = useState<string>("");
   const chatWrapRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (chatRecords?.length > 0) {
-      setNewMsg(true);
-    }
-  }, [chatRecords?.length]);
 
   const onChatMessage = useCallback(
     (payload: ChatRecord) => {
@@ -144,7 +140,6 @@ const ChatContainer = ({
     [chatReceivers]
   );
   const KeyActionButton = (e: any) => {
-    console.log("first", e);
     if (!e.shiftKey && e.key == "Enter") {
       sendMessage(e);
     }
@@ -152,7 +147,6 @@ const ChatContainer = ({
 
   const sendMessage = useCallback(
     (event: any) => {
-      console.log("e", event);
       event.preventDefault();
       if (chatUser && chatDraft) {
         chatClient?.send(chatDraft, chatUser?.userId);
@@ -168,70 +162,79 @@ const ChatContainer = ({
     }
   });
 
+  useEffect(() => {
+    console.log("chatWrapRef", chatWrapRef);
+    if (chatWrapRef.current) {
+      chatWrapRef.current.scrollTop = chatWrapRef.current.scrollHeight;
+    }
+  }, [modalOpenClose]);
+
   return (
-    <div className="chat-container">
-      <div className="chat-wrap px-2">
-        {/* <a className="exit-chat" href="/"> <i className="far fa-times-circle"></i> </a> */}
-        <div className="d-flex justify-content-between align-items-center px-3">
-          <p style={{ fontSize: 18, color: "black" }}>In-call messages</p>
-          <IconButton onClick={() => setmodalOpenClose(false)}>
-            <CloseIcon className="cursor-pointer" />
-          </IconButton>
-        </div>
-        <div className="chat-message-wrap" ref={chatWrapRef}>
-          {chatRecords.map((record) => (
-            <ChatMessageItem
-              record={record}
-              currentUserId={currentUserId}
-              setChatUser={setChatUserId}
-              key={record.timestamp}
-            />
-          ))}
-        </div>
-        {ChatPrivilege.NoOne !== chatPrivilege || isHost || isManager ? (
-          <>
-            <ChatReceiverContainer
-              chatUsers={chatReceivers}
-              selectedChatUser={chatUser}
-              isHostOrManager={isHost || isManager}
-              chatPrivilege={chatPrivilege}
-              setChatUser={setChatUserId}
-            />
-            <div className="chat-message-box d-flex align-items-center">
-              {/* <TextArea
+    <Slide direction="left" in={modalOpenClose} mountOnEnter unmountOnExit>
+      <div className="chat-container">
+        <div className="chat-wrap px-2">
+          {/* <a className="exit-chat" href="/"> <i className="far fa-times-circle"></i> </a> */}
+          <div className="d-flex justify-content-between align-items-center px-3">
+            <p style={{ fontSize: 18, color: "black" }}>In-call messages</p>
+            <IconButton onClick={() => setmodalOpenClose(false)}>
+              <CloseIcon className="cursor-pointer" />
+            </IconButton>
+          </div>
+          <div className="chat-message-wrap" ref={chatWrapRef}>
+            {chatRecords.map((record: any) => (
+              <ChatMessageItem
+                record={record}
+                currentUserId={currentUserId}
+                setChatUser={setChatUserId}
+                key={record.timestamp}
+              />
+            ))}
+          </div>
+          {ChatPrivilege.NoOne !== chatPrivilege || isHost || isManager ? (
+            <>
+              <ChatReceiverContainer
+                chatUsers={chatReceivers}
+                selectedChatUser={chatUser}
+                isHostOrManager={isHost || isManager}
+                chatPrivilege={chatPrivilege}
+                setChatUser={setChatUserId}
+              />
+              <div className="chat-message-box d-flex align-items-center">
+                {/* <TextArea
                 onPressEnter={sendMessage}
                 onChange={onChatInput}
                 placeholder="Send a message to everyone"
               /> */}
-              <TextareaAutosize
-                value={chatDraft}
-                maxRows={2}
-                aria-label="maximum height"
-                placeholder="Send a message to everyone"
-                onChange={onChatInput}
-                className="py-2"
-                onKeyPress={(e) => KeyActionButton(e)}
-              />
-              <IconButton
-                onClick={(e) => sendMessage(e)}
-                disabled={chatDraft?.length > 0 ? false : true}
-              >
-                <SendIcon
-                  style={{
-                    fill:
-                      chatDraft?.length > 0
-                        ? "rgb(73, 76, 226)"
-                        : "rgba(60,64,67,.38)",
-                  }}
+                <TextareaAutosize
+                  value={chatDraft}
+                  maxRows={2}
+                  aria-label="maximum height"
+                  placeholder="Send a message to everyone"
+                  onChange={onChatInput}
+                  className="py-2"
+                  onKeyPress={(e) => KeyActionButton(e)}
                 />
-              </IconButton>
-            </div>
-          </>
-        ) : (
-          <div className="chat-disabled">Chat disabled</div>
-        )}
+                <IconButton
+                  onClick={(e) => sendMessage(e)}
+                  disabled={chatDraft?.length > 0 ? false : true}
+                >
+                  <SendIcon
+                    style={{
+                      fill:
+                        chatDraft?.length > 0
+                          ? "rgb(73, 76, 226)"
+                          : "rgba(60,64,67,.38)",
+                    }}
+                  />
+                </IconButton>
+              </div>
+            </>
+          ) : (
+            <div className="chat-disabled">Chat disabled</div>
+          )}
+        </div>
       </div>
-    </div>
+    </Slide>
   );
 };
 

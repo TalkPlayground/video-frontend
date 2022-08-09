@@ -35,6 +35,7 @@ import { Apis, getQueryString } from "../../Api";
 import { Alert, MenuItem } from "@mui/material";
 import { AnyArray } from "immer/dist/internal";
 import nosleep from "nosleep.js";
+import { ChatRecord } from "../chat/chat-types";
 
 interface VideoProps extends RouteComponentProps {
   DisplayDataInfo: any;
@@ -56,12 +57,12 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   const shareContainerRef = useRef<HTMLDivElement | null>(null);
   const canvasDimension = useCanvasDimension(mediaStream, videoRef);
   const activeVideo = useActiveVideo(zmClient);
+
+  const [chatRecords, setChatRecords] = useState<ChatRecord[]>([]);
   const { page, pageSize, totalPage, totalSize, setPage } = usePagination(
     zmClient,
     canvasDimension
   );
-
-  const [NewMsg, setNewMsg] = useState(false);
 
   const [selfViewGalleryLayout, setselfViewGalleryLayout] = useState(false);
   const {
@@ -103,15 +104,6 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   }
 
   var noSleep = new nosleep();
-
-  useEffect(() => {
-    if (modalOpenClose) {
-      setNewMsg(false);
-    }
-    if (NewMsg && modalOpenClose) {
-      setNewMsg(false);
-    }
-  }, [modalOpenClose, NewMsg]);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -185,6 +177,28 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         console.log(error);
       });
   };
+
+  const [NewMsg, setNewMsg] = useState(false);
+  const hand = () => {
+    setTimeout(() => {
+      if (!modalOpenClose) {
+        setNewMsg(true);
+      }
+    }, 1000);
+  };
+
+  if (NewMsg && modalOpenClose) {
+    setNewMsg(false);
+  }
+
+  useEffect(() => {
+    if (modalOpenClose == false) {
+      zmClient.on("chat-on-message", hand);
+    }
+    if (modalOpenClose) {
+      setNewMsg(false);
+    }
+  }, [modalOpenClose, zmClient]);
 
   const [RenderShowHide, setRenderShowHide] = useState(false);
   const [AllvisibleParticipants, setAllvisibleParticipants] =
@@ -312,15 +326,14 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         </Box>
       </Slide>
 
-      <Slide direction="left" in={modalOpenClose} mountOnEnter unmountOnExit>
-        <Box>
-          <ChatContainer
-            modalOpenClose={true}
-            setmodalOpenClose={setmodalOpenClose}
-            setNewMsg={setNewMsg}
-          />
-        </Box>
-      </Slide>
+      <Box>
+        <ChatContainer
+          modalOpenClose={modalOpenClose}
+          setmodalOpenClose={setmodalOpenClose}
+          setChatRecords={setChatRecords}
+          chatRecords={chatRecords}
+        />
+      </Box>
 
       <VideoFooter
         className="video-operations"
@@ -330,10 +343,11 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         modalOpenClose={modalOpenClose}
         setLinkShowCard={setLinkShowCard}
         LinkShowCard={LinkShowCard}
-        NewMsg={NewMsg}
+        chatRecords={chatRecords}
         StartStopRecording={StartStopRecording}
         RecordingStatus={RecordingStatus}
         handleselfView={handleselfView}
+        NewMsg={NewMsg}
       />
 
       {totalPage > 1 && (

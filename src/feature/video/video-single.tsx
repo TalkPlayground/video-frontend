@@ -59,8 +59,6 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     mediaStream,
     shareRef
   );
-
-  const [NewMsg, setNewMsg] = useState(false);
   const [RecordingStatus, setRecordingStatus] = useState(false);
 
   const [LinkShowCard, setLinkShowCard] = useState(true);
@@ -150,14 +148,6 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     }
   });
 
-  useEffect(() => {
-    if (NewMsg && modalOpenClose) {
-      setNewMsg(false);
-    } else {
-      setNewMsg(false);
-    }
-  }, [modalOpenClose, NewMsg]);
-
   const { enqueueSnackbar } = useSnackbar();
 
   const StartStopRecording = async (data: boolean) => {
@@ -226,7 +216,6 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         <ChatContainer
           modalOpenClose={modalOpenClose}
           setmodalOpenClose={setmodalOpenClose}
-          setNewMsg={setNewMsg}
         />
       </div>
 
@@ -238,7 +227,6 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         modalOpenClose={modalOpenClose}
         setLinkShowCard={setLinkShowCard}
         LinkShowCard={LinkShowCard}
-        NewMsg={NewMsg}
         StartStopRecording={StartStopRecording}
         RecordingStatus={RecordingStatus}
         handleselfView={null}

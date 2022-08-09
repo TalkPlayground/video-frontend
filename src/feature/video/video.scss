@@ -61,6 +61,9 @@
     overflow: hidden;
     padding: 0;
     margin: 0;
+    .avatar{
+      transition: .2s all;
+    }
   }
   .video-operations {
     position: absolute;

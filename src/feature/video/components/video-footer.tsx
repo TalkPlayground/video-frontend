@@ -39,10 +39,11 @@ interface VideoFooterProps {
   modalOpenClose: any;
   setLinkShowCard: any;
   LinkShowCard: any;
-  NewMsg: boolean;
+  chatRecords?: any;
   StartStopRecording: any;
   RecordingStatus: boolean;
   handleselfView: any;
+  NewMsg?: boolean;
 }
 const isAudioEnable = typeof AudioWorklet === "function";
 const VideoFooter = (props: VideoFooterProps) => {
@@ -56,10 +57,11 @@ const VideoFooter = (props: VideoFooterProps) => {
     modalOpenClose,
     setLinkShowCard,
     LinkShowCard,
-    NewMsg,
     StartStopRecording,
     RecordingStatus,
     handleselfView,
+    chatRecords,
+    NewMsg,
   } = props;
 
   const [isStartedAudio, setIsStartedAudio] = useState(false);
@@ -179,6 +181,7 @@ const VideoFooter = (props: VideoFooterProps) => {
       setActiveCamera(mediaStream.getActiveCamera());
     }
   }, [mediaStream]);
+
   useEffect(() => {
     zmClient.on("current-audio-change", onHostAudioMuted);
     zmClient.on("passively-stop-share", onPassivelyStopShare);
