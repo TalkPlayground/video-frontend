@@ -25,7 +25,7 @@ function RegisterPage(props: any) {
     Fname: "",
     Lname: "",
     date: "",
-    pword: "",
+    pword: "playground@12345",
     cpword: "",
     invitecode: "",
   });
@@ -254,7 +254,7 @@ function RegisterPage(props: any) {
                 error={DateValid ? true : false}
               />
             </Grid>
-            <Grid xs={12} className="pb-2">
+            {/* <Grid xs={12} className="pb-2">
               <TextField
                 id="filled-search"
                 label="Password"
@@ -281,7 +281,7 @@ function RegisterPage(props: any) {
                   ),
                 }}
               />
-            </Grid>
+            </Grid> */}
             <Box className="mt-3">
               <Button
                 disabled={SendRegister}

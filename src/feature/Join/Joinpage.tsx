@@ -113,7 +113,8 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
 
   const zmClient = useContext(zoomContext);
 
-  const onSubmitForm = async (type: string) => {
+  const onSubmitForm = async (e: any, type: any) => {
+    e.preventDefault();
     closeSnackbar(UrlCloseID);
     // init(`abcd123-${DisplayDataInfo.Displayname}-${DisplayDataInfo.emailinfo}`);
     // history.push(`/${type}?topic=${devConfig.topic}${window.location.search}`);
@@ -235,110 +236,60 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
               Playground
             </Typography>
           </Grid>
-          {true ? (
-            <Grid
-              xs={12}
-              sm={6}
-              md={6}
-              className="d-flex flex-column justify-content-center align-items-center"
-              style={{ transform: "rotateY(0deg)", transition: ".1s all" }}
-            >
-              {/* <Box className="d-flex flex-column justify-content-center align-items-center"> */}
-              <TextField
-                error={nameValidation ? true : false}
-                id="filled-search"
-                label="Name to display"
-                type="string"
-                value={DisplayDataInfo.Displayname}
-                style={{ paddingBottom: "20px" }}
-                className="w-50"
-                variant="outlined"
-                autoComplete="off"
-                size="small"
-                name="Displayname"
-                onChange={DisplayNameData}
-              />
-              <TextField
-                error={emailValidate ? true : false}
-                size="small"
-                style={{ paddingBottom: "20px" }}
-                type="email"
-                className="w-50"
-                variant="outlined"
-                autoComplete="off"
-                label="Email"
-                name="emailinfo"
-                value={DisplayDataInfo.emailinfo}
-                onChange={DisplayNameData}
-                disabled={user ? true : false}
-              />
+
+          <Grid
+            xs={12}
+            sm={6}
+            md={6}
+            className="d-flex flex-column justify-content-center align-items-center"
+            style={{ transform: "rotateY(0deg)", transition: ".1s all" }}
+          >
+            <form onSubmit={(e) => onSubmitForm(e, "video")}>
+              <Box className="d-flex flex-column">
+                <TextField
+                  error={nameValidation ? true : false}
+                  id="filled-search"
+                  label="Name to display"
+                  type="string"
+                  value={DisplayDataInfo.Displayname}
+                  style={{ paddingBottom: "20px" }}
+                  className="w-100"
+                  variant="outlined"
+                  autoComplete="off"
+                  size="small"
+                  name="Displayname"
+                  onChange={DisplayNameData}
+                />
+                <TextField
+                  error={emailValidate ? true : false}
+                  size="small"
+                  style={{ paddingBottom: "20px" }}
+                  type="email"
+                  className="w-100"
+                  variant="outlined"
+                  autoComplete="off"
+                  label="Email"
+                  name="emailinfo"
+                  value={DisplayDataInfo.emailinfo}
+                  onChange={DisplayNameData}
+                  disabled={user ? true : false}
+                />
+              </Box>
 
               <Button
+                type="submit"
                 id="demo-positioned-button"
                 size="small"
                 variant="contained"
                 className="w-25"
                 style={{ backgroundColor: "#494CE2", color: "white" }}
-                onClick={() => onSubmitForm("video")}
-                // onClick={onCardClick}
+                // onClick={() => onSubmitForm("video")}
               >
-                {/* OTP */}Join
+                Join
               </Button>
-            </Grid>
-          ) : (
-            <Grid
-              xs={12}
-              md={6}
-              className="d-flex flex-column justify-content-center align-items-center"
-              style={{ transform: "rotateY(360deg)", transition: ".1s all" }}
-            >
-              <h2 className="lebalOTP">
-                <span>OTP</span>
-              </h2>
-              {/* {OpenOTP && ( */}
-              <OtpInput
-                isInputNum={true}
-                value={OTP}
-                onChange={setOTP}
-                numInputs={6}
-                separator={<span style={{ width: "10px" }}></span>}
-                inputStyle="OTPField"
-              />
-              {/* )} */}
-              <Grid
-                container
-                className="d-flex justify-content-center align-items-center mt-4"
-              >
-                <Grid xs={3}>
-                  <Button
-                    // id="demo-positioned-button"
-                    size="small"
-                    color="inherit"
-                    variant="contained"
-                    className="w-25"
-                    // style={{ backgroundColor: "#494CE2", color: "white" }}
-                    onClick={() => setOpenOTP(!OpenOTP)}
-                    // onClick={onSubmitForm}
-                  >
-                    back
-                  </Button>
-                </Grid>
-                <Grid xs={3}>
-                  <Button
-                    id="demo-positioned-button"
-                    size="small"
-                    variant="contained"
-                    className="w-25"
-                    style={{ backgroundColor: "#494CE2", color: "white" }}
-                    onClick={() => onSubmitForm("video")}
-                    // onClick={onSubmitForm}
-                  >
-                    Join
-                  </Button>
-                </Grid>
-              </Grid>
-            </Grid>
-          )}
+            </form>
+          </Grid>
+
           <Grid xs={12}>
             <Box className="d-flex justify-content-end align-items-center pb-2 pt-4 pr-4 ">
               <Box className=" hover:text-[#494CE2] d-flex align-items-center">

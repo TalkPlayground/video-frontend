@@ -68,7 +68,11 @@
         // background: rgba(82,82,128,0.09);
         color: #333;
         font-size: 13px;
-        margin-bottom: 8px;
+        margin-bottom: 0px;
+        padding-top: .625rem;
+        &:first-child{
+          padding-top: 0 !important;
+        }
       }
       &.myself {
         // align-items: flex-end;
