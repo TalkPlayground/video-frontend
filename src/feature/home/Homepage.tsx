@@ -24,7 +24,7 @@ import Header from "../../component/pages/Header";
 import { RouteComponentProps } from "react-router-dom";
 import "../../index.css";
 import { devConfig } from "../../config/dev";
-import { getQueryString } from "../../Api";
+import { getQueryString, supabase } from "../../Api";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 
@@ -104,12 +104,11 @@ function KeepMountedModal({ setOpenModal, openModal }: any) {
 
 interface HomeProps extends RouteComponentProps {
   status: string;
-  userData: any;
   init: any;
 }
 
 const Homepage: React.FunctionComponent<HomeProps> = (props) => {
-  const { history, status, userData, init } = props;
+  const { history, status, init } = props;
   const [anchorEl, setAnchorEl] = useState(null);
   // const navigate = useNavigate();
   const [openModal, setOpenModal] = React.useState(false);
@@ -135,6 +134,8 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
 
   const startSession = async () => {
     // noSleep.disable();
+    const userData = supabase.auth.user();
+
     if (userData) {
       await axios
         .post(

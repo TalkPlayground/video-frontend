@@ -229,12 +229,7 @@ function App(props: AppProps) {
                 <Route
                   path="/"
                   render={(props) => (
-                    <Homepage
-                      {...props}
-                      status={status}
-                      userData={userData}
-                      init={init}
-                    />
+                    <Homepage {...props} status={status} init={init} />
                   )}
                   exact
                 />
