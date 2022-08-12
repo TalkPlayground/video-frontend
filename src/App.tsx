@@ -281,7 +281,7 @@ function App(props: AppProps) {
                   exact
                 /> */}
                 <Route path="/preview" component={Preview} />
-                {userData && userData?.user_metadata?.fullname ? (
+                {userData || DisplayDataInfo ? (
                   <Route
                     path="/video"
                     render={(props) =>

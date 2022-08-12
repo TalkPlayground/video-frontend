@@ -60,6 +60,7 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
   const [nameValidation, setnameValidation] = useState(false);
   const [emailValidate, setemailValidate] = useState(false);
   const [OTP, setOTP] = useState("");
+  const [StartSession, setStartSession] = useState(false);
 
   const classes = useStyles();
 
@@ -115,6 +116,8 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
 
   const onSubmitForm = async (e: any, type: any) => {
     e.preventDefault();
+    console.log("first=====>");
+    setStartSession(true);
     closeSnackbar(UrlCloseID);
     // init(`abcd123-${DisplayDataInfo.Displayname}-${DisplayDataInfo.emailinfo}`);
     // history.push(`/${type}?topic=${devConfig.topic}${window.location.search}`);
@@ -142,6 +145,7 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
         console.log(error);
         setemailValidate(true);
         setnameValidation(true);
+        setStartSession(false);
       });
   };
 
@@ -246,6 +250,7 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
               </Box>
 
               <Button
+                disabled={StartSession}
                 type="submit"
                 id="demo-positioned-button"
                 size="small"
