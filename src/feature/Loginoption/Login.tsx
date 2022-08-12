@@ -37,9 +37,20 @@ function Loginpage(props: any) {
   const [emailValidate, setemailValidate] = useState(false);
   const [passwordValidation, setpasswordValidation] = useState(false);
   const [IsError, setIsError] = useState(false);
-  const [SendingEmail, setSendingEmail] = useState(false);
+  const [SendingEmail, setSendingEmail] = useState(
+    window.localStorage.getItem("SendingEmail") == "true" ? true : false
+  );
 
   const { enqueueSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    if (SendingEmail) {
+      setTimeout(() => {
+        window.localStorage.removeItem("SendingEmail");
+        setSendingEmail(false);
+      }, 60000);
+    }
+  }, [SendingEmail]);
 
   useEffect(() => {
     setemailValidate(false);
@@ -91,6 +102,7 @@ function Loginpage(props: any) {
         setLoginStart(false);
       } else {
         enqueueSnackbar(`Email Sended`, { variant: "success" });
+        window.localStorage.setItem("SendingEmail", "true");
         setSendingEmail(true);
       }
       setemailData("");
@@ -174,6 +186,13 @@ function Loginpage(props: any) {
               </Button>
             </Box>
           </>
+        ) : SendingEmail ? (
+          <>
+            <img
+              src="https://c.tenor.com/0ceXa2Dg8ywAAAAC/email-sent.gif"
+              height={200}
+            />
+          </>
         ) : IsError ? (
           <>
             <Button
@@ -197,13 +216,6 @@ function Loginpage(props: any) {
             >
               Don't have an Account? Sign up
             </span>
-          </>
-        ) : SendingEmail ? (
-          <>
-            <img
-              src="https://c.tenor.com/0ceXa2Dg8ywAAAAC/email-sent.gif"
-              height={200}
-            />
           </>
         ) : null}
       </Grid>

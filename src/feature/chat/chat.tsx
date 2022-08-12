@@ -181,14 +181,15 @@ const ChatContainer = ({
             </IconButton>
           </div>
           <div className="chat-message-wrap" ref={chatWrapRef}>
-            {chatRecords.map((record: any) => (
-              <ChatMessageItem
-                record={record}
-                currentUserId={currentUserId}
-                setChatUser={setChatUserId}
-                key={record.timestamp}
-              />
-            ))}
+            {chatRecords?.length > 0 &&
+              chatRecords.map((record: any) => (
+                <ChatMessageItem
+                  record={record}
+                  currentUserId={currentUserId}
+                  setChatUser={setChatUserId}
+                  key={record.timestamp}
+                />
+              ))}
           </div>
           {ChatPrivilege.NoOne !== chatPrivilege || isHost || isManager ? (
             <>
