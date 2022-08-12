@@ -37,6 +37,7 @@ import { getExploreName } from "./utils/platform";
 import jwt_decode from "jwt-decode";
 import { useSnackbar } from "notistack";
 import { supabase } from "./Api";
+import { parse } from "dotenv";
 
 interface AppProps {
   meetingArgs: {
@@ -107,13 +108,6 @@ function App(props: AppProps) {
   const [chatClient, setChatClient] = useState<ChatClient | null>(null);
   const [isSupportGalleryView, setIsSupportGalleryView] =
     useState<boolean>(true);
-  const [UserInfo, setUserInfo] = useState({
-    exp: "",
-    name: "",
-    sub: "",
-    userId: "",
-  });
-
   const [LoginOrNot, setLoginOrNot] = useState(false);
 
   const [DisplayDataInfo, setDisplayDataInfo] = useState({
@@ -121,18 +115,7 @@ function App(props: AppProps) {
     emailinfo: "",
   });
 
-  const accessToken = localStorage.getItem("accessToken");
-
-  useEffect(() => {
-    if (!UserInfo.name && accessToken) {
-      // var decoded = jwt_decode(accessToken);
-      // if (decoded) {
-      setUserInfo(jwt_decode(accessToken));
-
-      // handleClickVariant("success");
-      // }
-    }
-  }, [accessToken, LoginOrNot]);
+  const userData = supabase.auth.user();
 
   const zmClient = useContext(ZoomContext);
 
@@ -144,20 +127,23 @@ function App(props: AppProps) {
   };
 
   useEffect(() => {
-    if (UserInfo) {
-      setDisplayDataInfo({ ...DisplayDataInfo, emailinfo: UserInfo.sub });
+    if (userData) {
+      setDisplayDataInfo({
+        Displayname: `${
+          userData?.user_metadata?.fullname
+            ? userData?.user_metadata?.fullname
+            : ""
+        }`,
+        emailinfo: `${userData.email}`,
+      });
     }
-  }, [UserInfo]);
-
-  // if (topicInfo?.length && !UserInfo.sub) {
-  //   return <Redirect to="/Join" />;
-  // }
+  }, [userData]);
 
   useEffect(() => {
-    if (topicInfo?.length && UserInfo.name?.length) {
-      init(UserInfo.name);
+    if (topicInfo?.length && userData?.user_metadata?.fullname) {
+      init(userData?.user_metadata?.fullname);
     }
-  }, [topicInfo, UserInfo]);
+  }, [topicInfo]);
 
   const init = async (nameData: any) => {
     setIsLoading(true);
@@ -246,9 +232,8 @@ function App(props: AppProps) {
                     <Homepage
                       {...props}
                       status={status}
-                      UserInfo={UserInfo}
+                      userData={userData}
                       init={init}
-                      setLoginOrNot={setLoginOrNot}
                     />
                   )}
                   exact
@@ -277,9 +262,7 @@ function App(props: AppProps) {
                     <Loginpage
                       {...props}
                       status={status}
-                      setUserInfo={setUserInfo}
                       handleClickVariant={handleClickVariant}
-                      setLoginOrNot={setLoginOrNot}
                     />
                   )}
                   exact
@@ -298,7 +281,7 @@ function App(props: AppProps) {
                   exact
                 /> */}
                 <Route path="/preview" component={Preview} />
-                {UserInfo.name || DisplayDataInfo.Displayname || accessToken ? (
+                {userData && userData?.user_metadata?.fullname ? (
                   <Route
                     path="/video"
                     render={(props) =>

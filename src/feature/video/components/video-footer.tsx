@@ -425,9 +425,9 @@ const VideoFooter = (props: VideoFooterProps) => {
         </Tooltip>
         <Tooltip title={RecordingStatus ? "Stop Recording" : "Start Recording"}>
           <IconButton
-            // onClick={() => {
-            //   StartStopRecording(!RecordingStatus);
-            // }}
+            onClick={() => {
+              StartStopRecording(!RecordingStatus);
+            }}
             className="ml-2 HoverIcon"
           >
             <RadioButtonCheckedIcon

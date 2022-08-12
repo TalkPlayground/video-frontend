@@ -25,7 +25,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
-function Header({ UserInfo, setisLoginOrNot }: any) {
+function Header() {
   const history = useHistory();
   const [LoginOrNot, setLoginOrNot] = useState(false);
 
@@ -45,17 +45,6 @@ function Header({ UserInfo, setisLoginOrNot }: any) {
   };
 
   const { enqueueSnackbar } = useSnackbar();
-
-  const accessToken = localStorage.getItem("accessToken");
-
-  useEffect(() => {
-    if (accessToken) {
-      var decoded = jwt_decode(accessToken);
-      if (decoded) {
-        setLoginOrNot(true);
-      }
-    }
-  }, [UserInfo, accessToken]);
 
   const handleClickVariant = (variant: any) => {
     // variant could be success, error, warning, info, or default

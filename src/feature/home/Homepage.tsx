@@ -24,6 +24,9 @@ import Header from "../../component/pages/Header";
 import { RouteComponentProps } from "react-router-dom";
 import "../../index.css";
 import { devConfig } from "../../config/dev";
+import { getQueryString } from "../../Api";
+import axios from "axios";
+import { useSnackbar } from "notistack";
 
 const style = {
   position: "absolute",
@@ -101,13 +104,12 @@ function KeepMountedModal({ setOpenModal, openModal }: any) {
 
 interface HomeProps extends RouteComponentProps {
   status: string;
-  UserInfo: any;
+  userData: any;
   init: any;
-  setLoginOrNot: any;
 }
 
 const Homepage: React.FunctionComponent<HomeProps> = (props) => {
-  const { history, status, UserInfo, init, setLoginOrNot } = props;
+  const { history, status, userData, init } = props;
   const [anchorEl, setAnchorEl] = useState(null);
   // const navigate = useNavigate();
   const [openModal, setOpenModal] = React.useState(false);
@@ -124,11 +126,37 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
     sessionStorage.clear();
   }, []);
 
-  const startSession = () => {
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleClickVariant = (variant: any, data: String) => {
+    // variant could be success, error, warning, info, or default
+    enqueueSnackbar(data ? data : "Joined Successfully", { variant });
+  };
+
+  const startSession = async () => {
     // noSleep.disable();
-    if (UserInfo.name) {
-      init(UserInfo.name);
-      history.push(`/video?topic=${devConfig.topic}${window.location.search}`);
+    if (userData) {
+      await axios
+        .post(
+          "/api/v1/user/session/join" +
+            "?" +
+            getQueryString({
+              name: userData?.user_metadata?.fullname,
+              email: userData?.email,
+            })
+        )
+        .then(function (response) {
+          handleClickVariant("success", "");
+          localStorage.setItem("UserID", `${response.data.data}`);
+          init(`${response.data.data}-${userData?.user_metadata?.fullname}`);
+          history.push(
+            `/video?topic=${devConfig.topic}${window.location.search}`
+          );
+        })
+        .catch(function (error) {
+          console.log(error);
+          handleClickVariant("error", "Please try again");
+        });
     } else {
       history.push(`/Join`);
     }
@@ -142,7 +170,7 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
 
   return (
     <>
-      <Header UserInfo={UserInfo} setisLoginOrNot={setLoginOrNot} />
+      <Header />
       <KeepMountedModal setOpenModal={setOpenModal} openModal={openModal} />
       <Grid className="d-flex justify-content-center  h-75">
         <Grid container xs={12} md={11} className="my-5 py-4 ">

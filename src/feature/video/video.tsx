@@ -141,9 +141,9 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     noSleep.enable();
     const startAPi = async () => {
       const data: any = await JoinSessionApi();
-      if (data) {
-        StartStopRecording(!RecordingStatus);
-      }
+      // if (data) {
+      //   StartStopRecording(!RecordingStatus);
+      // }
     };
     startAPi();
   }, []);

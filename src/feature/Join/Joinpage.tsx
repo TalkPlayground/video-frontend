@@ -132,11 +132,6 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
       )
       .then(function (response) {
         handleClickVariant("success");
-        // history.push("/Login");
-        // init(DisplayDataInfo.Displayname);
-        // history.push(
-        //   `/${type}?topic=${devConfig.topic}${window.location.search}`
-        // );
         localStorage.setItem("UserID", `${response.data.data}`);
         init(`${response.data.data}-${DisplayDataInfo.Displayname}`);
         history.push(
@@ -148,32 +143,6 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
         setemailValidate(true);
         setnameValidation(true);
       });
-  };
-
-  const onCardClick = () => {
-    if (
-      DisplayDataInfo.Displayname?.length > 0 &&
-      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
-        DisplayDataInfo.emailinfo
-      )
-    ) {
-      setOpenOTP(true);
-    } else if (
-      DisplayDataInfo.Displayname?.length == 0 &&
-      DisplayDataInfo.emailinfo?.length == 0
-    ) {
-      setemailValidate(true);
-      setnameValidation(true);
-    } else if (DisplayDataInfo.Displayname?.length == 0) {
-      setnameValidation(true);
-    } else if (
-      !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
-        DisplayDataInfo.emailinfo
-      ) ||
-      DisplayDataInfo.emailinfo?.length == 0
-    ) {
-      setemailValidate(true);
-    }
   };
 
   const action = (snackbarId: any) => (

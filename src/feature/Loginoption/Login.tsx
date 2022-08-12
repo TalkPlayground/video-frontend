@@ -31,7 +31,6 @@ const useStyles = makeStyles({
 function Loginpage(props: any) {
   const history = useHistory();
   const classes = useStyles();
-  const { setUserInfo, setLoginOrNot } = props;
   const [email, setemailData] = useState("");
   const [passwordData, setpasswordData] = useState("");
   const [emailValidate, setemailValidate] = useState(false);
@@ -106,24 +105,6 @@ function Loginpage(props: any) {
         setSendingEmail(true);
       }
       setemailData("");
-      // const info = {
-      //   username: email,
-      //   password: passwordData,
-      // };
-      // await axios
-      //   .post("/api/v1/user/login", { ...info })
-      //   .then(function (response) {
-      //     console.log(response);
-      //     localStorage.setItem("accessToken", response.data.data.accessToken);
-      //     // var decoded = jwt_decode(response.data.data.accessToken);
-      //     // setUserInfo(decoded);
-      //     setLoginOrNot(true);
-      //     handleClickVariant("success");
-      //     history.push("/");
-      //   })
-      //   .catch(function (error) {
-      //     console.log(error);
-      //   });
     } else if (
       !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email) &&
       !passwordData
