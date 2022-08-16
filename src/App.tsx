@@ -171,9 +171,7 @@ function App(props: AppProps) {
     await zmClient.init("en-US", `${window.location.origin}/lib`);
     try {
       setLoadingText("Joining the session...");
-      console.log("started", topic, signature, nameData, password);
       await zmClient.join(topic, signature, nameData, password);
-
       const stream = zmClient.getMediaStream();
       setMediaStream(stream);
       // console.log("ssd", stream.isSupportHDVideo());

@@ -72,12 +72,12 @@ const ChatMessageItem = (props: ChatMessageItemProps) => {
           })}
         >
           {chatMessage.map((text, index) => (
-            <pre
+            <p
               className={classNames("chat-message-text text-left")}
               key={index}
             >
               {text}
-            </pre>
+            </p>
           ))}
         </ul>
       </div>
