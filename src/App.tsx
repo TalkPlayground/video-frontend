@@ -36,8 +36,9 @@ import { devConfig, topicInfo } from "./config/dev";
 import { getExploreName } from "./utils/platform";
 import jwt_decode from "jwt-decode";
 import { useSnackbar } from "notistack";
-import { supabase } from "./Api";
+import { getQueryString, supabase } from "./Api";
 import { parse } from "dotenv";
+import axios from "axios";
 
 interface AppProps {
   meetingArgs: {
@@ -121,9 +122,9 @@ function App(props: AppProps) {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const handleClickVariant = (variant: any) => {
+  const handleClickVariant = (variant: any, data: string) => {
     // variant could be success, error, warning, info, or default
-    enqueueSnackbar("Logged In", { variant });
+    enqueueSnackbar(data ? data : "Logged In", { variant });
   };
 
   useEffect(() => {
@@ -141,8 +142,27 @@ function App(props: AppProps) {
 
   useEffect(() => {
     if (topicInfo?.length && userData?.user_metadata?.fullname?.length) {
-      console.log("userData?.user_metadata?.fullname", userData);
-      init(userData?.user_metadata?.fullname);
+      axios
+        .post(
+          "/api/v1/user/session/join" +
+            "?" +
+            getQueryString({
+              name: userData?.user_metadata?.fullname,
+              email: userData?.email,
+            })
+        )
+        .then(function (response) {
+          handleClickVariant("success", "Joined Successfully");
+          localStorage.setItem("UserID", `${response.data.data}`);
+          init(`${response.data.data}-${userData?.user_metadata?.fullname}`);
+          history.push(
+            `/video?topic=${devConfig.topic}${window.location.search}`
+          );
+        })
+        .catch(function (error) {
+          console.log(error);
+          handleClickVariant("error", "Please try again");
+        });
     }
   }, [topicInfo]);
 
