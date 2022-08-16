@@ -140,7 +140,8 @@ function App(props: AppProps) {
   }, [userData]);
 
   useEffect(() => {
-    if (topicInfo?.length && userData?.user_metadata?.fullname) {
+    if (topicInfo?.length && userData?.user_metadata?.fullname?.length) {
+      console.log("userData?.user_metadata?.fullname", userData);
       init(userData?.user_metadata?.fullname);
     }
   }, [topicInfo]);
@@ -279,7 +280,7 @@ function App(props: AppProps) {
                   exact
                 /> */}
                 <Route path="/preview" component={Preview} />
-                {userData || DisplayDataInfo ? (
+                {userData || DisplayDataInfo?.Displayname ? (
                   <Route
                     path="/video"
                     render={(props) =>
