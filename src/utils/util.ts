@@ -1,20 +1,21 @@
-import { KJUR } from 'jsrsasign';
+import { KJUR } from "jsrsasign";
 
 export function generateVideoToken(
   sdkKey: string,
   sdkSecret: string,
   topic: string,
-  passWord = '',
-  userIdentity = '',
-  sessionKey = ''
+  passWord = "",
+  userIdentity = "",
+  sessionKey = "",
+  roleType = 1
 ) {
-  let signature = '';
+  let signature = "";
   try {
     const iat = Math.round(new Date().getTime() / 1000);
     const exp = iat + 60 * 60 * 2;
 
     // Header
-    const oHeader = { alg: 'HS256', typ: 'JWT' };
+    const oHeader = { alg: "HS256", typ: "JWT" };
     // Payload
     const oPayload = {
       app_key: sdkKey,
@@ -23,13 +24,14 @@ export function generateVideoToken(
       tpc: topic,
       pwd: passWord,
       user_identity: userIdentity,
-      session_key: sessionKey
+      session_key: sessionKey,
+      role_type: roleType,
       // topic
     };
     // Sign JWT, password=616161
     const sHeader = JSON.stringify(oHeader);
     const sPayload = JSON.stringify(oPayload);
-    signature = KJUR.jws.JWS.sign('HS256', sHeader, sPayload, sdkSecret);
+    signature = KJUR.jws.JWS.sign("HS256", sHeader, sPayload, sdkSecret);
   } catch (e) {
     console.error(e);
   }

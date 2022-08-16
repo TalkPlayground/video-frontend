@@ -147,10 +147,12 @@ function App(props: AppProps) {
 
   const init = async (nameData: any) => {
     setIsLoading(true);
-    await zmClient.init("en-US", `${window.location.origin}/lib`, "zoom.us");
+    await zmClient.init("en-US", `${window.location.origin}/lib`);
     try {
       setLoadingText("Joining the session...");
+      console.log("started", topic, signature, nameData, password);
       await zmClient.join(topic, signature, nameData, password);
+
       const stream = zmClient.getMediaStream();
       setMediaStream(stream);
       // console.log("ssd", stream.isSupportHDVideo());
@@ -161,6 +163,7 @@ function App(props: AppProps) {
       // history.push(`/video${window.location.search}`);
       setIsLoading(false);
     } catch (e: any) {
+      console.log("first", e);
       setIsLoading(false);
       message.error(e.reason);
     }
