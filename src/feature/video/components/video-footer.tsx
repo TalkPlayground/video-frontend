@@ -83,10 +83,18 @@ const VideoFooter = (props: VideoFooterProps) => {
 
   var noSleep = new nosleep();
 
+  const participants = zmClient.getAllUser();
   useEffect(() => {
     // onCameraClick();
     onMicrophoneClick();
+    if (participants?.length == 1 && !RecordingStatus) {
+      changeParticipant();
+    }
   }, []);
+
+  const changeParticipant = useCallback(() => {
+    StartStopRecording(!RecordingStatus);
+  }, [participants]);
 
   const onCameraClick = useCallback(async () => {
     if (isStartedVideo) {
@@ -211,6 +219,9 @@ const VideoFooter = (props: VideoFooterProps) => {
   const [HideSelfView, setHideSelfView] = useState(false);
 
   window.onbeforeunload = function () {
+    if (participants?.length == 1) {
+      StartStopRecording(false);
+    }
     zmClient.leave();
   };
 
@@ -364,8 +375,8 @@ const VideoFooter = (props: VideoFooterProps) => {
             cursor: "pointer",
           }}
           onClick={async () => {
-            if (RecordingStatus) {
-              StartStopRecording(!RecordingStatus).then(async () => {
+            if (participants?.length == 1) {
+              StartStopRecording(false).then(async () => {
                 zmClient.leave();
                 noSleep.disable();
                 localStorage.removeItem("UserID");
@@ -423,11 +434,13 @@ const VideoFooter = (props: VideoFooterProps) => {
             </Badge>
           </IconButton>
         </Tooltip>
-        <Tooltip title={RecordingStatus ? "Stop Recording" : "Start Recording"}>
+        <Tooltip
+          title={!RecordingStatus ? "Stop Recording" : "Start Recording"}
+        >
           <IconButton
-            onClick={() => {
-              StartStopRecording(!RecordingStatus);
-            }}
+            // onClick={() => {
+            //   StartStopRecording(!RecordingStatus);
+            // }}
             className="ml-2 HoverIcon"
           >
             <RadioButtonCheckedIcon
