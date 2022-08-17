@@ -163,7 +163,6 @@ const ChatContainer = ({
   });
 
   useEffect(() => {
-    console.log("chatWrapRef", chatWrapRef);
     if (chatWrapRef.current) {
       chatWrapRef.current.scrollTop = chatWrapRef.current.scrollHeight;
     }

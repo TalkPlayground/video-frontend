@@ -116,7 +116,6 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
 
   const onSubmitForm = async (e: any, type: any) => {
     e.preventDefault();
-    console.log("first=====>");
     setStartSession(true);
     closeSnackbar(UrlCloseID);
     // init(`abcd123-${DisplayDataInfo.Displayname}-${DisplayDataInfo.emailinfo}`);
