@@ -17,6 +17,10 @@ import { Apis, baseURL, supabase } from "../../Api";
 
 import HeaderIcon from "../../assets/app_image.png";
 
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+
 function RegisterPage(props: any) {
   const history = useHistory();
   const [SendingEmail, setSendingEmail] = useState(false);
@@ -177,7 +181,7 @@ function RegisterPage(props: any) {
         sm={12}
         md={4}
       >
-        <Grid xs={12} className="">
+        <Grid xs={12} className="h-100">
           <img src={HeaderIcon} alt="header_logo" style={{ width: "10rem" }} />
           <Typography
             className="pb-3"
@@ -240,7 +244,7 @@ function RegisterPage(props: any) {
               </Grid>
             </Grid>
             <Grid xs={12} className="pb-2">
-              <TextField
+              {/* <TextField
                 id="filled-search"
                 // label="Email"
                 type="date"
@@ -252,7 +256,31 @@ function RegisterPage(props: any) {
                 autoComplete="off"
                 onChange={inputFormData}
                 error={DateValid ? true : false}
-              />
+              /> */}
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DesktopDatePicker
+                  label="dd/mm/yyyy"
+                  inputFormat="MM/dd/yyyy"
+                  value={RegisterData.date}
+                  onChange={(e) =>
+                    setRegisterData({
+                      ...RegisterData,
+                      date: moment(e).format("DD/MM/yyyy"),
+                    })
+                  }
+                  renderInput={(params: any) => (
+                    <TextField
+                      {...params}
+                      name="date"
+                      onChange={(e) => inputFormData(e)}
+                      className="w-100"
+                      variant="outlined"
+                      size="small"
+                      error={DateValid ? true : false}
+                    />
+                  )}
+                />
+              </LocalizationProvider>
             </Grid>
             {/* <Grid xs={12} className="pb-2">
               <TextField

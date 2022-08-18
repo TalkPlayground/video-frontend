@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 import { Grid, Typography, Box, makeStyles } from "@material-ui/core";
-import { Button, IconButton, Tooltip } from "@mui/material";
+import { Alert, Button, IconButton, Tooltip } from "@mui/material";
 
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import TextField from "@mui/material/TextField";
@@ -30,9 +30,13 @@ import { transform } from "lodash";
 import axios from "axios";
 import { Apis, getQueryString, supabase } from "../../Api";
 import { useSnackbar } from "notistack";
-import { CloseCircleFilled } from "@ant-design/icons";
+import CloseIcon from "@mui/icons-material/Close";
+import LinkIcon from "@mui/icons-material/Link";
+
+import Slide from "@mui/material/Slide";
 
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import zIndex from "@material-ui/core/styles/zIndex";
 // import { useNavigate } from "react-router-dom";
 // import { useDispatch, useSelector } from "react-redux";
 // import DisplayAction from "../redux/actions/DisplayAction";
@@ -89,19 +93,7 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
     }
   }, [user]);
 
-  const [UrlShowJoin, setUrlShowJoin] = useState("true");
-  const [UrlCloseID, setUrlCloseID] = useState(0);
-
-  useEffect(() => {
-    if (UrlShowJoin === "true") {
-      enqueueSnackbar(`${url}`, {
-        action,
-        variant: "default",
-        persist: true,
-        preventDuplicate: true,
-      });
-    }
-  }, [UrlShowJoin]);
+  const [UrlShowJoin, setUrlShowJoin] = useState(false);
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
@@ -110,16 +102,11 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
     enqueueSnackbar("Joined Successfully", { variant });
   };
 
-  const [OpenOTP, setOpenOTP] = useState(false);
-
   const zmClient = useContext(zoomContext);
 
   const onSubmitForm = async (e: any, type: any) => {
     e.preventDefault();
     setStartSession(true);
-    closeSnackbar(UrlCloseID);
-    // init(`abcd123-${DisplayDataInfo.Displayname}-${DisplayDataInfo.emailinfo}`);
-    // history.push(`/${type}?topic=${devConfig.topic}${window.location.search}`);
     const info = {
       ...zmClient.getSessionInfo(),
     };
@@ -148,42 +135,14 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
       });
   };
 
-  const action = (snackbarId: any) => (
-    <>
-      {setUrlCloseID(snackbarId)}
-      <IconButton onClick={() => navigator.clipboard.writeText(url)}>
-        <ContentCopyIcon
-          style={{ fill: "#919499" }}
-          className="cursor-pointer"
-        />
-      </IconButton>
-      <IconButton>
-        <CloseCircleFilled
-          style={{ fill: "#fff" }}
-          className="cursor-pointer"
-          onClick={() => {
-            closeSnackbar(snackbarId);
-            setTimeout(() => {
-              setUrlShowJoin(snackbarId);
-            }, 500);
-          }}
-        />
-      </IconButton>
-    </>
-  );
-
   const url = `${window.location.origin}/video?topic=${devConfig.topic}`;
 
   return (
     <>
       <Header />
-      {/* <Grid xs={8} className="d-flex justify-content-center border rounded"> */}
       <Grid className="d-flex justify-content-center  align-items-center h-75">
         <Grid
           container
-          // direction="column"
-          // alignItems="center"
-          // justifyContent="center"
           className="border rounded pt-5"
           // xs={12}
           sm={12}
@@ -276,20 +235,60 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
         </Grid>
       </Grid>
 
-      {UrlShowJoin !== "true" && (
+      <Snackbar
+        open={!UrlShowJoin}
+        autoHideDuration={2000}
+        sx={{ zIndex: 1401 }}
+      >
         <Tooltip title="Copy URL">
           <IconButton
-            className="d-flex ml-5 mt-4"
-            style={{ backgroundColor: "rgb(73, 76, 226)", color: "#fff" }}
-            onClick={() => setUrlShowJoin("true")}
+            onClick={() => setUrlShowJoin(true)}
+            style={{ backgroundColor: "rgb(73, 76, 226)" }}
           >
-            <ArrowForwardIosIcon
-              fontSize="small"
-              style={{ cursor: "pointer" }}
-            />
+            <LinkIcon style={{ fill: "#fff" }} />
           </IconButton>
         </Tooltip>
-      )}
+      </Snackbar>
+
+      <Snackbar
+        open={UrlShowJoin}
+        autoHideDuration={2000}
+        TransitionComponent={(props) => <Slide {...props} direction="right" />}
+      >
+        <Alert
+          icon={false}
+          sx={{
+            width: "100%",
+            backgroundColor: "white",
+            boxShadow: 3,
+          }}
+          action={
+            <>
+              <IconButton color="inherit" size="small">
+                <ContentCopyIcon
+                  style={{ fill: "#919499", fontSize: "22" }}
+                  className="cursor-pointer"
+                />
+              </IconButton>
+
+              <IconButton
+                color="inherit"
+                size="small"
+                onClick={() => setUrlShowJoin(false)}
+              >
+                <CloseIcon
+                  style={{ fill: "#919499", fontSize: "22" }}
+                  className="cursor-pointer"
+                />
+              </IconButton>
+            </>
+          }
+        >
+          <p style={{ color: "grey" }}>
+            {url?.length > 35 ? url.slice(0, 35) + "..." : url}
+          </p>
+        </Alert>
+      </Snackbar>
     </>
   );
 };
