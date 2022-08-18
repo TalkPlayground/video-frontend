@@ -97,7 +97,7 @@ function Header() {
         >
           <Typography className="pr-4">
             {moment().format("LT")} <span className="px-1">&#8226;</span>
-            {moment().format("dddd, MMMM DD")}
+            {moment().format("ddd, MMM DD")}
           </Typography>
           <Button
             variant="outlined"

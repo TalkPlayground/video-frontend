@@ -80,11 +80,14 @@ function RegisterPage(props: any) {
     // RegisterData.pword &&
     // RegisterData.cpword &&
     // RegisterData.invitecode
+    console.log("RegisterData.Fname?.length", RegisterData.Fname?.length);
     if (
       /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
         RegisterData.email
       ) &&
+      RegisterData.Fname?.length > 0 &&
       RegisterData.Fname.match(letterNumber) &&
+      RegisterData.Lname?.length > 0 &&
       RegisterData.Lname.match(letterNumber) &&
       b.diff(a, "year") > 5 &&
       RegisterData.pword.match(letterNumber)
@@ -112,7 +115,6 @@ function RegisterPage(props: any) {
                 },
               }
             );
-
             if (!user.error?.message) {
               setSendingEmail(true);
               enqueueSnackbar(`Email Sended`, { variant: "success" });
@@ -145,11 +147,11 @@ function RegisterPage(props: any) {
       setemailValidate(true);
       setSendRegister(false);
     }
-    if (!RegisterData.Fname.match(letterNumber)) {
+    if (RegisterData.Fname?.length == 0) {
       setFnameValid(true);
       setSendRegister(false);
     }
-    if (!RegisterData.Lname.match(letterNumber)) {
+    if (RegisterData.Lname?.length == 0) {
       setLnameValid(true);
       setSendRegister(false);
     }
@@ -265,14 +267,14 @@ function RegisterPage(props: any) {
                   onChange={(e) =>
                     setRegisterData({
                       ...RegisterData,
-                      date: moment(e).format("DD/MM/yyyy"),
+                      date: moment(e).format("yyyy-DD-MM"),
                     })
                   }
                   renderInput={(params: any) => (
                     <TextField
                       {...params}
                       name="date"
-                      onChange={(e) => inputFormData(e)}
+                      // onChange={(e) => inputFormData(e)}
                       className="w-100"
                       variant="outlined"
                       size="small"
