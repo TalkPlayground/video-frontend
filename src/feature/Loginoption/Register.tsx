@@ -17,10 +17,6 @@ import { Apis, baseURL, supabase } from "../../Api";
 
 import HeaderIcon from "../../assets/app_image.png";
 
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-
 function RegisterPage(props: any) {
   const history = useHistory();
   const [SendingEmail, setSendingEmail] = useState(false);
@@ -80,15 +76,14 @@ function RegisterPage(props: any) {
     // RegisterData.pword &&
     // RegisterData.cpword &&
     // RegisterData.invitecode
-    console.log("RegisterData.Fname?.length", RegisterData.Fname?.length);
+    console.log("bb", b.diff(a, "year") > 5);
     if (
       /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
         RegisterData.email
       ) &&
       RegisterData.Fname?.length > 0 &&
-      RegisterData.Fname.match(letterNumber) &&
-      RegisterData.Lname?.length > 0 &&
-      RegisterData.Lname.match(letterNumber) &&
+      RegisterData.Fname.trim()?.length > 0 &&
+      RegisterData.Lname.trim()?.length > 0 &&
       b.diff(a, "year") > 5 &&
       RegisterData.pword.match(letterNumber)
     ) {
@@ -98,6 +93,7 @@ function RegisterPage(props: any) {
         password: RegisterData.pword,
         dob: RegisterData.date,
       };
+      console.log("info", info);
       await axios
         .post(Apis.Register, { ...info })
         .then(async function (response) {
@@ -246,7 +242,7 @@ function RegisterPage(props: any) {
               </Grid>
             </Grid>
             <Grid xs={12} className="pb-2">
-              {/* <TextField
+              <TextField
                 id="filled-search"
                 // label="Email"
                 type="date"
@@ -258,31 +254,7 @@ function RegisterPage(props: any) {
                 autoComplete="off"
                 onChange={inputFormData}
                 error={DateValid ? true : false}
-              /> */}
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DesktopDatePicker
-                  label="dd/mm/yyyy"
-                  inputFormat="MM/dd/yyyy"
-                  value={RegisterData.date}
-                  onChange={(e) =>
-                    setRegisterData({
-                      ...RegisterData,
-                      date: moment(e).format("yyyy-DD-MM"),
-                    })
-                  }
-                  renderInput={(params: any) => (
-                    <TextField
-                      {...params}
-                      name="date"
-                      // onChange={(e) => inputFormData(e)}
-                      className="w-100"
-                      variant="outlined"
-                      size="small"
-                      error={DateValid ? true : false}
-                    />
-                  )}
-                />
-              </LocalizationProvider>
+              />
             </Grid>
             {/* <Grid xs={12} className="pb-2">
               <TextField
