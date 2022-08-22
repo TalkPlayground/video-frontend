@@ -165,9 +165,6 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     //   },
     // };
     // console.log("first", zmClient.getSessionInfo());
-    const info = {
-      ...zmClient.getSessionInfo(),
-    };
     await axios
       .post("/api/v1/user/session/recording", {
         sessionId: info.sessionId,
