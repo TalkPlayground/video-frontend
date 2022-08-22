@@ -10,6 +10,8 @@ import {
   Modal,
   Box,
   IconButton,
+  Alert,
+  Slide,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
@@ -27,6 +29,7 @@ import { devConfig } from "../../config/dev";
 import { getQueryString, supabase } from "../../Api";
 import axios from "axios";
 import { useSnackbar } from "notistack";
+import chromeImage from "../../assets/chrome.png";
 
 const style = {
   position: "absolute",
@@ -112,6 +115,26 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   // const navigate = useNavigate();
   const [openModal, setOpenModal] = React.useState(false);
+  const [SupportBrowser, setSupportBrowser] = useState<any>(null);
+
+  useEffect(() => {
+    function fnBrowserDetect() {
+      let userAgent = navigator.userAgent;
+
+      if (userAgent.match(/chrome|chromium|crios/i)) {
+        setSupportBrowser(null);
+      } else if (userAgent.match(/firefox|fxios/i)) {
+        setSupportBrowser("firefox");
+      } else if (userAgent.match(/safari/i)) {
+        setSupportBrowser("safari");
+      } else if (userAgent.match(/opr\//i)) {
+        setSupportBrowser("opera");
+      } else if (userAgent.match(/edg/i)) {
+        setSupportBrowser("edge");
+      }
+    }
+    fnBrowserDetect();
+  }, []);
 
   const open = Boolean(anchorEl);
   const handleClick = (event: any) => {
@@ -124,6 +147,14 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
   useEffect(() => {
     sessionStorage.clear();
   }, []);
+
+  useEffect(() => {
+    if (SupportBrowser) {
+      setTimeout(() => {
+        setSupportBrowser(null);
+      }, 10000);
+    }
+  }, [SupportBrowser]);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -172,8 +203,18 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
   return (
     <>
       <Header />
+
+      {SupportBrowser && (
+        <Slide direction="down" in={SupportBrowser ? true : false}>
+          <Alert severity="error">
+            Your {SupportBrowser} browser is not supported by TalkPlayground at
+            this time. Please change to Chrome browser to use TalkPlayground.
+          </Alert>
+        </Slide>
+      )}
+
       <KeepMountedModal setOpenModal={setOpenModal} openModal={openModal} />
-      <Grid className="d-flex justify-content-center  h-75">
+      <Grid className="d-flex justify-content-center  h-auto">
         <Grid container xs={12} md={11} className="my-5 py-4 ">
           <Grid xs={12} md={6} className=" text-left">
             <Typography
@@ -261,6 +302,21 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
                 </MenuItem>
               </Menu>
             </Box>
+            <Box className="d-flex align-items-center pt-3">
+              <Typography
+                className="text-secondary pl-5"
+                style={{ fontSize: "15px" }}
+              >
+                Recommended Browser
+              </Typography>
+              <img
+                src={chromeImage}
+                width="25"
+                alt="recomended"
+                className="mx-2"
+              />
+            </Box>
+
             <Divider className="ml-5 mt-3" />
             <Typography className="pt-3 px-5" style={{ fontSize: "15px" }}>
               <span className="LearnMore pr-1" style={{ color: "#494CE2" }}>

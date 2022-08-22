@@ -101,8 +101,7 @@ const VideoFooter = (props: VideoFooterProps) => {
       await mediaStream?.stopVideo();
       setIsStartedVideo(false);
     } else {
-      // await mediaStream?.startVideo({ hd: mediaStream?.isSupportHDVideo() });
-      await mediaStream?.startVideo();
+      await mediaStream?.startVideo({ hd: mediaStream?.isSupportHDVideo() });
       setIsStartedVideo(true);
       await mediaStream?.mirrorVideo(true);
       setMirrorView(true);
