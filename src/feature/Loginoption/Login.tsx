@@ -16,6 +16,7 @@ import { useHistory } from "react-router-dom";
 import { Apis, baseURL, supabase } from "../../Api";
 
 import HeaderIcon from "../../assets/app_image.png";
+import headernewlog from "../../assets/talkplayground-logo.png";
 
 const useStyles = makeStyles({
   root: {
@@ -129,6 +130,7 @@ function Loginpage(props: any) {
         xs={12}
         className="d-flex flex-column justify-content-center align-items-center"
       >
+        <img src={headernewlog} alt="header_logo" style={{ width: "10rem" }} />
         <img src={HeaderIcon} alt="header_logo" style={{ width: "10rem" }} />
         <Typography
           className="pb-5"
