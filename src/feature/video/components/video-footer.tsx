@@ -101,7 +101,8 @@ const VideoFooter = (props: VideoFooterProps) => {
       await mediaStream?.stopVideo();
       setIsStartedVideo(false);
     } else {
-      await mediaStream?.startVideo({ hd: mediaStream?.isSupportHDVideo() });
+      // await mediaStream?.startVideo({ hd: mediaStream?.isSupportHDVideo() });
+      await mediaStream?.startVideo();
       setIsStartedVideo(true);
       await mediaStream?.mirrorVideo(true);
       setMirrorView(true);
@@ -219,10 +220,15 @@ const VideoFooter = (props: VideoFooterProps) => {
   const [HideSelfView, setHideSelfView] = useState(false);
 
   window.onbeforeunload = function () {
-    if (participants?.length == 1) {
-      StartStopRecording(false);
+    if (participants?.length == 1 && RecordingStatus) {
+      StartStopRecording(false).then(async () => {
+        zmClient.leave();
+        noSleep.disable();
+        localStorage.removeItem("UserID");
+        history.push("/");
+        window.location.reload();
+      });
     }
-    zmClient.leave();
   };
 
   const open = Boolean(anchorEl);
