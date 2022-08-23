@@ -141,7 +141,7 @@ function App(props: AppProps) {
   }, [userData]);
 
   useEffect(() => {
-    if (topicInfo?.length && userData?.user_metadata?.fullname?.length) {
+    if (topicInfo?.length && userData?.user_metadata?.fullname?.length > 0) {
       axios
         .post(
           "/api/v1/user/session/join" +
@@ -161,7 +161,6 @@ function App(props: AppProps) {
         })
         .catch(function (error) {
           console.log(error);
-          handleClickVariant("error", "Please try again");
         });
     }
   }, [topicInfo]);
@@ -240,6 +239,7 @@ function App(props: AppProps) {
       zmClient.off("media-sdk-change", onMediaSDKChange);
     };
   }, [zmClient, onConnectionChange, onMediaSDKChange]);
+
   return (
     <div className="App">
       {loading && <LoadingLayer content={loadingText} />}

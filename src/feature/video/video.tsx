@@ -113,25 +113,27 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
       ...zmClient.getSessionInfo(),
     };
     var a = false;
-    await axios
-      .post("/api/v1/user/session/store", {
-        userId: UserId,
-        sessionId: info.sessionId,
-      })
-      .then(function (response) {
-        a = true;
-        // handleClickVariant("success");
-        // history.push("/Login");
-        // init(DisplayDataInfo.Displayname);
-        // history.push(
-        //   `/${type}?topic=${devConfig.topic}${window.location.search}`
-        // );
-      })
-      .catch(function (error) {
-        console.log(error);
-        // setemailValidate(true);
-        // setnameValidation(true);
-      });
+    if (UserId) {
+      await axios
+        .post("/api/v1/user/session/store", {
+          userId: UserId,
+          sessionId: info.sessionId,
+        })
+        .then(function (response) {
+          a = true;
+          // handleClickVariant("success");
+          // history.push("/Login");
+          // init(DisplayDataInfo.Displayname);
+          // history.push(
+          //   `/${type}?topic=${devConfig.topic}${window.location.search}`
+          // );
+        })
+        .catch(function (error) {
+          console.log(error);
+          // setemailValidate(true);
+          // setnameValidation(true);
+        });
+    }
     if (a) {
       return a;
     }
@@ -142,6 +144,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     const startAPi = async () => {
       const data: any = await JoinSessionApi();
       if (
+        data &&
         zmClient?.getRecordingClient()?.getCloudRecordingStatus() == "Recording"
       ) {
         enqueueSnackbar("Recording Started", { variant: "info" });
