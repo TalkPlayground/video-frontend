@@ -139,14 +139,14 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
 
   useEffect(() => {
     noSleep.enable();
-    if (
-      zmClient?.getRecordingClient()?.getCloudRecordingStatus() == "Recording"
-    ) {
-      enqueueSnackbar("Recording Started", { variant: "info" });
-      setRecordingStatus(true);
-    }
     const startAPi = async () => {
       const data: any = await JoinSessionApi();
+      if (
+        zmClient?.getRecordingClient()?.getCloudRecordingStatus() == "Recording"
+      ) {
+        enqueueSnackbar("Recording Started", { variant: "info" });
+        setRecordingStatus(true);
+      }
       // if (data) {
       //   StartStopRecording(!RecordingStatus);
       // }

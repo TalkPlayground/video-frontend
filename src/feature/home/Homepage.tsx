@@ -216,7 +216,13 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
       <KeepMountedModal setOpenModal={setOpenModal} openModal={openModal} />
       <Grid className="d-flex justify-content-center  h-auto">
         <Grid container xs={12} md={11} className="my-5 py-4 ">
-          <Grid xs={12} md={6} className=" text-left">
+          <Grid
+            item
+            xs={12}
+            md={6}
+            order={{ xs: 2, md: 0 }}
+            className=" text-left"
+          >
             <Typography
               style={{
                 fontSize: "32px",
@@ -224,7 +230,7 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
                 lineHeight: "43.3px",
                 color: "black",
               }}
-              className="pt-4 px-5"
+              className="pt-2 px-5"
             >
               The video platform for connection.
             </Typography>
