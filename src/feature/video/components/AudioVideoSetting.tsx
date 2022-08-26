@@ -48,13 +48,19 @@ export function AudioVideoSetting({
   };
 
   const [ActiveTabSetting, setActiveTabSetting] = useState("Audio");
-  const [CameraList, setCameraList] = useState(`${cameraList[0]?.label}`);
-  const [speakerListData, setspeakerListData] = useState(
-    `${speakerList[0]?.label}`
-  );
-  const [micListData, setmicListData] = useState(`${micList[0]?.label}`);
+  const [CameraList, setCameraList] = useState("");
+  const [speakerListData, setspeakerListData] = useState("");
+  const [micListData, setmicListData] = useState("");
 
   const participants = zmClient.getAllUser();
+
+  useEffect(() => {
+    if (onAudioVideoOption) {
+      setCameraList(`${cameraList[0].label}`);
+      setspeakerListData(`${speakerList[0].label}`);
+      setmicListData(`${micList[0].label}`);
+    }
+  }, [onAudioVideoOption]);
 
   console.log("selfShareRef", mediaStream);
 
