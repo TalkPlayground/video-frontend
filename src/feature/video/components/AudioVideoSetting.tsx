@@ -55,10 +55,27 @@ export function AudioVideoSetting({
   const participants = zmClient.getAllUser();
 
   useEffect(() => {
+    console.log(speakerList, cameraList, mediaStream.getActiveCamera());
     if (onAudioVideoOption) {
-      setCameraList(`${cameraList[0].label}`);
-      setspeakerListData(`${speakerList[0].label}`);
-      setmicListData(`${micList[0].label}`);
+      cameraList.map((e: any) => {
+        if (e.deviceId == mediaStream.getActiveCamera()) {
+          setCameraList(`${e.label}`);
+        }
+      });
+      speakerList.map((e: any) => {
+        if (e.deviceId == mediaStream.getActiveSpeaker()) {
+          setspeakerListData(e.label);
+        }
+      });
+
+      micList.map((e: any) => {
+        if (e.deviceId == mediaStream.getActiveMicrophone()) {
+          setmicListData(`${e.label}`);
+        }
+      });
+      if (CameraList?.length == 0) {
+        setCameraList(cameraList[0].label);
+      }
     }
   }, [onAudioVideoOption]);
 
@@ -118,7 +135,7 @@ export function AudioVideoSetting({
               style={{
                 borderRight: "1px solid rgba(0, 0, 0, 0.12)",
                 // boxShadow: "3px 0 5px -2px #888",
-                minHeight: "95vh",
+                minHeight: "90vh",
               }}
             >
               <Typography variant="h5" className="p-4">
@@ -453,7 +470,7 @@ export function AudioVideoSetting({
                         </Grid>
                       </Grid>
                     </Box>
-                    <Box className="w-100 mt-4">
+                    {/* <Box className="w-100 mt-4">
                       <Typography
                         variant="subtitle1"
                         className="font-weight-bold text-primary"
@@ -485,8 +502,8 @@ export function AudioVideoSetting({
                           </TextField>
                         </Grid>
                       </Grid>
-                    </Box>
-                    <Box className="w-100 mt-4">
+                    </Box> */}
+                    {/* <Box className="w-100 mt-4">
                       <Typography
                         variant="subtitle1"
                         className="font-weight-bold text-primary"
@@ -518,7 +535,7 @@ export function AudioVideoSetting({
                           </TextField>
                         </Grid>
                       </Grid>
-                    </Box>
+                    </Box> */}
                   </Grid>
                 </Box>
               )}
