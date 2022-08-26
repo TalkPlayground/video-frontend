@@ -21,8 +21,14 @@ export function useGalleryLayout(
   );
   const [layout, setLayout] = useState<CellLayout[]>([]);
   const [subscribedVideos, setSubscribedVideos] = useState<number[]>([]);
-  const { page, pageSize, totalPage, totalSize, selfViewGalleryLayout } =
-    pagination;
+  const {
+    page,
+    pageSize,
+    totalPage,
+    totalSize,
+    selfViewGalleryLayout,
+    myVideoRef,
+  } = pagination;
   let size = pageSize;
   if (page === totalPage - 1) {
     size = Math.min(size, totalSize % pageSize || size);
@@ -97,7 +103,8 @@ export function useGalleryLayout(
     videoRef,
     layout,
     subscribedVideos,
-    visibleParticipants
+    visibleParticipants,
+    myVideoRef
   );
   return {
     visibleParticipants,

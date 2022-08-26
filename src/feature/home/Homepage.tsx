@@ -12,6 +12,7 @@ import {
   IconButton,
   Alert,
   Slide,
+  Switch,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
@@ -30,6 +31,7 @@ import { getQueryString, supabase } from "../../Api";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import chromeImage from "../../assets/chrome.png";
+import DoneIcon from "@mui/icons-material/Done";
 
 const style = {
   position: "absolute",
@@ -78,6 +80,7 @@ function KeepMountedModal({ setOpenModal, openModal }: any) {
             >
               Hear's the link of your meeting
             </Typography>
+
             <IconButton onClick={handleClose}>
               <CloseIcon className="cursor-pointer" />
             </IconButton>

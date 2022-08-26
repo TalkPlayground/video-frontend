@@ -4,6 +4,7 @@ import React, {
   useContext,
   useEffect,
   MutableRefObject,
+  useRef,
 } from "react";
 import classNames from "classnames";
 import { message, Tooltip } from "antd";
@@ -16,8 +17,23 @@ import { useUnmount } from "../../../hooks";
 import { MediaDevice } from "../video-types";
 import "./video-footer.scss";
 import CallEndIcon from "@mui/icons-material/CallEnd";
-import { IconButton, Badge } from "@mui/material";
-import { Box, Menu, MenuItem, Typography } from "@material-ui/core";
+import { IconButton, Badge, styled } from "@mui/material";
+import {
+  Box,
+  Divider,
+  FormControlLabel,
+  Grid,
+  Menu,
+  MenuItem,
+  Modal,
+  TextField,
+  Typography,
+} from "@material-ui/core";
+import InputLabel from "@mui/material/InputLabel";
+// import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+
 import moment from "moment";
 import { topicInfo } from "../../../config/dev";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
@@ -30,6 +46,19 @@ import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import { useHistory } from "react-router-dom";
 import nosleep from "nosleep.js";
+
+import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
+import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice";
+import { CloseOutlined, VolcanoOutlined } from "@mui/icons-material";
+
+import Switch from "@mui/material/Switch";
+import DoneIcon from "@mui/icons-material/Done";
+import VolumeUpOutlinedIcon from "@mui/icons-material/VolumeUpOutlined";
+import SpeakerOutlinedIcon from "@mui/icons-material/SpeakerOutlined";
+import RemoveOutlinedIcon from "@mui/icons-material/RemoveOutlined";
+import Avatar from "./avatar";
+import { CheckOutlined } from "@ant-design/icons";
+import { AudioVideoSetting } from "./AudioVideoSetting";
 
 interface VideoFooterProps {
   className?: string;
@@ -44,6 +73,7 @@ interface VideoFooterProps {
   RecordingStatus: boolean;
   handleselfView: any;
   NewMsg?: boolean;
+  videoRef?: any;
 }
 const isAudioEnable = typeof AudioWorklet === "function";
 const VideoFooter = (props: VideoFooterProps) => {
@@ -62,6 +92,7 @@ const VideoFooter = (props: VideoFooterProps) => {
     handleselfView,
     chatRecords,
     NewMsg,
+    videoRef,
   } = props;
 
   const [isStartedAudio, setIsStartedAudio] = useState(false);
@@ -80,6 +111,7 @@ const VideoFooter = (props: VideoFooterProps) => {
   const [MirrorView, setMirrorView] = useState(true);
 
   const [onCaptionClick, setonCaptionClick] = useState(false);
+  const [onAudioVideoOption, setonAudioVideoOption] = useState(false);
 
   var noSleep = new nosleep();
 
@@ -148,6 +180,7 @@ const VideoFooter = (props: VideoFooterProps) => {
       }
     }
   };
+
   const onHostAudioMuted = useCallback((payload) => {
     const { action, source, type } = payload;
     if (action === "join" && type === "computer") {
@@ -180,6 +213,7 @@ const VideoFooter = (props: VideoFooterProps) => {
     setIsStartedScreenShare(false);
   }, []);
   const onDeviceChange = useCallback(() => {
+    console.log("mediaStream", mediaStream);
     if (mediaStream) {
       setMicList(mediaStream.getMicList());
       setSpeakerList(mediaStream.getSpeakerList());
@@ -243,60 +277,74 @@ const VideoFooter = (props: VideoFooterProps) => {
     setMirrorView(data);
   };
 
+  const SettingvideoRef = useRef<HTMLCanvasElement | null | any>(null);
+
   return (
-    <div className={classNames("video-footer", className)}>
-      <div className="d-flex footer-left">
-        <Box
-          className="text-white px-3"
-          style={{ fontWeight: "bold" }}
-          sx={{
-            display: { xs: "none", sm: "block" },
-            borderRight: { md: "1px solid white" },
-          }}
-        >
-          {moment().format("LT")}
-        </Box>
+    <>
+      <AudioVideoSetting
+        onAudioVideoOption={onAudioVideoOption}
+        setonAudioVideoOption={setonAudioVideoOption}
+        selfShareRef={videoRef}
+        zmClient={zmClient}
+        mediaStream={mediaStream}
+        cameraList={cameraList}
+        activeCamera={activeCamera}
+        speakerList={speakerList}
+        micList={micList}
+      />
+      <div className={classNames("video-footer", className)}>
+        <div className="d-flex footer-left">
+          <Box
+            className="text-white px-3"
+            style={{ fontWeight: "bold" }}
+            sx={{
+              display: { xs: "none", sm: "block" },
+              borderRight: { md: "1px solid white" },
+            }}
+          >
+            {moment().format("LT")}
+          </Box>
 
-        {topicInfo ? (
-          <Box
-            className="text-white px-3 "
-            style={{ fontWeight: "bold" }}
-            sx={{ display: { xs: "none", md: "block" } }}
-          >
-            {topicInfo}
-          </Box>
-        ) : (
-          <Box
-            className="text-white px-3 "
-            style={{ fontWeight: "bold" }}
-            sx={{ display: { xs: "none", md: "block" } }}
-          >
-            {urlParams.get("topic")}
-          </Box>
-        )}
-      </div>
-      <div className="d-flex footer-center justify-content-center">
-        {isAudioEnable && (
-          <MicrophoneButton
-            isStartedAudio={isStartedAudio}
-            isMuted={isMuted}
-            onMicrophoneClick={onMicrophoneClick}
-            onMicrophoneMenuClick={onMicrophoneMenuClick}
-            microphoneList={micList}
-            speakerList={speakerList}
-            activeMicrophone={activeMicrophone}
-            activeSpeaker={activeSpeaker}
+          {topicInfo ? (
+            <Box
+              className="text-white px-3 "
+              style={{ fontWeight: "bold" }}
+              sx={{ display: { xs: "none", md: "block" } }}
+            >
+              {topicInfo}
+            </Box>
+          ) : (
+            <Box
+              className="text-white px-3 "
+              style={{ fontWeight: "bold" }}
+              sx={{ display: { xs: "none", md: "block" } }}
+            >
+              {urlParams.get("topic")}
+            </Box>
+          )}
+        </div>
+        <div className="d-flex footer-center justify-content-center">
+          {isAudioEnable && (
+            <MicrophoneButton
+              isStartedAudio={isStartedAudio}
+              isMuted={isMuted}
+              onMicrophoneClick={onMicrophoneClick}
+              onMicrophoneMenuClick={onMicrophoneMenuClick}
+              microphoneList={micList}
+              speakerList={speakerList}
+              activeMicrophone={activeMicrophone}
+              activeSpeaker={activeSpeaker}
+            />
+          )}
+          <CameraButton
+            isStartedVideo={isStartedVideo}
+            onCameraClick={onCameraClick}
+            onSwitchCamera={onSwitchCamera}
+            cameraList={cameraList}
+            activeCamera={activeCamera}
           />
-        )}
-        <CameraButton
-          isStartedVideo={isStartedVideo}
-          onCameraClick={onCameraClick}
-          onSwitchCamera={onSwitchCamera}
-          cameraList={cameraList}
-          activeCamera={activeCamera}
-        />
 
-        {/* <Tooltip title="Turn on captions (c)">
+          {/* <Tooltip title="Turn on captions (c)">
           <IconButton
             // className={isMuted ? "microphone-button" : "microphone-button"}
             className="ml-3 screen-share-button"
@@ -310,36 +358,36 @@ const VideoFooter = (props: VideoFooterProps) => {
           </IconButton>
         </Tooltip> */}
 
-        {sharing && (
-          <ScreenShareButton
-            isStartedScreenShare={isStartedScreenShare}
-            onScreenShareClick={onScreenShareClick}
-          />
-        )}
-        {/* <Tooltip title="More Option"> */}
-        <IconButton
-          // className={isMuted ? "microphone-button" : "microphone-button"}
-          className="ml-3 screen-share-button"
-          style={{ backgroundColor: true ? "#3c4043" : "#ea4335" }}
-          // onClick={onMicrophoneClick}
-          aria-controls={open ? "basic-menu" : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? "true" : undefined}
-          onClick={handleClick}
-        >
-          <MoreVertOutlinedIcon style={{ fill: "#fff" }} />
-        </IconButton>
-        <Menu
-          id="basic-menu"
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          MenuListProps={{
-            "aria-labelledby": "basic-button",
-          }}
-          style={{ marginBottom: "-18px" }}
-        >
-          {/* <MenuItem
+          {sharing && (
+            <ScreenShareButton
+              isStartedScreenShare={isStartedScreenShare}
+              onScreenShareClick={onScreenShareClick}
+            />
+          )}
+          {/* <Tooltip title="More Option"> */}
+          <IconButton
+            // className={isMuted ? "microphone-button" : "microphone-button"}
+            className="ml-3 screen-share-button"
+            style={{ backgroundColor: true ? "#3c4043" : "#ea4335" }}
+            // onClick={onMicrophoneClick}
+            aria-controls={open ? "basic-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            onClick={handleClick}
+          >
+            <MoreVertOutlinedIcon style={{ fill: "#fff" }} />
+          </IconButton>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+            style={{ marginBottom: "-18px" }}
+          >
+            {/* <MenuItem
             disabled={isStartedVideo ? false : true}
             onClick={() => {
               handleMirrorView(!MirrorView);
@@ -348,63 +396,72 @@ const VideoFooter = (props: VideoFooterProps) => {
           >
             {MirrorView ? "Off Mirror View" : "On mirror View"}
           </MenuItem> */}
-          {!HideSelfView ? (
             <MenuItem
-              disabled={zmClient.getAllUser()?.length > 1 ? false : true}
+              // disabled={isStartedVideo ? false : true}
               onClick={() => {
-                handleselfView(!HideSelfView);
-                setHideSelfView(!HideSelfView);
+                setonAudioVideoOption(true);
                 setAnchorEl(null);
               }}
             >
-              Hide Self view
+              Audio/Video Settings
             </MenuItem>
-          ) : (
-            <MenuItem
-              onClick={() => {
-                handleselfView(!HideSelfView);
-                setHideSelfView(!HideSelfView);
-                setAnchorEl(null);
-              }}
-            >
-              Show Self view
-            </MenuItem>
-          )}
-        </Menu>
-        {/* </Tooltip> */}
-        <Typography
-          className="rounded-pill ml-3"
-          style={{
-            padding: "8px 16px",
-            backgroundColor: "#ea4335",
-            cursor: "pointer",
-          }}
-          onClick={async () => {
-            if (participants?.length == 1) {
-              StartStopRecording(false).then(async () => {
+            {!HideSelfView ? (
+              <MenuItem
+                disabled={zmClient.getAllUser()?.length > 1 ? false : true}
+                onClick={() => {
+                  handleselfView(!HideSelfView);
+                  setHideSelfView(!HideSelfView);
+                  setAnchorEl(null);
+                }}
+              >
+                Hide Self view
+              </MenuItem>
+            ) : (
+              <MenuItem
+                onClick={() => {
+                  handleselfView(!HideSelfView);
+                  setHideSelfView(!HideSelfView);
+                  setAnchorEl(null);
+                }}
+              >
+                Show Self view
+              </MenuItem>
+            )}
+          </Menu>
+          {/* </Tooltip> */}
+          <Typography
+            className="rounded-pill ml-3"
+            style={{
+              padding: "8px 16px",
+              backgroundColor: "#ea4335",
+              cursor: "pointer",
+            }}
+            onClick={async () => {
+              if (participants?.length == 1) {
+                StartStopRecording(false).then(async () => {
+                  zmClient.leave();
+                  noSleep.disable();
+                  localStorage.removeItem("UserID");
+                  history.push("/");
+                  window.location.reload();
+                });
+              } else {
                 zmClient.leave();
                 noSleep.disable();
                 localStorage.removeItem("UserID");
                 history.push("/");
                 window.location.reload();
-              });
-            } else {
-              zmClient.leave();
-              noSleep.disable();
-              localStorage.removeItem("UserID");
-              history.push("/");
-              window.location.reload();
-            }
-          }}
-        >
-          {/* <Tooltip title={"Call Ended"} style={{ backgroundColor: "black" }}> */}
-          <CallEndIcon style={{ fill: "#fff" }} />
-          {/* </Tooltip> */}
-        </Typography>
-        {/* <a className="exit" href="/">
+              }
+            }}
+          >
+            {/* <Tooltip title={"Call Ended"} style={{ backgroundColor: "black" }}> */}
+            <CallEndIcon style={{ fill: "#fff" }} />
+            {/* </Tooltip> */}
+          </Typography>
+          {/* <a className="exit" href="/">
         <i className="far fa-times-circle"></i>{" "}
       </a> */}
-        {/* {(zmClient.isManager() || zmClient.isHost())&& (
+          {/* {(zmClient.isManager() || zmClient.isHost())&& (
         <ScreenShareLockButton
         isLockedScreenShare={isLockedScreenShare}
         onScreenShareLockClick={()=>{
@@ -413,66 +470,61 @@ const VideoFooter = (props: VideoFooterProps) => {
         }}
       />
       )} */}
+        </div>
+        <div className="footer-right mr-5">
+          <Tooltip title="Meeting details">
+            <IconButton
+              className="ml-2 HoverIcon"
+              onClick={() => {
+                setmodalOpenClose(false);
+                setLinkShowCard(!LinkShowCard);
+              }}
+            >
+              <InfoOutlinedIcon style={{ fill: "#fff" }} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Chat with everyone">
+            <IconButton
+              className="ml-2 HoverIcon"
+              onClick={() => {
+                setmodalOpenClose(!modalOpenClose);
+                setLinkShowCard(false);
+              }}
+            >
+              <Badge variant={NewMsg ? "dot" : "standard"} color="info">
+                <CommentOutlinedIcon style={{ fill: "#fff" }} />
+              </Badge>
+            </IconButton>
+          </Tooltip>
+          <Tooltip
+            title={!RecordingStatus ? "Stop Recording" : "Start Recording"}
+          >
+            <IconButton
+              // onClick={() => {
+              //   StartStopRecording(!RecordingStatus);
+              // }}
+              className="ml-2 HoverIcon"
+            >
+              <RadioButtonCheckedIcon
+                style={{ fill: RecordingStatus ? "red" : "#fff" }}
+                color="action"
+              />
+            </IconButton>
+          </Tooltip>
+        </div>
       </div>
-      <div className="footer-right mr-5">
-        <Tooltip title="Meeting details">
-          <IconButton
-            className="ml-2 HoverIcon"
-            onClick={() => {
-              setmodalOpenClose(false);
-              setLinkShowCard(!LinkShowCard);
-            }}
-          >
-            <InfoOutlinedIcon style={{ fill: "#fff" }} />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Chat with everyone">
-          <IconButton
-            className="ml-2 HoverIcon"
-            onClick={() => {
-              setmodalOpenClose(!modalOpenClose);
-              setLinkShowCard(false);
-            }}
-          >
-            <Badge variant={NewMsg ? "dot" : "standard"} color="info">
-              <CommentOutlinedIcon style={{ fill: "#fff" }} />
-            </Badge>
-          </IconButton>
-        </Tooltip>
-        <Tooltip
-          title={!RecordingStatus ? "Stop Recording" : "Start Recording"}
-        >
-          <IconButton
-            // onClick={() => {
-            //   StartStopRecording(!RecordingStatus);
-            // }}
-            className="ml-2 HoverIcon"
-          >
-            <RadioButtonCheckedIcon
-              style={{ fill: RecordingStatus ? "red" : "#fff" }}
-              color="action"
-            />
-          </IconButton>
-        </Tooltip>
-        {/* <Tooltip title="Show everyone">
-          <IconButton className="ml-2 HoverIcon">
-            <Badge badgeContent={4} color="info">
-              <GroupOutlinedIcon style={{ fill: "#fff" }} color="action" />
-            </Badge>
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Activities">
-          <IconButton className="ml-2 HoverIcon">
-            <CategoryOutlinedIcon style={{ fill: "#fff" }} />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Host controls">
-          <IconButton className="ml-2 HoverIcon">
-            <LockClockOutlinedIcon style={{ fill: "#fff" }} />
-          </IconButton>
-        </Tooltip> */}
-      </div>
-    </div>
+    </>
   );
 };
 export default VideoFooter;
+
+{
+  /* <Box sx={style}>
+  <Typography id="keep-mounted-modal-title" variant="h6" component="h2">
+    Text in a modal
+  </Typography>
+ <Typography id="keep-mounted-modal-description" sx={{ mt: 2 }}>
+    Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+  </Typography> 
+</Box> */
+}

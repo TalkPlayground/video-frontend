@@ -230,6 +230,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         StartStopRecording={StartStopRecording}
         RecordingStatus={RecordingStatus}
         handleselfView={null}
+        videoRef={videoRef}
       />
     </div>
   );

@@ -57,6 +57,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   const shareContainerRef = useRef<HTMLDivElement | null>(null);
   const canvasDimension = useCanvasDimension(mediaStream, videoRef);
   const activeVideo = useActiveVideo(zmClient);
+  const myVideoRef = useRef<HTMLCanvasElement | null>(null);
 
   const [chatRecords, setChatRecords] = useState<ChatRecord[]>([]);
   const { page, pageSize, totalPage, totalSize, setPage } = usePagination(
@@ -76,6 +77,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     videoRef,
     canvasDimension,
     {
+      myVideoRef,
       page,
       pageSize,
       totalPage,
@@ -83,6 +85,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
       selfViewGalleryLayout,
     }
   );
+
   const { isRecieveSharing, isStartedShare, sharedContentDimension } = useShare(
     zmClient,
     mediaStream,
@@ -356,6 +359,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         RecordingStatus={RecordingStatus}
         handleselfView={handleselfView}
         NewMsg={NewMsg}
+        videoRef={myVideoRef}
       />
 
       {totalPage > 1 && (
