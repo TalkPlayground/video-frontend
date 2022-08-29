@@ -126,8 +126,9 @@ export function AudioVideoSetting({
         aria-describedby="keep-mounted-modal-description"
       >
         <Box sx={style}>
-          <Grid container>
+          <Grid container item>
             <Grid
+              item={true}
               xs={3}
               style={{
                 borderRight: "1px solid rgba(0, 0, 0, 0.12)",
@@ -185,7 +186,7 @@ export function AudioVideoSetting({
                 </MenuItem>
               </Box>
             </Grid>
-            <Grid xs={9} style={{ width: "100%" }}>
+            <Grid item={true} xs={9} style={{ width: "100%" }}>
               <Box style={{ textAlign: "end" }} className="p-2">
                 <IconButton onClick={() => setonAudioVideoOption(false)}>
                   <CloseOutlined />
@@ -201,11 +202,12 @@ export function AudioVideoSetting({
                   </Typography>
                   <Grid
                     container
+                    item
                     style={{
                       alignItems: "center",
                     }}
                   >
-                    <Grid xs={8}>
+                    <Grid item={true} xs={8}>
                       <Select
                         variant="outlined"
                         labelId="demo-simple-select-label"
@@ -228,6 +230,7 @@ export function AudioVideoSetting({
                       </Select>
                     </Grid>
                     <Grid
+                      item={true}
                       xs={4}
                       style={{
                         display: "flex",
@@ -239,11 +242,12 @@ export function AudioVideoSetting({
                     <Box className="w-100 mt-4">
                       <Grid
                         container
+                        item
                         style={{
                           alignItems: "center",
                         }}
                       >
-                        <Grid xs={8} className="mt-2">
+                        <Grid item={true} xs={8} className="mt-2">
                           <Typography
                             variant="subtitle1"
                             className="font-weight-bold"
@@ -256,6 +260,7 @@ export function AudioVideoSetting({
                         </Grid>
 
                         <Grid
+                          item={true}
                           xs={4}
                           style={{
                             display: "flex",
@@ -288,11 +293,12 @@ export function AudioVideoSetting({
                       </Typography>
                       <Grid
                         container
+                        item
                         style={{
                           alignItems: "center",
                         }}
                       >
-                        <Grid xs={8} className="mt-2">
+                        <Grid item={true} xs={8} className="mt-2">
                           <Select
                             variant="outlined"
                             labelId="demo-simple-select-label"
@@ -319,6 +325,7 @@ export function AudioVideoSetting({
                         </Grid>
 
                         <Grid
+                          item={true}
                           xs={4}
                           style={{
                             display: "flex",
@@ -347,11 +354,12 @@ export function AudioVideoSetting({
                   </Typography>
                   <Grid
                     container
+                    item
                     style={{
                       alignItems: "center",
                     }}
                   >
-                    <Grid xs={8}>
+                    <Grid item={true} xs={8}>
                       {/* <TextField
                         style={{ width: "100%" }}
                         variant="outlined"
@@ -384,6 +392,7 @@ export function AudioVideoSetting({
                       </Select>
                     </Grid>
                     <Grid
+                      item={true}
                       xs={4}
                       style={{
                         display: "flex",
@@ -426,11 +435,12 @@ export function AudioVideoSetting({
                     <Box className="w-100 mt-4">
                       <Grid
                         container
+                        item
                         style={{
                           alignItems: "center",
                         }}
                       >
-                        <Grid xs={8} className="mt-2">
+                        <Grid item={true} xs={8} className="mt-2">
                           <Typography
                             variant="subtitle1"
                             className="font-weight-bold"
@@ -444,6 +454,7 @@ export function AudioVideoSetting({
                         </Grid>
 
                         <Grid
+                          item={true}
                           xs={4}
                           style={{
                             display: "flex",

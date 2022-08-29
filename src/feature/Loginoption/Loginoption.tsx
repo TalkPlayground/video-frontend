@@ -8,6 +8,7 @@ function Loginoption(props: any) {
   const history = useHistory();
   return (
     <Grid
+      item={true}
       xs={12}
       className="d-flex justify-content-center align-items-center flex-column h-100"
     >

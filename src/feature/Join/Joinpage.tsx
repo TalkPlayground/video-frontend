@@ -140,15 +140,17 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
   return (
     <>
       <Header />
-      <Grid className="d-flex justify-content-center  align-items-center h-75">
+      <Box className="d-flex justify-content-center  align-items-center h-75">
         <Grid
           container
+          item
           className="border rounded pt-5"
           // xs={12}
           sm={12}
           md={8}
         >
           <Grid
+            item={true}
             xs={12}
             sm={6}
             md={6}
@@ -169,6 +171,7 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
           </Grid>
 
           <Grid
+            item={true}
             xs={12}
             sm={6}
             md={6}
@@ -222,7 +225,7 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
             </form>
           </Grid>
 
-          <Grid xs={12}>
+          <Grid item={true} xs={12}>
             <Box className="d-flex justify-content-end align-items-center pb-2 pt-4 pr-4 ">
               <Box className=" hover:text-[#494CE2] d-flex align-items-center">
                 <SettingsIcon fontSize="small" />
@@ -233,7 +236,7 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
             </Box>
           </Grid>
         </Grid>
-      </Grid>
+      </Box>
 
       <Snackbar
         open={!UrlShowJoin}

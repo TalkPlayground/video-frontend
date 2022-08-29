@@ -218,9 +218,9 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
 
       <KeepMountedModal setOpenModal={setOpenModal} openModal={openModal} />
       <Grid className="d-flex justify-content-center  h-auto">
-        <Grid container xs={12} md={11} className="my-5 py-4 ">
+        <Grid container item xs={12} md={11} className="my-5 py-4 ">
           <Grid
-            item
+            item={true}
             xs={12}
             md={6}
             order={{ xs: 2, md: 0 }}
@@ -334,7 +334,7 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
               about Playground
             </Typography>
           </Grid>
-          <Grid xs={12} md={6}>
+          <Grid item={true} xs={12} md={6}>
             <img
               className="rounded HomepagePhoto"
               src={HomepagePhoto}

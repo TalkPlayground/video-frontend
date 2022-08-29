@@ -124,8 +124,9 @@ function Loginpage(props: any) {
   };
 
   return (
-    <Grid container>
+    <Grid container item>
       <Grid
+        item={true}
         xs={12}
         className="d-flex flex-column justify-content-center align-items-center"
       >

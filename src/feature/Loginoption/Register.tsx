@@ -173,11 +173,12 @@ function RegisterPage(props: any) {
         // direction="column"
         // alignItems="center"
         // justifyContent="center"
+        item
         xs={12}
         sm={12}
         md={4}
       >
-        <Grid xs={12} className="h-100">
+        <Grid item={true} xs={12} className="h-100">
           <img src={HeaderIcon} alt="header_logo" style={{ width: "10rem" }} />
           <Typography
             className="pb-3"
@@ -193,7 +194,7 @@ function RegisterPage(props: any) {
         </Grid>
         {!SendingEmail ? (
           <>
-            <Grid xs={12} className="pb-2">
+            <Grid item={true} xs={12} className="pb-2">
               <TextField
                 id="filled-search"
                 label="Email"
@@ -207,8 +208,8 @@ function RegisterPage(props: any) {
                 error={emailValidate ? true : false}
               />
             </Grid>
-            <Grid container className=" pb-2">
-              <Grid xs={6} className="pr-1">
+            <Grid container item className=" pb-2">
+              <Grid item={true} xs={6} className="pr-1">
                 <TextField
                   id="filled-search"
                   label="First Name"
@@ -223,7 +224,7 @@ function RegisterPage(props: any) {
                   error={FnameValid ? true : false}
                 />
               </Grid>
-              <Grid xs={6} className="pl-1">
+              <Grid item={true} xs={6} className="pl-1">
                 <TextField
                   id="filled-search"
                   label="Last Name"
@@ -239,7 +240,7 @@ function RegisterPage(props: any) {
                 />
               </Grid>
             </Grid>
-            <Grid xs={12} className="pb-2">
+            <Grid item={true} xs={12} className="pb-2">
               <TextField
                 id="filled-search"
                 // label="Email"

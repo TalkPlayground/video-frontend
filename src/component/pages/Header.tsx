@@ -86,11 +86,11 @@ function Header() {
   });
 
   return (
-    <Grid container className="align-items-center py-2 px-5">
-      <Grid xs={6} md={6} className="d-flex justify-items-start">
+    <Grid container item className="align-items-center py-2 px-5">
+      <Grid item={true} xs={6} md={6} className="d-flex justify-items-start">
         <img src={Header_logo} className="Header_logo" alt="Header_logo" />
       </Grid>
-      <Grid xs={6} md={6} className="d-flex justify-content-end">
+      <Grid item={true} xs={6} md={6} className="d-flex justify-content-end">
         <Box
           className="align-items-center"
           sx={{ display: { xs: "none", sm: "flex" } }}
