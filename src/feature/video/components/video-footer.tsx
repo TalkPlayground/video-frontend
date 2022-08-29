@@ -119,14 +119,14 @@ const VideoFooter = (props: VideoFooterProps) => {
   useEffect(() => {
     // onCameraClick();
     onMicrophoneClick();
-    if (participants?.length == 1 && !RecordingStatus) {
-      changeParticipant();
-    }
+    // if (participants?.length == 1 && !RecordingStatus) {
+    //   changeParticipant();
+    // }
   }, []);
 
-  const changeParticipant = useCallback(() => {
-    StartStopRecording(!RecordingStatus);
-  }, [participants]);
+  // const changeParticipant = useCallback(() => {
+  //   StartStopRecording(!RecordingStatus);
+  // }, [participants]);
 
   const onCameraClick = useCallback(async () => {
     if (isStartedVideo) {
@@ -213,7 +213,6 @@ const VideoFooter = (props: VideoFooterProps) => {
     setIsStartedScreenShare(false);
   }, []);
   const onDeviceChange = useCallback(() => {
-    console.log("mediaStream", mediaStream);
     if (mediaStream) {
       setMicList(mediaStream.getMicList());
       setSpeakerList(mediaStream.getSpeakerList());

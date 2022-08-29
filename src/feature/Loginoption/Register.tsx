@@ -76,7 +76,6 @@ function RegisterPage(props: any) {
     // RegisterData.pword &&
     // RegisterData.cpword &&
     // RegisterData.invitecode
-    console.log("bb", b.diff(a, "year") > 5);
     if (
       /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
         RegisterData.email
@@ -93,7 +92,6 @@ function RegisterPage(props: any) {
         password: RegisterData.pword,
         dob: RegisterData.date,
       };
-      console.log("info", info);
       await axios
         .post(Apis.Register, { ...info })
         .then(async function (response) {

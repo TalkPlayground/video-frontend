@@ -92,7 +92,6 @@ const ChatContainer = ({
   );
   const onChatInput = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      // console.log("first", event);
       setChatDraft(event.target.value);
     },
     []

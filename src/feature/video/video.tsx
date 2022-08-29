@@ -143,6 +143,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   };
 
   useEffect(() => {
+    const participants = zmClient.getAllUser();
     noSleep.enable();
     const startAPi = async () => {
       const data: any = await JoinSessionApi();
@@ -153,24 +154,14 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         enqueueSnackbar("Recording Started", { variant: "info" });
         setRecordingStatus(true);
       }
-      // if (data) {
-      //   StartStopRecording(!RecordingStatus);
-      // }
+      if (data && participants?.length == 1) {
+        StartStopRecording(!RecordingStatus);
+      }
     };
     startAPi();
   }, []);
 
   const StartStopRecording = async (data: boolean) => {
-    // console.log(
-    //   "process.env.ZOMM_VIDEO_SDK_JWT_TOKEN}",
-    //   process.env.REACT_APP_ZOOM_JWT_KEY
-    // );
-    // let config = {
-    //   headers: {
-    //     Authorization: `Bearer ${process.env.REACT_APP_ZOOM_JWT_KEY}`,
-    //   },
-    // };
-    // console.log("first", zmClient.getSessionInfo());
     await axios
       .post("/api/v1/user/session/recording", {
         sessionId: info.sessionId,

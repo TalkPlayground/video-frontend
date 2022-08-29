@@ -55,7 +55,6 @@ export function AudioVideoSetting({
   const participants = zmClient.getAllUser();
 
   useEffect(() => {
-    console.log(speakerList, cameraList, mediaStream.getActiveCamera());
     if (onAudioVideoOption) {
       cameraList.map((e: any) => {
         if (e.deviceId == mediaStream.getActiveCamera()) {
@@ -78,8 +77,6 @@ export function AudioVideoSetting({
       }
     }
   }, [onAudioVideoOption]);
-
-  console.log("selfShareRef", mediaStream);
 
   useEffect(() => {
     const stream = zmClient.getMediaStream();

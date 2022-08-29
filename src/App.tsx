@@ -173,15 +173,12 @@ function App(props: AppProps) {
       await zmClient.join(topic, signature, nameData, password);
       const stream = zmClient.getMediaStream();
       setMediaStream(stream);
-      // console.log("ssd", stream.isSupportHDVideo());
       setIsSupportGalleryView(stream.isSupportMultipleVideos());
       const chatClient = zmClient.getChatClient();
       setChatClient(chatClient);
-
-      // history.push(`/video${window.location.search}`);
       setIsLoading(false);
     } catch (e: any) {
-      console.log("first", e);
+      console.log("Error", e);
       setIsLoading(false);
       message.error(e.reason);
     }
