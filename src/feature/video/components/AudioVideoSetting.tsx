@@ -78,18 +78,18 @@ export function AudioVideoSetting({
     }
   }, [onAudioVideoOption]);
 
-  useEffect(() => {
-    const stream = zmClient.getMediaStream();
-    stream.renderVideo(
-      document.querySelector("#participants-canvas"),
-      participants[0].userId,
-      960,
-      540,
-      0,
-      0,
-      3
-    );
-  }, [onAudioVideoOption]);
+  // useEffect(() => {
+  //   const stream = zmClient.getMediaStream();
+  //   stream.renderVideo(
+  //     document.querySelector("#participants-canvas"),
+  //     participants[0].userId,
+  //     960,
+  //     540,
+  //     0,
+  //     0,
+  //     3
+  //   );
+  // }, [onAudioVideoOption]);
 
   const toggleMic = (name: any) => {
     micList.map((e: any) => {
