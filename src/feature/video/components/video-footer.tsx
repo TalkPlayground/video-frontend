@@ -74,6 +74,8 @@ interface VideoFooterProps {
   handleselfView: any;
   NewMsg?: boolean;
   videoRef?: any;
+  setIsLoading?: any;
+  setLoadingText?: any;
 }
 const isAudioEnable = typeof AudioWorklet === "function";
 const VideoFooter = (props: VideoFooterProps) => {
@@ -93,6 +95,8 @@ const VideoFooter = (props: VideoFooterProps) => {
     chatRecords,
     NewMsg,
     videoRef,
+    setIsLoading,
+    setLoadingText,
   } = props;
 
   const [isStartedAudio, setIsStartedAudio] = useState(false);
@@ -117,16 +121,8 @@ const VideoFooter = (props: VideoFooterProps) => {
 
   const participants = zmClient.getAllUser();
   useEffect(() => {
-    // onCameraClick();
     onMicrophoneClick();
-    // if (participants?.length == 1 && !RecordingStatus) {
-    //   changeParticipant();
-    // }
   }, []);
-
-  // const changeParticipant = useCallback(() => {
-  //   StartStopRecording(!RecordingStatus);
-  // }, [participants]);
 
   const onCameraClick = useCallback(async () => {
     if (isStartedVideo) {
@@ -437,6 +433,8 @@ const VideoFooter = (props: VideoFooterProps) => {
             }}
             onClick={async () => {
               if (participants?.length == 1) {
+                setLoadingText("You left the meeting");
+                setIsLoading(true);
                 StartStopRecording(false).then(async () => {
                   zmClient.leave();
                   noSleep.disable();
@@ -445,6 +443,8 @@ const VideoFooter = (props: VideoFooterProps) => {
                   window.location.reload();
                 });
               } else {
+                setLoadingText("You left the meeting");
+                setIsLoading(true);
                 zmClient.leave();
                 noSleep.disable();
                 localStorage.removeItem("UserID");
@@ -495,9 +495,7 @@ const VideoFooter = (props: VideoFooterProps) => {
               </Badge>
             </IconButton>
           </Tooltip>
-          <Tooltip
-            title={!RecordingStatus ? "Stop Recording" : "Start Recording"}
-          >
+          <Tooltip title={!RecordingStatus ? "Not Record" : "Recording"}>
             <IconButton
               // onClick={() => {
               //   StartStopRecording(!RecordingStatus);

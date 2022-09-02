@@ -84,11 +84,7 @@ function Loginpage(props: any) {
 
   const LoginData = async () => {
     setLoginStart(true);
-    if (
-      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)
-      // &&
-      // validatePassword(passwordData)
-    ) {
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
       const user = await supabase.auth.signIn(
         { email },
         {
@@ -191,9 +187,7 @@ function Loginpage(props: any) {
               <span className="text-capitalize">Send Email Again</span>
             </Button>
             <span
-              // style={{ color: "rgb(73, 76, 226)", cursor: "pointer" }}
               className={classes.root}
-              // href="/Register"
               onClick={() => history.push("/Register")}
             >
               Don't have an Account? Sign up
@@ -206,29 +200,3 @@ function Loginpage(props: any) {
 }
 
 export default Loginpage;
-
-{
-  /* <TextField
-          error={passwordValidation ? true : false}
-          size="small"
-          style={{ paddingBottom: "20px" }}
-          type="password"
-          className="w-72"
-          variant="outlined"
-          label="Password"
-          autoComplete="off"
-          onChange={(e) => setpasswordData(e.target.value)}
-          // InputProps={{
-          //   endAdornment: (
-          //     <InputAdornment position="end">
-          //       <IconButton>
-          //         {true ? <VisibilityOff /> : <Visibility />}
-          //       </IconButton>
-          //     </InputAdornment>
-          //   ),
-          // }}
-          // helperText={
-          //   passwordValidation ? "password must be in between 6 to 10" : false
-          // }
-        /> */
-}

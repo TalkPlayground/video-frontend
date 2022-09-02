@@ -261,6 +261,7 @@ function App(props: AppProps) {
                       init={init}
                       setDisplayDataInfo={setDisplayDataInfo}
                       DisplayDataInfo={DisplayDataInfo}
+                      setIsLoading={setIsLoading}
                     />
                   )}
                   exact
@@ -288,30 +289,30 @@ function App(props: AppProps) {
                   )}
                   exact
                 />
-
-                {/* <Route
-                  path="/index.html"
-                  render={(props) => <Home {...props} status={status} />}
-                  exact
-                /> */}
                 <Route path="/preview" component={Preview} />
-                {userData || DisplayDataInfo?.Displayname ? (
-                  <Route
-                    path="/video"
-                    render={(props) =>
+
+                <Route
+                  path="/video"
+                  render={(props) =>
+                    userData || DisplayDataInfo?.Displayname ? (
                       isSupportGalleryView ? (
-                        <Video {...props} DisplayDataInfo={DisplayDataInfo} />
+                        <Video
+                          {...props}
+                          DisplayDataInfo={DisplayDataInfo}
+                          setIsLoading={setIsLoading}
+                          setLoadingText={setLoadingText}
+                        />
                       ) : (
                         <VideoSingle
                           {...props}
                           DisplayDataInfo={DisplayDataInfo}
                         />
                       )
-                    }
-                  />
-                ) : (
-                  <Redirect to="/Join" />
-                )}
+                    ) : (
+                      <Redirect to="/Join" />
+                    )
+                  }
+                />
                 <Route path="/chat" component={Chat} />
               </Switch>
             </Router>

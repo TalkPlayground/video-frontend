@@ -12,7 +12,6 @@ function Loginoption(props: any) {
       xs={12}
       className="d-flex justify-content-center align-items-center flex-column h-100"
     >
-      {/* <Box className="flex flex-col justify-center items-center"> */}
       <img src={HeaderIcon} alt="header_logo" style={{ width: "10rem" }} />
       <Typography
         style={{
@@ -34,7 +33,6 @@ function Loginoption(props: any) {
       >
         Know Yourself, Better
       </Typography>
-      {/* </Box> */}
       <Divider className="w-75 mx-auto" />
       <Box className="my-4">
         <Button

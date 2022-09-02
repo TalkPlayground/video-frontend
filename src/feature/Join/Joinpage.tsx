@@ -35,17 +35,12 @@ import LinkIcon from "@mui/icons-material/Link";
 
 import Slide from "@mui/material/Slide";
 
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import zIndex from "@material-ui/core/styles/zIndex";
-// import { useNavigate } from "react-router-dom";
-// import { useDispatch, useSelector } from "react-redux";
-// import DisplayAction from "../redux/actions/DisplayAction";
-
 interface JoinProps extends RouteComponentProps {
   status: string;
   init: any;
   DisplayDataInfo: any;
   setDisplayDataInfo: any;
+  setIsLoading: Function;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -59,7 +54,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
-  const { history, init, setDisplayDataInfo, DisplayDataInfo } = props;
+  const { history, init, setDisplayDataInfo, DisplayDataInfo, setIsLoading } =
+    props;
   const [openToast, setopenToast] = useState(false);
   const [nameValidation, setnameValidation] = useState(false);
   const [emailValidate, setemailValidate] = useState(false);
@@ -76,6 +72,7 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
 
   function DisplayNameData(e: any) {
     setDisplayDataInfo({ ...DisplayDataInfo, [e.target.name]: e.target.value });
+    setUrlShowJoin(false);
     setemailValidate(false);
     setnameValidation(false);
   }
@@ -110,6 +107,7 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
     const info = {
       ...zmClient.getSessionInfo(),
     };
+    setIsLoading(true);
     await axios
       .post(
         "/api/v1/user/session/join" +
@@ -218,7 +216,6 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
                 variant="contained"
                 className="w-25"
                 style={{ backgroundColor: "#494CE2", color: "white" }}
-                // onClick={() => onSubmitForm("video")}
               >
                 Join
               </Button>
@@ -267,7 +264,11 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
           }}
           action={
             <>
-              <IconButton color="inherit" size="small">
+              <IconButton
+                color="inherit"
+                size="small"
+                onClick={() => navigator.clipboard.writeText(url)}
+              >
                 <ContentCopyIcon
                   style={{ fill: "#919499", fontSize: "22" }}
                   className="cursor-pointer"

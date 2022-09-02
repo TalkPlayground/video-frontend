@@ -39,10 +39,12 @@ import { ChatRecord } from "../chat/chat-types";
 
 interface VideoProps extends RouteComponentProps {
   DisplayDataInfo: any;
+  setIsLoading?: Function;
+  setLoadingText?: Function;
 }
 
 const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
-  const { DisplayDataInfo } = props;
+  const { DisplayDataInfo, setIsLoading, setLoadingText } = props;
   const [LinkShowCard, setLinkShowCard] = useState(true);
   const zmClient = useContext(ZoomContext);
   const {
@@ -124,17 +126,9 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         })
         .then(function (response) {
           a = true;
-          // handleClickVariant("success");
-          // history.push("/Login");
-          // init(DisplayDataInfo.Displayname);
-          // history.push(
-          //   `/${type}?topic=${devConfig.topic}${window.location.search}`
-          // );
         })
         .catch(function (error) {
           console.log(error);
-          // setemailValidate(true);
-          // setnameValidation(true);
         });
     }
     if (a) {
@@ -239,8 +233,6 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     }
   };
 
-  const containerRef = React.useRef(null);
-
   return (
     <div className="viewport">
       {LinkShowCard && (
@@ -250,7 +242,6 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
           DisplayDataInfo={DisplayDataInfo}
         />
       )}
-      {/* <a className="exit" href="/"> <i className="far fa-times-circle"></i> </a> */}
       <div
         className={classnames("share-container", {
           "in-sharing": isSharing,
@@ -351,6 +342,8 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         handleselfView={handleselfView}
         NewMsg={NewMsg}
         videoRef={myVideoRef}
+        setIsLoading={setIsLoading}
+        setLoadingText={setLoadingText}
       />
 
       {totalPage > 1 && (

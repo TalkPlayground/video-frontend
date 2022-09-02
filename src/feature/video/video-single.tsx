@@ -210,8 +210,6 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         )}
       </div>
 
-      {/* <MeetingDetails modalOpenClose={modalOpenClose} /> */}
-
       <div className={modalOpenClose ? "ChatTransition" : "ChatTransitionOpen"}>
         <ChatContainer
           modalOpenClose={modalOpenClose}

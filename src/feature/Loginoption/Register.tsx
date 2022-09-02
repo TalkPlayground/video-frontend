@@ -73,9 +73,6 @@ function RegisterPage(props: any) {
     const a = moment([moment(RegisterData.date).format("YYYY,MM,DD")]);
     const b = moment([moment().format("YYYY,MM,DD")]);
     setSendRegister(true);
-    // RegisterData.pword &&
-    // RegisterData.cpword &&
-    // RegisterData.invitecode
     if (
       /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
         RegisterData.email
@@ -162,22 +159,9 @@ function RegisterPage(props: any) {
 
   const [PassShowHide, setPassShowHide] = useState(false);
 
-  const handleClickShowPassword = () => {
-    setPassShowHide(!PassShowHide);
-  };
-
   return (
     <Grid className="d-flex flex-column  justify-content-center align-items-center px-4">
-      <Grid
-        // container
-        // direction="column"
-        // alignItems="center"
-        // justifyContent="center"
-        item
-        xs={12}
-        sm={12}
-        md={4}
-      >
+      <Grid item xs={12} sm={12} md={4}>
         <Grid item={true} xs={12} className="h-100">
           <img src={HeaderIcon} alt="header_logo" style={{ width: "10rem" }} />
           <Typography
@@ -255,34 +239,6 @@ function RegisterPage(props: any) {
                 error={DateValid ? true : false}
               />
             </Grid>
-            {/* <Grid xs={12} className="pb-2">
-              <TextField
-                id="filled-search"
-                label="Password"
-                type={PassShowHide ? "text" : "password"}
-                className="w-100"
-                variant="outlined"
-                size="small"
-                name="pword"
-                value={RegisterData.pword}
-                autoComplete="off"
-                onChange={inputFormData}
-                error={passwordValidation ? true : false}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        // onMouseDown={handleMouseDownPassword}
-                      >
-                        {PassShowHide ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Grid> */}
             <Box className="mt-3">
               <Button
                 disabled={SendRegister}
@@ -303,34 +259,6 @@ function RegisterPage(props: any) {
             />
           </>
         )}
-        {/*<Grid xs={12} className="pb-2">
-          <TextField
-            id="filled-search"
-            label="Confirm Password"
-            type="password"
-            className="w-100"
-            variant="outlined"
-            size="small"
-            name="cpword"
-            autoComplete="off"
-            onChange={inputFormData}
-          />
-        </Grid>
-        <Grid xs={12} className="pb-2">
-          <TextField
-            id="filled-search"
-            label="Invite Code"
-            type="string"
-            className="w-100"
-            variant="outlined"
-            size="small"
-            name="invitecode"
-            autoComplete="off"
-            onChange={inputFormData}
-          />
-        </Grid> */}
-        {/* <Grid xs={12}></Grid>
-        <Grid xs={12}></Grid> */}
       </Grid>
     </Grid>
   );

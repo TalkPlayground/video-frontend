@@ -167,7 +167,6 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
   };
 
   const startSession = async () => {
-    // noSleep.disable();
     const userData = supabase.auth.user();
 
     if (userData) {
@@ -198,7 +197,6 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
   };
 
   const createSession = () => {
-    // noSleep.enable();
     setOpenModal(true);
     setAnchorEl(null);
   };
@@ -253,7 +251,6 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
                 fontSize: "22px",
                 fontWeight: 300,
                 lineHeight: "31.51px",
-                // color: "gray",
               }}
               className="pb-4 pt-1 px-5 bg-red-600"
             >
