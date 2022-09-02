@@ -5,12 +5,12 @@ import {
   MenuItem,
   Modal,
   Select,
+  Switch,
   TextField,
   Typography,
 } from "@material-ui/core";
 import { useEffect, useState } from "react";
 
-import Switch from "@mui/material/Switch";
 import DoneIcon from "@mui/icons-material/Done";
 import VolumeUpOutlinedIcon from "@mui/icons-material/VolumeUpOutlined";
 import SpeakerOutlinedIcon from "@mui/icons-material/SpeakerOutlined";
