@@ -26,7 +26,7 @@ import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
 import Header from "../../component/pages/Header";
 import { RouteComponentProps } from "react-router-dom";
 import "../../index.css";
-import { devConfig } from "../../config/dev";
+import { devConfig, topicInfo } from "../../config/dev";
 import { getQueryString, supabase } from "../../Api";
 import axios from "axios";
 import { useSnackbar } from "notistack";
@@ -49,7 +49,7 @@ function KeepMountedModal({ setOpenModal, openModal }: any) {
   const handleClose = () => setOpenModal(false);
   const [copyLinkDone, setcopyLinkDone] = useState(false);
 
-  const url = `${window.location.origin}/video?topic=${devConfig.topic}`;
+  const url = `${window.location.origin}?topic=${devConfig.topic}`;
 
   const copyLink = () => {
     setcopyLinkDone(true);
@@ -119,6 +119,36 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
   // const navigate = useNavigate();
   const [openModal, setOpenModal] = React.useState(false);
   const [SupportBrowser, setSupportBrowser] = useState<any>(null);
+
+  const user = supabase.auth.user();
+
+  useEffect(() => {
+    const submitformLink = async () => {
+      if (user?.user_metadata?.fullname && topicInfo?.length) {
+        await axios
+          .post(
+            "/api/v1/user/session/join" +
+              "?" +
+              getQueryString({
+                name: user?.user_metadata?.fullname,
+                email: user.email,
+              })
+          )
+          .then(function (response) {
+            handleClickVariant("success", "");
+            localStorage.setItem("UserID", `${response.data.data}`);
+            init(`${response.data.data}-${user?.user_metadata?.fullname}`);
+            history.push(`/video?topic=${topicInfo}`);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      } else if (topicInfo?.length) {
+        history.push(`/Join`);
+      }
+    };
+    submitformLink();
+  }, []);
 
   useEffect(() => {
     function fnBrowserDetect() {

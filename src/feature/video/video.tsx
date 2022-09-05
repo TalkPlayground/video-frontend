@@ -137,37 +137,26 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   };
 
   const participants = zmClient.getAllUser();
+  const RecordingZoomApi: any = zmClient?.getRecordingClient();
+
+  console.log("first", RecordingZoomApi?.length, RecordingZoomApi);
 
   useEffect(() => {
     noSleep.enable();
     const startAPi = async () => {
       const data: any = await JoinSessionApi();
-      // if (
-      //   data &&
-      //   zmClient?.getRecordingClient()?.getCloudRecordingStatus() == "Recording"
-      // ) {
-      //   enqueueSnackbar("Recording Started", { variant: "info" });
-      //   setRecordingStatus(true);
-      // }
       if (data && participants?.length == 1) {
         StartStopRecording(!RecordingStatus);
+      } else if (data) {
+        setRecordingStatus(
+          RecordingZoomApi?.getCloudRecordingStatus() == "Recording"
+            ? true
+            : false
+        );
       }
     };
     startAPi();
   }, []);
-
-  useEffect(() => {
-    if (
-      participants?.length > 0 &&
-      zmClient?.getRecordingClient()?.getCloudRecordingStatus() == "Recording"
-    ) {
-      setRecordingStatus(true);
-    } else {
-      setRecordingStatus(false);
-    }
-  }, [participants?.length]);
-
-  const RecordingZoomApi: any = zmClient?.getRecordingClient();
 
   const StartStopRecording = async (data: boolean) => {
     if (data) {
@@ -239,7 +228,6 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         (e: any) => e.userId === info.userId
       );
       AllvisibleParticipants.push(visibleParticipants[index]);
-
       setRenderShowHide(true);
       visibleParticipants.splice(index, 1);
     } else {

@@ -140,30 +140,30 @@ function App(props: AppProps) {
     }
   }, [userData]);
 
-  useEffect(() => {
-    if (topicInfo?.length && userData?.user_metadata?.fullname?.length > 0) {
-      axios
-        .post(
-          "/api/v1/user/session/join" +
-            "?" +
-            getQueryString({
-              name: userData?.user_metadata?.fullname,
-              email: userData?.email,
-            })
-        )
-        .then(function (response) {
-          handleClickVariant("success", "Joined Successfully");
-          localStorage.setItem("UserID", `${response.data.data}`);
-          init(`${response.data.data}-${userData?.user_metadata?.fullname}`);
-          history.push(
-            `/video?topic=${devConfig.topic}${window.location.search}`
-          );
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }
-  }, [topicInfo]);
+  // useEffect(() => {
+  //   if (topicInfo?.length && userData?.user_metadata?.fullname?.length > 0) {
+  //     axios
+  //       .post(
+  //         "/api/v1/user/session/join" +
+  //           "?" +
+  //           getQueryString({
+  //             name: userData?.user_metadata?.fullname,
+  //             email: userData?.email,
+  //           })
+  //       )
+  //       .then(function (response) {
+  //         handleClickVariant("success", "Joined Successfully");
+  //         localStorage.setItem("UserID", `${response.data.data}`);
+  //         init(`${response.data.data}-${userData?.user_metadata?.fullname}`);
+  //         history.push(
+  //           `/video?topic=${devConfig.topic}${window.location.search}`
+  //         );
+  //       })
+  //       .catch(function (error) {
+  //         console.log(error);
+  //       });
+  //   }
+  // }, [topicInfo]);
 
   const init = async (nameData: any) => {
     setIsLoading(true);

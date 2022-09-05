@@ -15,7 +15,7 @@ export default function BasicCard({
   LinkShowCard,
   DisplayDataInfo,
 }: any) {
-  const url = `${window.location.origin}/video?topic=${devConfig.topic}`;
+  const url = `${window.location.origin}?topic=${devConfig.topic}`;
 
   const cardOpen = () => {
     setLinkShowCard(!LinkShowCard);
