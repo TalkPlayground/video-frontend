@@ -249,13 +249,13 @@ const VideoFooter = (props: VideoFooterProps) => {
 
   window.onbeforeunload = function () {
     if (participants?.length == 1 && RecordingStatus) {
-      StartStopRecording(false).then(async () => {
-        zmClient.leave();
-        noSleep.disable();
-        localStorage.removeItem("UserID");
-        history.push("/");
-        window.location.reload();
-      });
+      // StartStopRecording(false).then(async () => {
+      zmClient.leave();
+      noSleep.disable();
+      localStorage.removeItem("UserID");
+      history.push("/");
+      window.location.reload();
+      // });
     }
   };
 

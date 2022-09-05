@@ -155,23 +155,28 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     startAPi();
   }, []);
 
+  const RecordingZoomApi: any = zmClient?.getRecordingClient();
+
   const StartStopRecording = async (data: boolean) => {
-    await axios
-      .post("/api/v1/user/session/recording", {
-        sessionId: info.sessionId,
-        status: data,
-      })
-      .then(function (response) {
-        setRecordingStatus(data);
-        if (data) {
+    if (data) {
+      await RecordingZoomApi.startCloudRecording()
+        .then(function (response: any) {
+          setRecordingStatus(data);
           enqueueSnackbar("Recording Started", { variant: "info" });
-        } else {
+        })
+        .catch(function (error: any) {
+          console.log(error);
+        });
+    } else {
+      await RecordingZoomApi.stopCloudRecording()
+        .then(function (response: any) {
+          setRecordingStatus(data);
           enqueueSnackbar("Recording Stoped", { variant: "info" });
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+        })
+        .catch(function (error: any) {
+          console.log(error);
+        });
+    }
   };
 
   const [NewMsg, setNewMsg] = useState(false);
