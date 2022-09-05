@@ -495,14 +495,7 @@ const VideoFooter = (props: VideoFooterProps) => {
               </Badge>
             </IconButton>
           </Tooltip>
-          <Tooltip
-            title={
-              zmClient?.getRecordingClient()?.getCloudRecordingStatus() ==
-              "Recording"
-                ? "Recording"
-                : "Not Record"
-            }
-          >
+          <Tooltip title={RecordingStatus ? "Recording" : "Not Record"}>
             <IconButton
               // onClick={() => {
               //   StartStopRecording(!RecordingStatus);
@@ -511,11 +504,7 @@ const VideoFooter = (props: VideoFooterProps) => {
             >
               <RadioButtonCheckedIcon
                 style={{
-                  fill:
-                    zmClient?.getRecordingClient()?.getCloudRecordingStatus() ==
-                    "Recording"
-                      ? "red"
-                      : "#fff",
+                  fill: RecordingStatus ? "red" : "#fff",
                 }}
                 color="action"
               />
