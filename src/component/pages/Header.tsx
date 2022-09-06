@@ -6,7 +6,6 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Snackbar,
   Typography,
 } from "@material-ui/core";
 import moment from "moment";
@@ -16,9 +15,7 @@ import Header_logo from "../../assets/header_logo.png";
 import Header_icon from "../../assets/app_image.png";
 import "./index.scss";
 import { useHistory } from "react-router-dom";
-import jwt_decode from "jwt-decode";
 import { useSnackbar } from "notistack";
-// import { useNavigate } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { supabase } from "../../Api";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -57,32 +54,17 @@ function Header() {
     setopenDrawer(false);
     setAnchorEl(null);
     await supabase.auth.signOut();
-    // setisLoginOrNot(false);
     handleClickVariant("success");
   };
 
   useEffect(() => {
-    // if (user) {
-    //   setLoginOrNot(true);
-    //   getProfile(user);
-    // }
-    // async function getdata() {
-    // const { user, error } = await supabase.auth.api.getUser(
-    //   "ACCESS_TOKEN_JWT"
-    // );
     const user = supabase.auth.user();
-    const session = supabase.auth.session();
     if (user) {
-      // const user = supabase.auth.api.getUser(session.access_token);
       setLoginOrNot(true);
     } else {
       supabase.auth.signOut();
       setLoginOrNot(false);
     }
-
-    // }
-
-    // getdata();
   });
 
   return (

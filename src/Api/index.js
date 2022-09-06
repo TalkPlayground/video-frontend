@@ -1,5 +1,4 @@
 import { createClient } from "@supabase/supabase-js";
-import axios from "axios";
 
 export const baseURL = "/base";
 

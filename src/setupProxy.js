@@ -5,11 +5,6 @@ const proxy = {
   changeOrigin: true,
 };
 
-// const proxy2 = {
-//   target: "https://www.stackoverflow.com",
-//   changeOrigin: true,
-// };
-
 module.exports = function (app) {
   app.use(
     "/api",
@@ -18,12 +13,4 @@ module.exports = function (app) {
       changeOrigin: true,
     })
   );
-
-  // app.use(
-  //   "/",
-  //   createProxyMiddleware({
-  //     target: "https://api.zoom.us/v2",
-  //     changeOrigin: true,
-  //   })
-  // );
 };

@@ -1,6 +1,5 @@
 import { Box, Button, Divider, Grid, Typography } from "@material-ui/core";
 import React from "react";
-import AcUnitIcon from "@mui/icons-material/AcUnit";
 import HeaderIcon from "../../assets/app_image.png";
 import { useHistory } from "react-router-dom";
 

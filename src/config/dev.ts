@@ -1,4 +1,3 @@
-import { getExploreName } from "../utils/platform";
 const dotenv = require("dotenv").config();
 
 const queryString = window.location.search;
