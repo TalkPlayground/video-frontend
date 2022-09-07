@@ -40,9 +40,6 @@ import { getQueryString, supabase } from "./Api";
 import { parse } from "dotenv";
 import axios from "axios";
 
-const logging = require("@jenkins-cd/logging");
-const logger = logging.logger("org.jenkinsci.sse");
-
 interface AppProps {
   meetingArgs: {
     sdkKey: string;
@@ -170,12 +167,7 @@ function App(props: AppProps) {
   //   }
   // }, [topicInfo]);
 
-  console.log("LoggerMixin", logger);
-
-  logger.debug("Goooooodddddddd...................");
-
   const init = async (nameData: any) => {
-    logger.debug("Starttttted...................");
     setIsLoading(true);
     await zmClient.init("en-US", `${window.location.origin}/lib`);
     try {

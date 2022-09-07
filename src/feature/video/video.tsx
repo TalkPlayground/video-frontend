@@ -36,6 +36,7 @@ import { Alert, MenuItem } from "@mui/material";
 import { AnyArray } from "immer/dist/internal";
 import nosleep from "nosleep.js";
 import { ChatRecord } from "../chat/chat-types";
+import moment from "moment";
 
 interface VideoProps extends RouteComponentProps {
   DisplayDataInfo: any;
@@ -161,26 +162,57 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   const StartStopRecording = async (data: boolean) => {
     if (data) {
       await RecordingZoomApi.startCloudRecording()
-        .then(function (response: any) {
+        .then(async function (response: any) {
           setRecordingStatus(data);
           enqueueSnackbar("Recording Started", { variant: "info" });
+          await axios.post(
+            "/api/v1/user/session/frontend/loggers" +
+              "?" +
+              getQueryString({
+                logs: `Recording Started on ${moment().format(
+                  "DD/MM/YYYY LT"
+                )}`,
+              })
+          );
         })
-        .catch(function (error: any) {
+        .catch(async function (error: any) {
           console.log(error);
+          await axios.post(
+            "/api/v1/user/session/frontend/loggers" +
+              "?" +
+              getQueryString({
+                logs: error?.message + " " + moment().format("DD/MM/YYYY LT"),
+              })
+          );
         });
     } else {
       await RecordingZoomApi.stopCloudRecording()
-        .then(function (response: any) {
+        .then(async function (response: any) {
           setRecordingStatus(data);
           enqueueSnackbar("Recording Stoped", { variant: "info" });
+          await axios.post(
+            "/api/v1/user/session/frontend/loggers" +
+              "?" +
+              getQueryString({
+                logs: `Recording Stoped on ${moment().format("DD/MM/YYYY LT")}`,
+              })
+          );
         })
-        .catch(function (error: any) {
+        .catch(async function (error: any) {
           console.log(error);
+          await axios.post(
+            "/api/v1/user/session/frontend/loggers" +
+              "?" +
+              getQueryString({
+                logs: error?.message + " " + moment().format("DD/MM/YYYY LT"),
+              })
+          );
         });
     }
   };
 
   const [NewMsg, setNewMsg] = useState(false);
+
   const hand = () => {
     setTimeout(() => {
       if (!modalOpenClose) {
