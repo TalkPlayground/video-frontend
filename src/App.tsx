@@ -39,7 +39,9 @@ import { useSnackbar } from "notistack";
 import { getQueryString, supabase } from "./Api";
 import { parse } from "dotenv";
 import axios from "axios";
-const LoggerMixin = require("react-logger");
+
+const logging = require("@jenkins-cd/logging");
+const logger = logging.logger("org.jenkinsci.sse");
 
 interface AppProps {
   meetingArgs: {
@@ -168,12 +170,12 @@ function App(props: AppProps) {
   //   }
   // }, [topicInfo]);
 
-  console.log("LoggerMixin", LoggerMixin);
+  console.log("LoggerMixin", logger);
 
-  LoggerMixin.log("Goooooodddddddd...................");
+  logger.debug("Goooooodddddddd...................");
 
   const init = async (nameData: any) => {
-    LoggerMixin.log("something insightful");
+    logger.debug("Starttttted...................");
     setIsLoading(true);
     await zmClient.init("en-US", `${window.location.origin}/lib`);
     try {
