@@ -32,6 +32,7 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import chromeImage from "../../assets/chrome.png";
 import DoneIcon from "@mui/icons-material/Done";
+import { url } from "../../App";
 
 const style = {
   position: "absolute",
@@ -48,8 +49,6 @@ const style = {
 function KeepMountedModal({ setOpenModal, openModal }: any) {
   const handleClose = () => setOpenModal(false);
   const [copyLinkDone, setcopyLinkDone] = useState(false);
-
-  const url = `${window.location.origin}?topic=${devConfig.topic}`;
 
   const copyLink = () => {
     setcopyLinkDone(true);

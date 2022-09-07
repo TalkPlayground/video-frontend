@@ -9,14 +9,13 @@ import { IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { devConfig } from "../../config/dev";
+import { url } from "../../App";
 
 export default function BasicCard({
   setLinkShowCard,
   LinkShowCard,
   DisplayDataInfo,
 }: any) {
-  const url = `${window.location.origin}?topic=${devConfig.topic}`;
-
   const cardOpen = () => {
     setLinkShowCard(!LinkShowCard);
   };

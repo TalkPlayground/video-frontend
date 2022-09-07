@@ -148,11 +148,11 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
       if (data && participants?.length == 1) {
         StartStopRecording(!RecordingStatus);
       } else if (data) {
-        setRecordingStatus(
-          RecordingZoomApi?.getCloudRecordingStatus() == "Recording"
-            ? true
-            : false
-        );
+        if (RecordingZoomApi?.getCloudRecordingStatus() == "Recording") {
+          setRecordingStatus(true);
+        } else {
+          StartStopRecording(true);
+        }
       }
     };
     startAPi();

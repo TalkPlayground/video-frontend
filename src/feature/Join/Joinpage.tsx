@@ -34,6 +34,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import LinkIcon from "@mui/icons-material/Link";
 
 import Slide from "@mui/material/Slide";
+import { url } from "../../App";
 
 interface JoinProps extends RouteComponentProps {
   status: string;
@@ -132,8 +133,6 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
         setStartSession(false);
       });
   };
-
-  const url = `${window.location.origin}/video?topic=${devConfig.topic}`;
 
   return (
     <>

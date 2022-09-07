@@ -39,6 +39,7 @@ import { useSnackbar } from "notistack";
 import { getQueryString, supabase } from "./Api";
 import { parse } from "dotenv";
 import axios from "axios";
+const LoggerMixin = require("react-logger");
 
 interface AppProps {
   meetingArgs: {
@@ -93,6 +94,8 @@ const mediaReducer = produce((draft, action) => {
       break;
   }
 }, mediaShape);
+
+export const url = `${window.location.origin}?topic=${devConfig.topic}`;
 
 function App(props: AppProps) {
   const {
@@ -165,7 +168,12 @@ function App(props: AppProps) {
   //   }
   // }, [topicInfo]);
 
+  console.log("LoggerMixin", LoggerMixin);
+
+  LoggerMixin.log("Goooooodddddddd...................");
+
   const init = async (nameData: any) => {
+    LoggerMixin.log("something insightful");
     setIsLoading(true);
     await zmClient.init("en-US", `${window.location.origin}/lib`);
     try {
