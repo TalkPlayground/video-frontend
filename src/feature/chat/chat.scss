@@ -34,9 +34,9 @@
       // border-bottom: 1px solid #eee;
     }
     .chat-message-box {
-      min-height: 46px;
-
-      max-height: 60px;
+      // min-height: 46px;
+      height: auto;
+      max-height: 61px;
       box-sizing: border-box;
       padding: 0 5px;
       background-color: #f1f3f4;
@@ -70,3 +70,6 @@
     flex-shrink: 0;
   }
 }
+// .css-1pxa9xg-MuiAlert-message{
+//   padding: 0 !important;
+// }

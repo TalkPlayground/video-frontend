@@ -20,12 +20,14 @@ import SendIcon from "@mui/icons-material/Send";
 import { useMount } from "../../hooks";
 import "./chat.scss";
 import {
+  Grow,
   IconButton,
   InputAdornment,
   Slide,
   TextareaAutosize,
 } from "@material-ui/core";
 import { Visibility } from "@mui/icons-material";
+import { Alert } from "@mui/material";
 const { TextArea } = Input;
 const ChatContainer = ({
   modalOpenClose,
@@ -90,9 +92,25 @@ const ChatContainer = ({
     },
     [chatClient]
   );
+
+  const [ErrorValidate, setErrorValidate] = useState(false);
+
+  useEffect(() => {
+    if (ErrorValidate) {
+      setTimeout(() => {
+        setErrorValidate(false);
+      }, 4000);
+    }
+  }, [ErrorValidate]);
+
   const onChatInput = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       setChatDraft(event.target.value);
+      if (event.target.value?.length > 10200) {
+        setErrorValidate(true);
+      } else {
+        setErrorValidate(false);
+      }
     },
     []
   );
@@ -147,13 +165,14 @@ const ChatContainer = ({
   const sendMessage = useCallback(
     (event: any) => {
       event.preventDefault();
-      if (chatUser && chatDraft) {
+      if (chatUser && chatDraft && chatDraft?.length <= 10200) {
         chatClient?.send(chatDraft, chatUser?.userId);
         setChatDraft("");
       }
     },
     [chatClient, chatDraft, chatUser]
   );
+
   useMount(() => {
     setCurrentUserId(zmClient.getSessionInfo().userId);
     if (chatClient) {
@@ -178,6 +197,15 @@ const ChatContainer = ({
               <CloseIcon className="cursor-pointer" />
             </IconButton>
           </div>
+          {/* {ErrorValidate && (
+            <Grow in={ErrorValidate}>
+              <Alert variant="filled" severity="error" icon={false}>
+                Message failed to send! Messages longer than 2000 words cannot
+                be sent.
+              </Alert>
+            </Grow>
+          )} */}
+
           <div className="chat-message-wrap" ref={chatWrapRef}>
             {chatRecords?.length > 0 &&
               chatRecords.map((record: any) => (
@@ -220,7 +248,7 @@ const ChatContainer = ({
                   <SendIcon
                     style={{
                       fill:
-                        chatDraft?.length > 0
+                        chatDraft?.length > 0 && chatDraft?.length <= 10200
                           ? "rgb(73, 76, 226)"
                           : "rgba(60,64,67,.38)",
                     }}

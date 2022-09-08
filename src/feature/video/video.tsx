@@ -140,8 +140,6 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   const participants = zmClient.getAllUser();
   const RecordingZoomApi: any = zmClient?.getRecordingClient();
 
-  console.log("first", RecordingZoomApi?.length, RecordingZoomApi);
-
   useEffect(() => {
     noSleep.enable();
     const startAPi = async () => {

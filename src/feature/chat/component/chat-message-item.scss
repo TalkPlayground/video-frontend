@@ -62,7 +62,7 @@
       align-items: flex-start;
       .chat-message-text {
         white-space: break-spaces;
-        word-break: break-all;
+        word-break: break-word;
         // padding: 8px 10px;
         font-family: system-ui;
         border-radius: 8px;
@@ -79,7 +79,7 @@
         // align-items: flex-end;
         .chat-message-text {
           white-space: break-spaces;
-          word-break: break-all;
+          word-break: break-word;
           // background: #deedfd;
         }
       }
