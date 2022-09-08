@@ -197,14 +197,14 @@ const ChatContainer = ({
               <CloseIcon className="cursor-pointer" />
             </IconButton>
           </div>
-          {/* {ErrorValidate && (
+          {ErrorValidate && (
             <Grow in={ErrorValidate}>
               <Alert variant="filled" severity="error" icon={false}>
                 Message failed to send! Messages longer than 2000 words cannot
                 be sent.
               </Alert>
             </Grow>
-          )} */}
+          )}
 
           <div className="chat-message-wrap" ref={chatWrapRef}>
             {chatRecords?.length > 0 &&
