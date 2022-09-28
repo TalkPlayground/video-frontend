@@ -495,14 +495,14 @@ const VideoFooter = (props: VideoFooterProps) => {
               </Badge>
             </IconButton>
           </Tooltip>
-          <Tooltip title={RecordingStatus ? "Recording" : "Not Record"}>
+          <Tooltip title={RecordingStatus ? "Transcript On" : "Transcript Off"}>
             <IconButton
               // onClick={() => {
               //   StartStopRecording(!RecordingStatus);
               // }}
               className="ml-2 HoverIcon"
             >
-              <RadioButtonCheckedIcon
+              <ClosedCaptionOffOutlinedIcon
                 style={{
                   fill: RecordingStatus ? "red" : "#fff",
                 }}
