@@ -37,10 +37,11 @@ import { MenuItem } from "@mui/material";
 
 interface VideoProps extends RouteComponentProps {
   DisplayDataInfo: any;
+  TranscribeStartStop:any;
 }
 
 const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
-  const { DisplayDataInfo } = props;
+  const { DisplayDataInfo,TranscribeStartStop } = props;
   const zmClient = useContext(ZoomContext);
   const {
     mediaStream,
@@ -76,7 +77,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   useParticipantsChange(zmClient, (payload) => {
     setParticipants(payload);
   });
-  const onActiveVideoChange = useCallback((payload) => {
+  const onActiveVideoChange = useCallback((payload:any) => {
     const { state, userId } = payload;
     if (state === VideoActiveState.Active) {
       setActiveVideo(userId);
@@ -84,7 +85,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
       setActiveVideo(0);
     }
   }, []);
-  const onActiveSpeakerChange = useCallback((payload) => {
+  const onActiveSpeakerChange = useCallback((payload:any) => {
     if (Array.isArray(payload) && payload.length > 0) {
       const { userId } = payload[0];
       setActiveSpeaker(userId);

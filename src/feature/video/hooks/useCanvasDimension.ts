@@ -8,7 +8,7 @@ export function useCanvasDimension(
 ) {
   const [dimension, setDimension] = useState({ width: 0, height: 0 });
   const onCanvasResize = useCallback(
-    ({ width, height }) => {
+    ({ width, height }:any) => {
       if (videoRef) {
         _.debounce((...args) => {
           setDimension({

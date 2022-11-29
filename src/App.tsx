@@ -6,7 +6,7 @@ import React, {
   useReducer,
 } from "react";
 import {
-  BrowserRouter as Router,
+  BrowserRouter,
   Switch,
   Route,
   useHistory,
@@ -118,6 +118,8 @@ function App(props: AppProps) {
     emailinfo: "",
   });
 
+  const [TranscribeStartStop, setTranscribeStartStop] = useState(true)
+
   const userData = supabase.auth.user();
 
   const zmClient = useContext(ZoomContext);
@@ -187,7 +189,7 @@ function App(props: AppProps) {
   };
 
   const onConnectionChange = useCallback(
-    (payload) => {
+    (payload:any) => {
       if (payload.state === ConnectionState.Reconnecting) {
         setIsLoading(true);
         setIsFailover(true);
@@ -214,7 +216,7 @@ function App(props: AppProps) {
     [isFailover]
   );
 
-  const onMediaSDKChange = useCallback((payload) => {
+  const onMediaSDKChange = useCallback((payload:any) => {
     const { action, type, result } = payload;
     dispatch({ type: `${type}-${action}`, payload: result === "success" });
   }, []);
@@ -245,7 +247,7 @@ function App(props: AppProps) {
       {!loading && (
         <ZoomMediaContext.Provider value={{ ...mediaState, mediaStream }}>
           <ChatContext.Provider value={chatClient}>
-            <Router>
+            <BrowserRouter>
               <Switch>
                 <Route
                   path="/"
@@ -264,6 +266,8 @@ function App(props: AppProps) {
                       setDisplayDataInfo={setDisplayDataInfo}
                       DisplayDataInfo={DisplayDataInfo}
                       setIsLoading={setIsLoading}
+                      setTranscribeStartStop={setTranscribeStartStop}
+                      TranscribeStartStop={TranscribeStartStop}
                     />
                   )}
                   exact
@@ -303,11 +307,13 @@ function App(props: AppProps) {
                           DisplayDataInfo={DisplayDataInfo}
                           setIsLoading={setIsLoading}
                           setLoadingText={setLoadingText}
+                          TranscribeStartStop={TranscribeStartStop}
                         />
                       ) : (
                         <VideoSingle
                           {...props}
                           DisplayDataInfo={DisplayDataInfo}
+                          TranscribeStartStop={TranscribeStartStop}
                         />
                       )
                     ) : (
@@ -317,7 +323,7 @@ function App(props: AppProps) {
                 />
                 <Route path="/chat" component={Chat} />
               </Switch>
-            </Router>
+            </BrowserRouter>
           </ChatContext.Provider>
         </ZoomMediaContext.Provider>
       )}

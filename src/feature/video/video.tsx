@@ -42,10 +42,11 @@ interface VideoProps extends RouteComponentProps {
   DisplayDataInfo: any;
   setIsLoading?: Function;
   setLoadingText?: Function;
+  TranscribeStartStop:any;
 }
 
 const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
-  const { DisplayDataInfo, setIsLoading, setLoadingText } = props;
+  const { DisplayDataInfo, setIsLoading, setLoadingText,TranscribeStartStop } = props;
   const [LinkShowCard, setLinkShowCard] = useState(true);
   const zmClient = useContext(ZoomContext);
   const {
@@ -144,9 +145,9 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     noSleep.enable();
     const startAPi = async () => {
       const data: any = await JoinSessionApi();
-      if (data && participants?.length == 1) {
+      if (data && participants?.length == 1 && TranscribeStartStop) {
         StartStopRecording(!RecordingStatus);
-      } else if (data) {
+      } else if (data && TranscribeStartStop) {
         if (RecordingZoomApi?.getCloudRecordingStatus() == "Recording") {
           setRecordingStatus(true);
         } else {
@@ -162,7 +163,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
       await RecordingZoomApi.startCloudRecording()
         .then(async function (response: any) {
           setRecordingStatus(data);
-          enqueueSnackbar("Recording Started", { variant: "info" });
+          enqueueSnackbar("Transcript Started", { variant: "info" });
           await axios.post(
             "/api/v1/user/session/frontend/loggers" +
               "?" +
@@ -187,7 +188,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
       await RecordingZoomApi.stopCloudRecording()
         .then(async function (response: any) {
           setRecordingStatus(data);
-          enqueueSnackbar("Recording Stoped", { variant: "info" });
+          enqueueSnackbar("Transcript Stoped", { variant: "info" });
           await axios.post(
             "/api/v1/user/session/frontend/loggers" +
               "?" +
@@ -379,6 +380,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         videoRef={myVideoRef}
         setIsLoading={setIsLoading}
         setLoadingText={setLoadingText}
+        TranscribeStartStop={TranscribeStartStop}
       />
 
       {totalPage > 1 && (

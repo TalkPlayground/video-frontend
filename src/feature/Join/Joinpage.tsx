@@ -5,7 +5,7 @@ import React, {
   useReducer,
   useState,
 } from "react";
-import { Grid, Typography, Box, makeStyles } from "@material-ui/core";
+import { Grid, Typography, Box, makeStyles, Checkbox } from "@material-ui/core";
 import { Alert, Button, IconButton, Tooltip } from "@mui/material";
 
 import AcUnitIcon from "@mui/icons-material/AcUnit";
@@ -15,7 +15,7 @@ import Snackbar from "@mui/material/Snackbar";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Header from "../../component/pages/Header";
 import HeaderIcon from "../../assets/app_image.png";
-import { RouteComponentProps } from "react-router-dom";
+import { RouteComponentProps, useLocation } from "react-router-dom";
 import { devConfig } from "../../config/dev";
 import { generateVideoToken } from "../../utils/util";
 import ZoomVideo, { ConnectionState } from "@zoom/videosdk";
@@ -42,6 +42,8 @@ interface JoinProps extends RouteComponentProps {
   DisplayDataInfo: any;
   setDisplayDataInfo: any;
   setIsLoading: Function;
+  setTranscribeStartStop:any;
+  TranscribeStartStop:any;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -55,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
-  const { history, init, setDisplayDataInfo, DisplayDataInfo, setIsLoading } =
+  const { history, init, setDisplayDataInfo, DisplayDataInfo, setIsLoading,setTranscribeStartStop,TranscribeStartStop } =
     props;
   const [openToast, setopenToast] = useState(false);
   const [nameValidation, setnameValidation] = useState(false);
@@ -63,6 +65,7 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
   const [OTP, setOTP] = useState("");
   const [StartSession, setStartSession] = useState(false);
 
+  
   const classes = useStyles();
 
   useEffect(() => {
@@ -108,6 +111,8 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
     const info = {
       ...zmClient.getSessionInfo(),
     };
+    if(DisplayDataInfo.Displayname){
+     
     setIsLoading(true);
     await axios
       .post(
@@ -132,6 +137,10 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
         setnameValidation(true);
         setStartSession(false);
       });
+       
+    } else{
+      setnameValidation(true);
+    }
   };
 
   return (
@@ -205,6 +214,10 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
                   onChange={DisplayNameData}
                   disabled={user ? true : false}
                 />
+                <Box className="d-flex align-items-center pb-3">
+                <Checkbox color="primary" checked={TranscribeStartStop} onClick={() => setTranscribeStartStop(!TranscribeStartStop)} />
+                <Typography className="text-secondary">Save my transcript for <a style={{textDecoration:"underline"}} href="https://insights.talkplayground.com/about">Insights</a></Typography>
+                </Box>
               </Box>
 
               <Button

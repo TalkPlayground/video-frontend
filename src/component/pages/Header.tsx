@@ -14,7 +14,7 @@ import Header_logo from "../../assets/header_logo.png";
 
 import Header_icon from "../../assets/app_image.png";
 import "./index.scss";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { supabase } from "../../Api";
@@ -24,6 +24,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 function Header() {
   const history = useHistory();
+  const path = useLocation();
   const [LoginOrNot, setLoginOrNot] = useState(false);
 
   const [openDrawer, setopenDrawer] = useState(false);
@@ -83,7 +84,7 @@ function Header() {
           </Typography>
           <Button
             variant="outlined"
-            style={{ textTransform: "inherit", color: "#949494" }}
+            style={{ textTransform: "inherit", color: "#949494",display: path.pathname == "/" ? "" : "none" }}
             id="basic-button"
             aria-controls={open ? "basic-menu" : undefined}
             aria-haspopup="true"

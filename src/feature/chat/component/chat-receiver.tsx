@@ -54,7 +54,7 @@ const ChatReceiverContainer = (props: ChatReceiverProps) => {
     </MenuItem>
   ));
   const onMenuItemClick = useCallback(
-    ({ key }) => {
+    ({ key }:any) => {
       const userId = Number(key);
       if (userId !== selectedChatUser?.userId) {
         setChatUser(userId);
@@ -63,7 +63,7 @@ const ChatReceiverContainer = (props: ChatReceiverProps) => {
     [selectedChatUser, setChatUser],
   );
   const onMenuItemPrivilegeClick = useCallback(
-    ({ key }) => {
+    ({ key }:any) => {
       const privilege = Number(key);
       if (chatPrivilege !== privilege) {
         chatClient?.setPrivilege(privilege);

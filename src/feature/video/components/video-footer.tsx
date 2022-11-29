@@ -76,6 +76,7 @@ interface VideoFooterProps {
   videoRef?: any;
   setIsLoading?: any;
   setLoadingText?: any;
+  TranscribeStartStop?:any;
 }
 const isAudioEnable = typeof AudioWorklet === "function";
 const VideoFooter = (props: VideoFooterProps) => {
@@ -97,6 +98,7 @@ const VideoFooter = (props: VideoFooterProps) => {
     videoRef,
     setIsLoading,
     setLoadingText,
+    TranscribeStartStop
   } = props;
 
   const [isStartedAudio, setIsStartedAudio] = useState(false);
@@ -177,7 +179,7 @@ const VideoFooter = (props: VideoFooterProps) => {
     }
   };
 
-  const onHostAudioMuted = useCallback((payload) => {
+  const onHostAudioMuted = useCallback((payload:any) => {
     const { action, source, type } = payload;
     if (action === "join" && type === "computer") {
       setIsStartedAudio(true);
@@ -204,7 +206,7 @@ const VideoFooter = (props: VideoFooterProps) => {
       setIsStartedScreenShare(false);
     }
   }, [mediaStream, isStartedScreenShare, shareRef]);
-  const onPassivelyStopShare = useCallback(({ reason }) => {
+  const onPassivelyStopShare = useCallback(({ reason}:any) => {
     console.log("passively stop reason:", reason);
     setIsStartedScreenShare(false);
   }, []);
@@ -432,7 +434,7 @@ const VideoFooter = (props: VideoFooterProps) => {
               cursor: "pointer",
             }}
             onClick={async () => {
-              if (participants?.length == 1) {
+              if (participants?.length == 1 && TranscribeStartStop) {
                 setLoadingText("You left the meeting");
                 setIsLoading(true);
                 StartStopRecording(false).then(async () => {

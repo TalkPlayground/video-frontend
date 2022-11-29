@@ -84,7 +84,7 @@ const ChatContainer = ({
     [chatWrapRef]
   );
   const onChatPrivilegeChange = useCallback(
-    (payload) => {
+    (payload:any) => {
       setChatPrivilege(payload.chatPrivilege);
       if (chatClient) {
         setChatReceivers(chatClient.getReceivers());
@@ -148,7 +148,7 @@ const ChatContainer = ({
     }
   }, [chatReceivers, chatUser]);
   const setChatUserId = useCallback(
-    (userId) => {
+    (userId:any) => {
       const user = chatReceivers.find((u) => u.userId === userId);
       if (user) {
         setChatUser(user);
