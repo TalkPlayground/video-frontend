@@ -215,13 +215,15 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
                   disabled={user ? true : false}
                 />
                 <Box className="d-flex align-items-center pb-3">
-                <Checkbox color="primary" checked={TranscribeStartStop} onClick={() => setTranscribeStartStop(!TranscribeStartStop)} />
+                <Checkbox  style ={{
+                      color: "#494CE2",
+                    }} checked={TranscribeStartStop} onClick={() => setTranscribeStartStop(!TranscribeStartStop)} />
                 <Typography className="text-secondary">Save my transcript for <a style={{textDecoration:"underline"}} href="https://insights.talkplayground.com/about">Insights</a></Typography>
                 </Box>
               </Box>
 
               <Button
-                disabled={StartSession}
+                // disabled={StartSession}
                 type="submit"
                 id="demo-positioned-button"
                 size="small"
