@@ -59,6 +59,7 @@ import RemoveOutlinedIcon from "@mui/icons-material/RemoveOutlined";
 import Avatar from "./avatar";
 import { CheckOutlined } from "@ant-design/icons";
 import { AudioVideoSetting } from "./AudioVideoSetting";
+import { useSnackbar } from "notistack";
 
 interface VideoFooterProps {
   className?: string;
@@ -120,6 +121,8 @@ const VideoFooter = (props: VideoFooterProps) => {
   const [onAudioVideoOption, setonAudioVideoOption] = useState(false);
 
   var noSleep = new nosleep();
+  
+  const { enqueueSnackbar } = useSnackbar();
 
   const participants = zmClient.getAllUser();
   useEffect(() => {
@@ -434,7 +437,7 @@ const VideoFooter = (props: VideoFooterProps) => {
               cursor: "pointer",
             }}
             onClick={async () => {
-              if (participants?.length == 1 && TranscribeStartStop) {
+              if (participants?.length == 1) {
                 setLoadingText("You left the meeting");
                 setIsLoading(true);
                 StartStopRecording(false).then(async () => {
@@ -445,6 +448,9 @@ const VideoFooter = (props: VideoFooterProps) => {
                   window.location.reload();
                 });
               } else {
+                if(TranscribeStartStop){
+                  enqueueSnackbar("Transcript Stoped", { variant: "info" });
+                }
                 setLoadingText("You left the meeting");
                 setIsLoading(true);
                 zmClient.leave();
@@ -506,7 +512,7 @@ const VideoFooter = (props: VideoFooterProps) => {
             >
               <ClosedCaptionOffOutlinedIcon
                 style={{
-                  fill: RecordingStatus ? "red" : "#fff",
+                  fill: RecordingStatus && TranscribeStartStop ? "red" : "#fff",
                 }}
                 color="action"
               />

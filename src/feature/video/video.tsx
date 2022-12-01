@@ -145,11 +145,15 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     noSleep.enable();
     const startAPi = async () => {
       const data: any = await JoinSessionApi();
-      if (data && participants?.length == 1 && TranscribeStartStop) {
+      if (data && participants?.length == 1 ) {
         StartStopRecording(!RecordingStatus);
-      } else if (data && TranscribeStartStop) {
+      } else if (data) {
         if (RecordingZoomApi?.getCloudRecordingStatus() == "Recording") {
           setRecordingStatus(true);
+          if(TranscribeStartStop){
+            enqueueSnackbar("Transcript Started", { variant: "info" });
+          }
+          ///Call Api Here with else
         } else {
           StartStopRecording(true);
         }
@@ -163,7 +167,10 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
       await RecordingZoomApi.startCloudRecording()
         .then(async function (response: any) {
           setRecordingStatus(data);
-          enqueueSnackbar("Transcript Started", { variant: "info" });
+          if(TranscribeStartStop){
+            enqueueSnackbar("Transcript Started", { variant: "info" });
+          }
+          ///Call Api Here with else
           await axios.post(
             "/api/v1/user/session/frontend/loggers" +
               "?" +
@@ -188,7 +195,9 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
       await RecordingZoomApi.stopCloudRecording()
         .then(async function (response: any) {
           setRecordingStatus(data);
-          enqueueSnackbar("Transcript Stoped", { variant: "info" });
+          if(TranscribeStartStop){
+            enqueueSnackbar("Transcript Stoped", { variant: "info" });
+          }
           await axios.post(
             "/api/v1/user/session/frontend/loggers" +
               "?" +
