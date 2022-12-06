@@ -31,6 +31,8 @@ if (!meetingArgs.signature && meetingArgs.sdkSecret && meetingArgs.topic) {
   );
 }
 
+console.log("meetingArgs", meetingArgs);
+
 const zmClient = ZoomVideo.createClient();
 
 ReactDOM.render(
