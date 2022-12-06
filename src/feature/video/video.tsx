@@ -42,11 +42,12 @@ interface VideoProps extends RouteComponentProps {
   DisplayDataInfo: any;
   setIsLoading?: Function;
   setLoadingText?: Function;
-  TranscribeStartStop:any;
+  TranscribeStartStop: any;
 }
 
 const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
-  const { DisplayDataInfo, setIsLoading, setLoadingText,TranscribeStartStop } = props;
+  const { DisplayDataInfo, setIsLoading, setLoadingText, TranscribeStartStop } =
+    props;
   const [LinkShowCard, setLinkShowCard] = useState(true);
   const zmClient = useContext(ZoomContext);
   const {
@@ -145,13 +146,17 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     noSleep.enable();
     const startAPi = async () => {
       const data: any = await JoinSessionApi();
-      if (data && participants?.length == 1 ) {
+      if (data && participants?.length == 1) {
         StartStopRecording(!RecordingStatus);
       } else if (data) {
         if (RecordingZoomApi?.getCloudRecordingStatus() == "Recording") {
           setRecordingStatus(true);
-          if(TranscribeStartStop){
+          if (TranscribeStartStop) {
             enqueueSnackbar("Transcript Started", { variant: "info" });
+          } else {
+            await axios.post("/api/v1/user/transcripts/delete/statusChange", {
+              status: false,
+            });
           }
           ///Call Api Here with else
         } else {
@@ -167,8 +172,12 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
       await RecordingZoomApi.startCloudRecording()
         .then(async function (response: any) {
           setRecordingStatus(data);
-          if(TranscribeStartStop){
+          if (TranscribeStartStop) {
             enqueueSnackbar("Transcript Started", { variant: "info" });
+          } else {
+            await axios.post("/api/v1/user/transcripts/delete/statusChange", {
+              status: false,
+            });
           }
           ///Call Api Here with else
           await axios.post(
@@ -195,7 +204,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
       await RecordingZoomApi.stopCloudRecording()
         .then(async function (response: any) {
           setRecordingStatus(data);
-          if(TranscribeStartStop){
+          if (TranscribeStartStop) {
             enqueueSnackbar("Transcript Stoped", { variant: "info" });
           }
           await axios.post(
