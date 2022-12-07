@@ -77,7 +77,7 @@ interface VideoFooterProps {
   videoRef?: any;
   setIsLoading?: any;
   setLoadingText?: any;
-  TranscribeStartStop?:any;
+  SaveTranscript?: any;
 }
 const isAudioEnable = typeof AudioWorklet === "function";
 const VideoFooter = (props: VideoFooterProps) => {
@@ -99,7 +99,7 @@ const VideoFooter = (props: VideoFooterProps) => {
     videoRef,
     setIsLoading,
     setLoadingText,
-    TranscribeStartStop
+    SaveTranscript,
   } = props;
 
   const [isStartedAudio, setIsStartedAudio] = useState(false);
@@ -121,7 +121,7 @@ const VideoFooter = (props: VideoFooterProps) => {
   const [onAudioVideoOption, setonAudioVideoOption] = useState(false);
 
   var noSleep = new nosleep();
-  
+
   const { enqueueSnackbar } = useSnackbar();
 
   const participants = zmClient.getAllUser();
@@ -182,7 +182,7 @@ const VideoFooter = (props: VideoFooterProps) => {
     }
   };
 
-  const onHostAudioMuted = useCallback((payload:any) => {
+  const onHostAudioMuted = useCallback((payload: any) => {
     const { action, source, type } = payload;
     if (action === "join" && type === "computer") {
       setIsStartedAudio(true);
@@ -209,7 +209,7 @@ const VideoFooter = (props: VideoFooterProps) => {
       setIsStartedScreenShare(false);
     }
   }, [mediaStream, isStartedScreenShare, shareRef]);
-  const onPassivelyStopShare = useCallback(({ reason}:any) => {
+  const onPassivelyStopShare = useCallback(({ reason }: any) => {
     console.log("passively stop reason:", reason);
     setIsStartedScreenShare(false);
   }, []);
@@ -448,7 +448,7 @@ const VideoFooter = (props: VideoFooterProps) => {
                   window.location.reload();
                 });
               } else {
-                if(TranscribeStartStop){
+                if (SaveTranscript) {
                   enqueueSnackbar("Transcript Stoped", { variant: "info" });
                 }
                 setLoadingText("You left the meeting");
@@ -503,7 +503,13 @@ const VideoFooter = (props: VideoFooterProps) => {
               </Badge>
             </IconButton>
           </Tooltip>
-          <Tooltip title={RecordingStatus ? "Transcript On" : "Transcript Off"}>
+          <Tooltip
+            title={
+              RecordingStatus && SaveTranscript
+                ? "Transcript On"
+                : "Transcript Off"
+            }
+          >
             <IconButton
               // onClick={() => {
               //   StartStopRecording(!RecordingStatus);
@@ -512,7 +518,7 @@ const VideoFooter = (props: VideoFooterProps) => {
             >
               <ClosedCaptionOffOutlinedIcon
                 style={{
-                  fill: RecordingStatus && TranscribeStartStop ? "red" : "#fff",
+                  fill: RecordingStatus && SaveTranscript ? "red" : "#fff",
                 }}
                 color="action"
               />

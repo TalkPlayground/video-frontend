@@ -82,7 +82,7 @@ function Header() {
             {moment().format("LT")} <span className="px-1">&#8226;</span>
             {moment().format("ddd, MMM DD")}
           </Typography>
-          <Button
+          {/* <Button
             variant="outlined"
             style={{ textTransform: "inherit", color: "#949494",display: path.pathname == "/" ? "" : "none" }}
             id="basic-button"
@@ -104,7 +104,7 @@ function Header() {
             <span className={LoginOrNot ? "text-capitalize" : ""}>
               {LoginOrNot ? `Logged In` : "Login to view insight"}
             </span>
-          </Button>
+          </Button> */}
 
           {/* <Button
             id="basic-button"

@@ -118,7 +118,7 @@ function App(props: AppProps) {
     emailinfo: "",
   });
 
-  const [TranscribeStartStop, setTranscribeStartStop] = useState(true)
+  const [SaveTranscript, setSaveTranscript] = useState(true);
 
   const userData = supabase.auth.user();
 
@@ -189,7 +189,7 @@ function App(props: AppProps) {
   };
 
   const onConnectionChange = useCallback(
-    (payload:any) => {
+    (payload: any) => {
       if (payload.state === ConnectionState.Reconnecting) {
         setIsLoading(true);
         setIsFailover(true);
@@ -216,7 +216,7 @@ function App(props: AppProps) {
     [isFailover]
   );
 
-  const onMediaSDKChange = useCallback((payload:any) => {
+  const onMediaSDKChange = useCallback((payload: any) => {
     const { action, type, result } = payload;
     dispatch({ type: `${type}-${action}`, payload: result === "success" });
   }, []);
@@ -266,8 +266,8 @@ function App(props: AppProps) {
                       setDisplayDataInfo={setDisplayDataInfo}
                       DisplayDataInfo={DisplayDataInfo}
                       setIsLoading={setIsLoading}
-                      setTranscribeStartStop={setTranscribeStartStop}
-                      TranscribeStartStop={TranscribeStartStop}
+                      setSaveTranscript={setSaveTranscript}
+                      SaveTranscript={SaveTranscript}
                     />
                   )}
                   exact
@@ -307,13 +307,13 @@ function App(props: AppProps) {
                           DisplayDataInfo={DisplayDataInfo}
                           setIsLoading={setIsLoading}
                           setLoadingText={setLoadingText}
-                          TranscribeStartStop={TranscribeStartStop}
+                          SaveTranscript={SaveTranscript}
                         />
                       ) : (
                         <VideoSingle
                           {...props}
                           DisplayDataInfo={DisplayDataInfo}
-                          TranscribeStartStop={TranscribeStartStop}
+                          SaveTranscript={SaveTranscript}
                         />
                       )
                     ) : (

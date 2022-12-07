@@ -42,8 +42,8 @@ interface JoinProps extends RouteComponentProps {
   DisplayDataInfo: any;
   setDisplayDataInfo: any;
   setIsLoading: Function;
-  setTranscribeStartStop:any;
-  TranscribeStartStop:any;
+  setSaveTranscript: any;
+  SaveTranscript: any;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -57,15 +57,21 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
-  const { history, init, setDisplayDataInfo, DisplayDataInfo, setIsLoading,setTranscribeStartStop,TranscribeStartStop } =
-    props;
+  const {
+    history,
+    init,
+    setDisplayDataInfo,
+    DisplayDataInfo,
+    setIsLoading,
+    setSaveTranscript,
+    SaveTranscript,
+  } = props;
   const [openToast, setopenToast] = useState(false);
   const [nameValidation, setnameValidation] = useState(false);
   const [emailValidate, setemailValidate] = useState(false);
   const [OTP, setOTP] = useState("");
   const [StartSession, setStartSession] = useState(false);
 
-  
   const classes = useStyles();
 
   useEffect(() => {
@@ -111,34 +117,32 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
     const info = {
       ...zmClient.getSessionInfo(),
     };
-    if(DisplayDataInfo.Displayname){
-     
-    setIsLoading(true);
-    await axios
-      .post(
-        "/api/v1/user/session/join" +
-          "?" +
-          getQueryString({
-            name: DisplayDataInfo.Displayname,
-            email: DisplayDataInfo.emailinfo,
-          })
-      )
-      .then(function (response) {
-        handleClickVariant("success");
-        localStorage.setItem("UserID", `${response.data.data}`);
-        init(`${response.data.data}-${DisplayDataInfo.Displayname}`);
-        history.push(
-          `/${type}?topic=${devConfig.topic}${window.location.search}`
-        );
-      })
-      .catch(function (error) {
-        console.log(error);
-        setemailValidate(true);
-        setnameValidation(true);
-        setStartSession(false);
-      });
-       
-    } else{
+    if (DisplayDataInfo.Displayname) {
+      setIsLoading(true);
+      await axios
+        .post(
+          "/api/v1/user/session/join" +
+            "?" +
+            getQueryString({
+              name: DisplayDataInfo.Displayname,
+              email: DisplayDataInfo.emailinfo,
+            })
+        )
+        .then(function (response) {
+          handleClickVariant("success");
+          localStorage.setItem("UserID", `${response.data.data}`);
+          init(`${response.data.data}-${DisplayDataInfo.Displayname}`);
+          history.push(
+            `/${type}?topic=${devConfig.topic}${window.location.search}`
+          );
+        })
+        .catch(function (error) {
+          console.log(error);
+          setemailValidate(true);
+          setnameValidation(true);
+          setStartSession(false);
+        });
+    } else {
       setnameValidation(true);
     }
   };
@@ -215,10 +219,22 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
                   disabled={user ? true : false}
                 />
                 <Box className="d-flex align-items-center pb-3">
-                <Checkbox  style ={{
+                  <Checkbox
+                    style={{
                       color: "#494CE2",
-                    }} checked={TranscribeStartStop} onClick={() => setTranscribeStartStop(!TranscribeStartStop)} />
-                <Typography className="text-secondary">Save my transcript for <a style={{textDecoration:"underline"}} href="https://insights.talkplayground.com/about">Insights</a></Typography>
+                    }}
+                    checked={SaveTranscript}
+                    onClick={() => setSaveTranscript(!SaveTranscript)}
+                  />
+                  <Typography className="text-secondary">
+                    Save my transcript for{" "}
+                    <a
+                      style={{ textDecoration: "underline" }}
+                      href="https://insights.talkplayground.com/about"
+                    >
+                      Insights
+                    </a>
+                  </Typography>
                 </Box>
               </Box>
 
