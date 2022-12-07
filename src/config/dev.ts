@@ -5,8 +5,8 @@ const urlParams = new URLSearchParams(queryString);
 export const topicInfo = urlParams.get("topic");
 
 export const devConfig = {
-  sdkKey: process.env.REACT_APP_ZOOM_SDK_KEY || "ibquuO2GGD6DjvtP4p2yGC8CcGGlMl72nMJ4",
-  sdkSecret: process.env.REACT_APP_ZOOM_SDK_SECRET || "Xv55BmmlKxAxFiB7rKQNb4u2fT7sNPmTKfnc",
+  sdkKey: process.env.REACT_APP_ZOOM_SDK_KEY,
+  sdkSecret: process.env.REACT_APP_ZOOM_SDK_SECRET,
   topic: topicInfo ? `${topicInfo}` : `${create_UUID()}`,
   // name: `${getExploreName()}-${Math.floor(Math.random() * 1000)}`,
   name: "",
