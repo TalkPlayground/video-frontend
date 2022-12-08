@@ -144,6 +144,11 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
 
   useEffect(() => {
     noSleep.enable();
+
+    const info = {
+      ...zmClient.getSessionInfo(),
+    };
+
     const startAPi = async () => {
       const data: any = await JoinSessionApi();
       if (data && participants?.length == 1) {
@@ -155,8 +160,9 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
             enqueueSnackbar("Transcript Started", { variant: "info" });
           } else {
             await axios.post("/api/v1/user/transcripts/delete/statusChange", {
-              UserId,
+              userId: UserId,
               status: false,
+              sessionId: info.sessionId,
             });
           }
           ///Call Api Here with else
@@ -169,6 +175,9 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   }, []);
 
   const StartStopRecording = async (data: boolean) => {
+    const info = {
+      ...zmClient.getSessionInfo(),
+    };
     if (data) {
       await RecordingZoomApi.startCloudRecording()
         .then(async function (response: any) {
@@ -177,8 +186,9 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
             enqueueSnackbar("Transcript Started", { variant: "info" });
           } else {
             await axios.post("/api/v1/user/transcripts/delete/statusChange", {
-              UserId,
+              userId: UserId,
               status: false,
+              sessionId: info.sessionId,
             });
           }
           ///Call Api Here with else
