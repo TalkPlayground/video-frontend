@@ -897,50 +897,67 @@ const VideoFooter = (props: any) => {
         </>
       )} */}
         </div>
-        <Box className="footer-right d-flex" sx={{ display: { xs: 'none', md: 'block' } }}>
-          <Tooltip title="Meeting details">
-            <IconButton
-              sx={{ display: { xs: 'none', md: 'block' } }}
-              className="ml-2 HoverIcon"
-              onClick={() => {
-                setmodalOpenClose(false);
-                setLinkShowCard(!LinkShowCard);
-              }}
-            >
-              <InfoOutlinedIcon style={{ fill: '#fff' }} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Chat with everyone">
-            <IconButton
-              sx={{ display: { xs: 'none', md: 'block' } }}
-              className="ml-2 HoverIcon"
-              onClick={() => {
-                setmodalOpenClose(!modalOpenClose);
-                setLinkShowCard(false);
-              }}
-            >
-              <Badge variant={NewMsg ? 'dot' : 'standard'} color="info">
-                <CommentOutlinedIcon style={{ fill: '#fff' }} />
-              </Badge>
-            </IconButton>
-          </Tooltip>
-          <Tooltip title={RecordingStatus && SaveTranscript ? 'Transcript On' : 'Transcript Off'}>
-            <IconButton
-              sx={{ display: { xs: 'none', md: 'block' } }}
-              // onClick={() => {
-              //   StartStopRecording(!RecordingStatus);
-              // }}
-              className="ml-2 HoverIcon"
-            >
-              <ClosedCaptionOffOutlinedIcon
-                style={{
-                  fill: RecordingStatus && SaveTranscript ? 'red' : '#fff'
+        <div className="footer-right d-flex align-items-center">
+          <Box
+            sx={{
+              display: { xs: 'none', sm: 'block' }
+            }}
+          >
+            <Tooltip title="Meeting details">
+              <IconButton
+                className="ml-2 HoverIcon"
+                onClick={() => {
+                  setmodalOpenClose(false);
+                  setLinkShowCard(!LinkShowCard);
                 }}
-                color="action"
-              />
-            </IconButton>
-          </Tooltip>
-        </Box>
+              >
+                <InfoOutlinedIcon style={{ fill: '#fff' }} />
+              </IconButton>
+            </Tooltip>
+          </Box>
+          <Box
+            sx={{
+              display: { xs: 'none', sm: 'block' }
+            }}
+          >
+            <Tooltip title="Chat with everyone">
+              <IconButton
+                sx={{ display: { xs: 'none', md: 'block' } }}
+                className="ml-2 HoverIcon"
+                onClick={() => {
+                  setmodalOpenClose(!modalOpenClose);
+                  setLinkShowCard(false);
+                }}
+              >
+                <Badge variant={NewMsg ? 'dot' : 'standard'} color="info">
+                  <CommentOutlinedIcon style={{ fill: '#fff' }} />
+                </Badge>
+              </IconButton>
+            </Tooltip>
+          </Box>
+          <Box
+            sx={{
+              display: { xs: 'none', sm: 'block' }
+            }}
+          >
+            <Tooltip title={RecordingStatus && SaveTranscript ? 'Transcript On' : 'Transcript Off'}>
+              <IconButton
+                sx={{ display: { xs: 'none', md: 'block' } }}
+                // onClick={() => {
+                //   StartStopRecording(!RecordingStatus);
+                // }}
+                className="ml-2 HoverIcon"
+              >
+                <ClosedCaptionOffOutlinedIcon
+                  style={{
+                    fill: RecordingStatus && SaveTranscript ? 'red' : '#fff'
+                  }}
+                  color="action"
+                />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </div>
         <AudioVideoStatisticModal
           visible={statisticVisible}
           setVisible={setStatisticVisible}
