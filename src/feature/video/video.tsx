@@ -1,131 +1,133 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import classnames from "classnames";
-import { RouteComponentProps } from "react-router-dom";
-import ZoomContext from "../../context/zoom-context";
-import ZoomMediaContext from "../../context/media-context";
-import Avatar from "./components/avatar";
-import VideoFooter from "./components/video-footer";
-import Pagination from "./components/pagination";
-import { useCanvasDimension } from "./hooks/useCanvasDimension";
-import { useGalleryLayout } from "./hooks/useGalleryLayout";
-import { usePagination } from "./hooks/usePagination";
-import { useActiveVideo } from "./hooks/useAvtiveVideo";
-import { useShare } from "./hooks/useShare";
-import "./video.scss";
-import { isSupportWebCodecs } from "../../utils/platform";
-import BasicCard from "../../component/pages/Linkcard";
-import {
-  Box,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Drawer,
-  Menu,
-  Paper,
-  Slide,
-  Typography,
-} from "@material-ui/core";
-import MeetingDetails from "./components/MeetingDetails";
-import ChatContainer from "../chat/chat";
-import axios from "axios";
-import { devConfig } from "../../config/dev";
-import { useSnackbar } from "notistack";
-import { Apis, getQueryString } from "../../Api";
-import { Alert, MenuItem } from "@mui/material";
-import { AnyArray } from "immer/dist/internal";
-import nosleep from "nosleep.js";
-import { ChatRecord } from "../chat/chat-types";
-import moment from "moment";
+import React, { useState, useContext, useRef, useEffect, useCallback } from 'react';
+import classnames from 'classnames';
+import _ from 'lodash';
+import { RouteComponentProps } from 'react-router-dom';
+import ZoomContext from '../../context/zoom-context';
+import ZoomMediaContext from '../../context/media-context';
+import Avatar from './components/avatar';
+import VideoFooter from './components/video-footer';
+import Pagination from './components/pagination';
+import { useCanvasDimension } from './hooks/useCanvasDimension';
+import { useGalleryLayout } from './hooks/useGalleryLayout';
+import { usePagination } from './hooks/usePagination';
+import { useActiveVideo } from './hooks/useAvtiveVideo';
+import { useShare } from './hooks/useShare';
+import { useLocalVolume } from './hooks/useLocalVolume';
+import './video.scss';
+import { isSupportWebCodecs } from '../../utils/platform';
+import { isShallowEqual } from '../../utils/util';
+import { useSizeCallback } from '../../hooks/useSizeCallback';
+import { ChatRecord } from '../chat/chat-types';
+import { useSnackbar } from 'notistack';
+import { getQueryString } from '../../Api';
+import axios from 'axios';
+import moment from 'moment';
+import { AnyArray } from 'immer/dist/internal';
+import { Box, Slide } from '@material-ui/core';
+import ChatContainer from '../chat/chat';
+import { Alert } from '@mui/material';
+import BasicCard from '../../component/pages/Linkcard';
+import nosleep from 'nosleep.js';
+import { SELF_VIDEO_ID } from './video-constants';
 
 interface VideoProps extends RouteComponentProps {
-  DisplayDataInfo: any;
+  DisplayDataInfo?: any;
   setIsLoading?: Function;
   setLoadingText?: Function;
   SaveTranscript: any;
 }
 
 const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
-  const { DisplayDataInfo, setIsLoading, setLoadingText, SaveTranscript } =
-    props;
-  const [LinkShowCard, setLinkShowCard] = useState(true);
+  const { DisplayDataInfo, setIsLoading, setLoadingText, SaveTranscript } = props;
   const zmClient = useContext(ZoomContext);
   const {
     mediaStream,
-    video: { decode: isVideoDecodeReady },
+    video: { decode: isVideoDecodeReady }
   } = useContext(ZoomMediaContext);
   const videoRef = useRef<HTMLCanvasElement | null>(null);
   const shareRef = useRef<HTMLCanvasElement | null>(null);
-  const selfShareRef = useRef<(HTMLCanvasElement & HTMLVideoElement) | null>(
-    null
-  );
+  const selfShareRef = useRef<(HTMLCanvasElement & HTMLVideoElement) | null>(null);
   const shareContainerRef = useRef<HTMLDivElement | null>(null);
+  const [containerDimension, setContainerDimension] = useState({
+    width: 0,
+    height: 0
+  });
+  const [shareViewDimension, setShareViewDimension] = useState({
+    width: 0,
+    height: 0
+  });
   const canvasDimension = useCanvasDimension(mediaStream, videoRef);
-  const activeVideo = useActiveVideo(zmClient);
-  const myVideoRef = useRef<HTMLCanvasElement | null>(null);
-
-  const [chatRecords, setChatRecords] = useState<ChatRecord[]>([]);
-  const { page, pageSize, totalPage, totalSize, setPage } = usePagination(
-    zmClient,
-    canvasDimension
-  );
-
-  const [selfViewGalleryLayout, setselfViewGalleryLayout] = useState(false);
-  const {
-    visibleParticipants,
-    setVisibleParticipants,
-    layout: videoLayout,
-  } = useGalleryLayout(
-    zmClient,
-    mediaStream,
-    isVideoDecodeReady,
-    videoRef,
-    canvasDimension,
-    {
-      myVideoRef,
-      page,
-      pageSize,
-      totalPage,
-      totalSize,
-      selfViewGalleryLayout,
-    }
-  );
-
-  const { isRecieveSharing, isStartedShare, sharedContentDimension } = useShare(
-    zmClient,
-    mediaStream,
-    shareRef
-  );
 
   const [modalOpenClose, setmodalOpenClose] = useState(false);
+  const [LinkShowCard, setLinkShowCard] = useState(true);
+  const [chatRecords, setChatRecords] = useState<ChatRecord[]>([]);
   const [RecordingStatus, setRecordingStatus] = useState(false);
-  var UserId = localStorage.getItem("UserID");
-
-  const isSharing = isRecieveSharing || isStartedShare;
-  const contentDimension = sharedContentDimension;
-  if (isSharing && shareContainerRef.current) {
-    const { width, height } = sharedContentDimension;
-    const { width: containerWidth, height: containerHeight } =
-      shareContainerRef.current.getBoundingClientRect();
-    const ratio = Math.min(containerWidth / width, containerHeight / height, 1);
-    contentDimension.width = Math.floor(width * ratio);
-    contentDimension.height = Math.floor(height * ratio);
-  }
-
+  const { enqueueSnackbar } = useSnackbar();
+  const RecordingZoomApi: any = zmClient?.getRecordingClient();
+  var UserId = localStorage.getItem('UserID');
+  const [selfViewGalleryLayout, setselfViewGalleryLayout] = useState(false);
+  const [ShowAlert, setShowAlert] = useState(false);
+  const [RenderShowHide, setRenderShowHide] = useState(false);
+  const [AllvisibleParticipants, setAllvisibleParticipants] = useState<AnyArray>([]);
+  const myVideoRef = useRef<HTMLCanvasElement | null>(null);
+  const [NewMsg, setNewMsg] = useState(false);
   var noSleep = new nosleep();
 
-  const { enqueueSnackbar } = useSnackbar();
+  const activeVideo = useActiveVideo(zmClient);
+  const { page, pageSize, totalPage, totalSize, setPage } = usePagination(
+    zmClient,
+    canvasDimension,
+    selfViewGalleryLayout
+  );
+  const {
+    visibleParticipants,
+    layout: videoLayout,
+    setSelfVideoToggle
+  } = useGalleryLayout(zmClient, mediaStream, isVideoDecodeReady, videoRef, canvasDimension, {
+    page,
+    pageSize,
+    totalPage,
+    totalSize
+  });
+  const { isRecieveSharing, isStartedShare, sharedContentDimension } = useShare(zmClient, mediaStream, shareRef);
+
+  const { userVolumeList, setLocalVolume } = useLocalVolume();
+
+  const isSharing = isRecieveSharing || isStartedShare;
+  useEffect(() => {
+    if (isSharing && shareContainerRef.current) {
+      const { width, height } = sharedContentDimension;
+      const { width: containerWidth, height: containerHeight } = containerDimension;
+      const ratio = Math.min(containerWidth / width, containerHeight / height, 1);
+      setShareViewDimension({
+        width: Math.floor(width * ratio),
+        height: Math.floor(height * ratio)
+      });
+    }
+  }, [isSharing, sharedContentDimension, containerDimension]);
+
+  const onShareContainerResize = useCallback(({ width, height }: any) => {
+    _.throttle(() => {
+      setContainerDimension({ width, height });
+    }, 50)();
+  }, []);
+  useSizeCallback(shareContainerRef.current, onShareContainerResize);
+  useEffect(() => {
+    if (!isShallowEqual(shareViewDimension, sharedContentDimension)) {
+      mediaStream?.updateSharingCanvasDimension(shareViewDimension.width, shareViewDimension.height);
+    }
+  }, [mediaStream, sharedContentDimension, shareViewDimension]);
 
   const JoinSessionApi = async () => {
     const info = {
-      ...zmClient.getSessionInfo(),
+      ...zmClient.getSessionInfo()
     };
     var a = false;
     if (UserId) {
       await axios
-        .post("/api/v1/user/session/store", {
+        .post('/api/v1/user/session/store', {
           userId: UserId,
-          sessionId: info.sessionId,
+          sessionId: info.sessionId
         })
         .then(function (response) {
           a = true;
@@ -140,13 +142,12 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   };
 
   const participants = zmClient.getAllUser();
-  const RecordingZoomApi: any = zmClient?.getRecordingClient();
 
   useEffect(() => {
     noSleep.enable();
 
     const info = {
-      ...zmClient.getSessionInfo(),
+      ...zmClient.getSessionInfo()
     };
 
     const startAPi = async () => {
@@ -154,15 +155,15 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
       if (data && participants?.length == 1) {
         StartStopRecording(!RecordingStatus);
       } else if (data) {
-        if (RecordingZoomApi?.getCloudRecordingStatus() == "Recording") {
+        if (RecordingZoomApi?.getCloudRecordingStatus() == 'Recording') {
           setRecordingStatus(true);
           if (SaveTranscript) {
-            enqueueSnackbar("Transcript Started", { variant: "info" });
+            enqueueSnackbar('Transcript Started', { variant: 'info' });
           } else {
-            await axios.post("/api/v1/user/transcripts/delete/statusChange", {
+            await axios.post('/api/v1/user/transcripts/delete/statusChange', {
               userId: UserId,
               status: false,
-              sessionId: info.sessionId,
+              sessionId: info.sessionId
             });
           }
           ///Call Api Here with else
@@ -174,41 +175,39 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     startAPi();
   }, []);
 
+  const info = {
+    ...zmClient.getSessionInfo()
+  };
   const StartStopRecording = async (data: boolean) => {
-    const info = {
-      ...zmClient.getSessionInfo(),
-    };
     if (data) {
       await RecordingZoomApi.startCloudRecording()
         .then(async function (response: any) {
           setRecordingStatus(data);
           if (SaveTranscript) {
-            enqueueSnackbar("Transcript Started", { variant: "info" });
+            enqueueSnackbar('Transcript Started', { variant: 'info' });
           } else {
-            await axios.post("/api/v1/user/transcripts/delete/statusChange", {
+            await axios.post('/api/v1/user/transcripts/delete/statusChange', {
               userId: UserId,
               status: false,
-              sessionId: info.sessionId,
+              sessionId: info.sessionId
             });
           }
           ///Call Api Here with else
           await axios.post(
-            "/api/v1/user/session/frontend/loggers" +
-              "?" +
+            '/api/v1/user/session/frontend/loggers' +
+              '?' +
               getQueryString({
-                logs: `Recording Started on ${moment().format(
-                  "DD/MM/YYYY LT"
-                )}`,
+                logs: `Recording Started on ${moment().format('DD/MM/YYYY LT')}`
               })
           );
         })
         .catch(async function (error: any) {
           console.log(error);
           await axios.post(
-            "/api/v1/user/session/frontend/loggers" +
-              "?" +
+            '/api/v1/user/session/frontend/loggers' +
+              '?' +
               getQueryString({
-                logs: error?.message + " " + moment().format("DD/MM/YYYY LT"),
+                logs: error?.message + ' ' + moment().format('DD/MM/YYYY LT')
               })
           );
         });
@@ -217,60 +216,27 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         .then(async function (response: any) {
           setRecordingStatus(data);
           if (SaveTranscript) {
-            enqueueSnackbar("Transcript Stoped", { variant: "info" });
+            enqueueSnackbar('Transcript Stoped', { variant: 'info' });
           }
           await axios.post(
-            "/api/v1/user/session/frontend/loggers" +
-              "?" +
+            '/api/v1/user/session/frontend/loggers' +
+              '?' +
               getQueryString({
-                logs: `Recording Stoped on ${moment().format("DD/MM/YYYY LT")}`,
+                logs: `Recording Stoped on ${moment().format('DD/MM/YYYY LT')}`
               })
           );
         })
         .catch(async function (error: any) {
           console.log(error);
           await axios.post(
-            "/api/v1/user/session/frontend/loggers" +
-              "?" +
+            '/api/v1/user/session/frontend/loggers' +
+              '?' +
               getQueryString({
-                logs: error?.message + " " + moment().format("DD/MM/YYYY LT"),
+                logs: error?.message + ' ' + moment().format('DD/MM/YYYY LT')
               })
           );
         });
     }
-  };
-
-  const [NewMsg, setNewMsg] = useState(false);
-
-  const hand = () => {
-    setTimeout(() => {
-      if (!modalOpenClose) {
-        setNewMsg(true);
-      }
-    }, 1000);
-  };
-
-  if (NewMsg && modalOpenClose) {
-    setNewMsg(false);
-  }
-
-  useEffect(() => {
-    if (modalOpenClose == false) {
-      zmClient.on("chat-on-message", hand);
-    }
-    if (modalOpenClose) {
-      setNewMsg(false);
-    }
-  }, [modalOpenClose, zmClient]);
-
-  const [RenderShowHide, setRenderShowHide] = useState(false);
-  const [AllvisibleParticipants, setAllvisibleParticipants] =
-    useState<AnyArray>([]);
-
-  const [ShowAlert, setShowAlert] = useState(false);
-
-  const info = {
-    ...zmClient.getSessionInfo(),
   };
 
   useEffect(() => {
@@ -281,61 +247,57 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     }
   }, [ShowAlert]);
 
-  const handleselfView = (data: any) => {
+  const handleselfView = async (data: any) => {
     if (data) {
-      setShowAlert(true);
-      setselfViewGalleryLayout(true);
-      var index = visibleParticipants.findIndex(
-        (e: any) => e.userId === info.userId
-      );
-      AllvisibleParticipants.push(visibleParticipants[index]);
-      setRenderShowHide(true);
-      visibleParticipants.splice(index, 1);
+      await setSelfVideoToggle(data);
+      // setShowAlert(true);
+      enqueueSnackbar('Hide Self View', { variant: 'info' });
+      setselfViewGalleryLayout(data);
+      // var index = await visibleParticipants.findIndex((e: any) => e.userId === info.userId);
+      // AllvisibleParticipants.push(visibleParticipants[index]);
+      // await visibleParticipants.splice(index, 1);
+      // setRenderShowHide(true);
+      // console.log(index, visibleParticipants);
     } else {
-      setselfViewGalleryLayout(false);
-      visibleParticipants.push(AllvisibleParticipants[0]);
-      setRenderShowHide(false);
-      setAllvisibleParticipants([]);
+      setSelfVideoToggle(data);
+      enqueueSnackbar('Show Self View', { variant: 'info' });
+      setselfViewGalleryLayout(data);
+      // visibleParticipants.push(AllvisibleParticipants[0]);
+      // setRenderShowHide(false);
+      // setAllvisibleParticipants([]);
     }
   };
 
   return (
     <div className="viewport">
       {LinkShowCard && (
-        <BasicCard
-          setLinkShowCard={setLinkShowCard}
-          LinkShowCard={LinkShowCard}
-          DisplayDataInfo={DisplayDataInfo}
-        />
+        <BasicCard setLinkShowCard={setLinkShowCard} LinkShowCard={LinkShowCard} DisplayDataInfo={DisplayDataInfo} />
       )}
       <div
-        className={classnames("share-container", {
-          "in-sharing": isSharing,
+        className={classnames('share-container', {
+          'in-sharing': isSharing
         })}
         ref={shareContainerRef}
       >
         <div
           className="share-container-viewport"
           style={{
-            width: `${contentDimension.width}px`,
-            height: `${contentDimension.height}px`,
+            width: `${shareViewDimension.width}px`,
+            height: `${shareViewDimension.height}px`
           }}
         >
-          <canvas
-            className={classnames("share-canvas", { hidden: isStartedShare })}
-            ref={shareRef}
-          />
+          <canvas className={classnames('share-canvas', { hidden: isStartedShare })} ref={shareRef} />
           {isSupportWebCodecs() ? (
             <video
-              className={classnames("share-canvas", {
-                hidden: isRecieveSharing,
+              className={classnames('share-canvas', {
+                hidden: isRecieveSharing
               })}
               ref={selfShareRef}
             />
           ) : (
             <canvas
-              className={classnames("share-canvas", {
-                hidden: isRecieveSharing,
+              className={classnames('share-canvas', {
+                hidden: isRecieveSharing
               })}
               ref={selfShareRef}
             />
@@ -343,19 +305,13 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         </div>
       </div>
       <div
-        className={classnames("video-container", {
-          "in-sharing": isSharing,
+        className={classnames('video-container', {
+          'in-sharing': isSharing
         })}
       >
-        <canvas
-          className="video-canvas"
-          id="video-canvas"
-          width="800"
-          height="600"
-          ref={videoRef}
-        />
+        <canvas className="video-canvas" id="video-canvas" width="800" height="600" ref={videoRef} />
         <ul className="avatar-list">
-          {visibleParticipants?.map((user, index) => {
+          {visibleParticipants.map((user, index) => {
             if (index > videoLayout.length - 1) {
               return null;
             }
@@ -367,11 +323,13 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
                 participant={user}
                 key={user.userId}
                 isActive={activeVideo === user.userId}
+                volume={userVolumeList.find((u) => u.userId === user.userId)?.volume}
+                setLocalVolume={setLocalVolume}
                 style={{
                   width: `${width}px`,
                   height: `${height}px`,
                   top: `${canvasHeight - y - height}px`,
-                  left: `${x}px`,
+                  left: `${x}px`
                 }}
               />
             );
@@ -379,11 +337,11 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         </ul>
       </div>
 
-      <Slide direction="left" in={ShowAlert} mountOnEnter unmountOnExit>
+      {/* <Slide direction="left" in={ShowAlert} mountOnEnter unmountOnExit>
         <Box>
           <Alert>Hide Self View</Alert>
         </Box>
-      </Slide>
+      </Slide> */}
 
       <Box>
         <ChatContainer
@@ -393,7 +351,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
           chatRecords={chatRecords}
         />
       </Box>
-
+      {/* <VideoFooter className="video-operations" sharing shareRef={selfShareRef} /> */}
       <VideoFooter
         className="video-operations"
         sharing
@@ -412,15 +370,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         setLoadingText={setLoadingText}
         SaveTranscript={SaveTranscript}
       />
-
-      {totalPage > 1 && (
-        <Pagination
-          page={page}
-          totalPage={totalPage}
-          setPage={setPage}
-          inSharing={isSharing}
-        />
-      )}
+      {totalPage > 1 && <Pagination page={page} totalPage={totalPage} setPage={setPage} inSharing={isSharing} />}
     </div>
   );
 };

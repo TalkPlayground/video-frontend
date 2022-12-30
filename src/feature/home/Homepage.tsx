@@ -12,38 +12,38 @@ import {
   IconButton,
   Alert,
   Slide,
-  Switch,
-} from "@mui/material";
-import React, { useEffect, useState } from "react";
-import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
-import LinkIcon from "@mui/icons-material/Link";
-import HomepagePhoto from "../../assets/homepagePhoto.jpg";
+  Switch
+} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
+import LinkIcon from '@mui/icons-material/Link';
+import HomepagePhoto from '../../assets/homepagePhoto.jpg';
 //   import { useNavigate } from "react-router-dom";
-import CloseIcon from "@mui/icons-material/Close";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import CloseIcon from '@mui/icons-material/Close';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
-import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
-import Header from "../../component/pages/Header";
-import { RouteComponentProps } from "react-router-dom";
-import "../../index.css";
-import { devConfig, topicInfo } from "../../config/dev";
-import { getQueryString, supabase } from "../../Api";
-import axios from "axios";
-import { useSnackbar } from "notistack";
-import chromeImage from "../../assets/chrome.png";
-import DoneIcon from "@mui/icons-material/Done";
-import { url } from "../../App";
+import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
+import Header from '../../component/pages/Header';
+import { RouteComponentProps } from 'react-router-dom';
+import '../../index.css';
+import { devConfig, topicInfo } from '../../config/dev';
+import { getQueryString } from '../../Api';
+import axios from 'axios';
+import { useSnackbar } from 'notistack';
+import chromeImage from '../../assets/chrome.png';
+import DoneIcon from '@mui/icons-material/Done';
+import { url } from '../../App';
 
 const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
   width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #fff",
+  bgcolor: 'background.paper',
+  border: '2px solid #fff',
   boxShadow: 24,
-  p: 2,
+  p: 2
 };
 
 function KeepMountedModal({ setOpenModal, openModal }: any) {
@@ -71,10 +71,10 @@ function KeepMountedModal({ setOpenModal, openModal }: any) {
           <Box className="d-flex justify-content-between align-items-center">
             <Typography
               style={{
-                fontSize: "20px",
+                fontSize: '20px',
                 fontWeight: 600,
-                lineHeight: "43.3px",
-                color: "black",
+                lineHeight: '43.3px',
+                color: 'black'
               }}
             >
               Hear's the link of your meeting
@@ -85,24 +85,17 @@ function KeepMountedModal({ setOpenModal, openModal }: any) {
             </IconButton>
           </Box>
           <Typography variant="h6" fontSize={18}>
-            Copy this link and send it to people you want to meet with. Be sure
-            to save it so you can use it later, too.
+            Copy this link and send it to people you want to meet with. Be sure to save it so you can use it later, too.
           </Typography>
           <Box className="d-flex justify-content-between align-items-center bg-light px-2 my-3 rounded mb-5 ">
-            <p id="copyInput">
-              {url?.length > 35 ? url.slice(0, 35) + "..." : url}
-            </p>
+            <p id="copyInput">{url?.length > 35 ? url.slice(0, 35) + '...' : url}</p>
             <IconButton onClick={copyLink}>
               <ContentCopyIcon className="cursor-pointer" />
             </IconButton>
           </Box>
         </Box>
       </Modal>
-      <Snackbar
-        open={copyLinkDone}
-        message="Copied meeting link"
-        key={"bottom" + "left"}
-      />
+      <Snackbar open={copyLinkDone} message="Copied meeting link" key={'bottom' + 'left'} />
     </>
   );
 }
@@ -119,36 +112,6 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
   const [openModal, setOpenModal] = React.useState(false);
   const [SupportBrowser, setSupportBrowser] = useState<any>(null);
 
-  const user = supabase.auth.user();
-
-  useEffect(() => {
-    const submitformLink = async () => {
-      if (user?.user_metadata?.fullname && topicInfo?.length) {
-        await axios
-          .post(
-            "/api/v1/user/session/join" +
-              "?" +
-              getQueryString({
-                name: user?.user_metadata?.fullname,
-                email: user.email,
-              })
-          )
-          .then(function (response) {
-            handleClickVariant("success", "");
-            localStorage.setItem("UserID", `${response.data.data}`);
-            init(`${response.data.data}-${user?.user_metadata?.fullname}`);
-            history.push(`/video?topic=${topicInfo}`);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      } else if (topicInfo?.length) {
-        history.push(`/Join`);
-      }
-    };
-    submitformLink();
-  }, []);
-
   useEffect(() => {
     function fnBrowserDetect() {
       let userAgent = navigator.userAgent;
@@ -156,13 +119,13 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
       if (userAgent.match(/chrome|chromium|crios/i)) {
         setSupportBrowser(null);
       } else if (userAgent.match(/firefox|fxios/i)) {
-        setSupportBrowser("firefox");
+        setSupportBrowser('firefox');
       } else if (userAgent.match(/safari/i)) {
-        setSupportBrowser("safari");
+        setSupportBrowser('safari');
       } else if (userAgent.match(/opr\//i)) {
-        setSupportBrowser("opera");
+        setSupportBrowser('opera');
       } else if (userAgent.match(/edg/i)) {
-        setSupportBrowser("edge");
+        setSupportBrowser('edge');
       }
     }
     fnBrowserDetect();
@@ -192,37 +155,11 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
 
   const handleClickVariant = (variant: any, data: String) => {
     // variant could be success, error, warning, info, or default
-    enqueueSnackbar(data ? data : "Joined Successfully", { variant });
+    enqueueSnackbar(data ? data : 'Joined Successfully', { variant });
   };
 
   const startSession = async () => {
-    const userData = supabase.auth.user();
-
-    if (userData) {
-      await axios
-        .post(
-          "/api/v1/user/session/join" +
-            "?" +
-            getQueryString({
-              name: userData?.user_metadata?.fullname,
-              email: userData?.email,
-            })
-        )
-        .then(function (response) {
-          handleClickVariant("success", "");
-          localStorage.setItem("UserID", `${response.data.data}`);
-          init(`${response.data.data}-${userData?.user_metadata?.fullname}`);
-          history.push(
-            `/video?topic=${devConfig.topic}${window.location.search}`
-          );
-        })
-        .catch(function (error) {
-          console.log(error);
-          handleClickVariant("error", "Please try again");
-        });
-    } else {
-      history.push(`/Join`);
-    }
+    history.push(`/Join`);
   };
 
   const createSession = () => {
@@ -237,8 +174,8 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
       {SupportBrowser && (
         <Slide direction="down" in={SupportBrowser ? true : false}>
           <Alert severity="error">
-            Your {SupportBrowser} browser is not supported by TalkPlayground at
-            this time. Please change to Chrome browser to use TalkPlayground.
+            Your {SupportBrowser} browser is not supported by TalkPlayground at this time. Please change to Chrome
+            browser to use TalkPlayground.
           </Alert>
         </Slide>
       )}
@@ -246,19 +183,13 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
       <KeepMountedModal setOpenModal={setOpenModal} openModal={openModal} />
       <Grid className="d-flex justify-content-center  h-auto">
         <Grid container item xs={12} md={11} className="my-5 py-4 ">
-          <Grid
-            item={true}
-            xs={12}
-            md={6}
-            order={{ xs: 2, md: 0 }}
-            className=" text-left"
-          >
+          <Grid item={true} xs={12} md={6} order={{ xs: 2, md: 0 }} className=" text-left">
             <Typography
               style={{
-                fontSize: "32px",
+                fontSize: '32px',
                 fontWeight: 500,
-                lineHeight: "43.3px",
-                color: "black",
+                lineHeight: '43.3px',
+                color: 'black'
               }}
               className="pt-2 px-5"
             >
@@ -266,10 +197,10 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
             </Typography>
             <Typography
               style={{
-                fontSize: "32px",
+                fontSize: '32px',
                 fontWeight: 500,
-                lineHeight: "43.3px",
-                color: "black",
+                lineHeight: '43.3px',
+                color: 'black'
               }}
               className="px-5"
             >
@@ -277,25 +208,24 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
             </Typography>
             <Typography
               style={{
-                fontSize: "22px",
+                fontSize: '22px',
                 fontWeight: 300,
-                lineHeight: "31.51px",
+                lineHeight: '31.51px'
               }}
               className="pb-4 pt-1 px-5 bg-red-600"
             >
-              Designed specifically for building emotional <br /> awareness.
-              Free and available for all.
+              Designed specifically for building emotional <br /> awareness. Free and available for all.
             </Typography>
             <Box className="mt-3 pb-10 px-5">
               <Button
                 id="demo-positioned-button"
-                aria-controls={open ? "demo-positioned-menu" : undefined}
+                aria-controls={open ? 'demo-positioned-menu' : undefined}
                 aria-haspopup="true"
-                aria-expanded={open ? "true" : undefined}
+                aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
                 startIcon={<VideocamOutlinedIcon />}
                 variant="contained"
-                style={{ backgroundColor: "#494CE2", color: "#fff" }}
+                style={{ backgroundColor: '#494CE2', color: '#fff' }}
               >
                 <span className="text-capitalize">New Meeting</span>
               </Button>
@@ -306,66 +236,42 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
                 open={open}
                 onClose={handleClose}
                 anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
+                  vertical: 'top',
+                  horizontal: 'left'
                 }}
                 transformOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
+                  vertical: 'top',
+                  horizontal: 'left'
                 }}
-                style={{ marginLeft: "38px" }}
+                style={{ marginLeft: '38px' }}
               >
                 <MenuItem onClick={startSession} className="py-1 mb-1">
                   <VideocamOutlinedIcon className="mr-2" />
-                  <ListItemText
-                    primary={
-                      <span className="capitalize text-xs">
-                        Start a session now
-                      </span>
-                    }
-                  />
+                  <ListItemText primary={<span className="capitalize text-xs">Start a session now</span>} />
                 </MenuItem>
                 <MenuItem onClick={createSession} className="py-1">
                   <LinkIcon className="mr-2" />
-                  <ListItemText
-                    primary={
-                      <span className="capitalize text-xs">
-                        Create a session for later
-                      </span>
-                    }
-                  />
+                  <ListItemText primary={<span className="capitalize text-xs">Create a session for later</span>} />
                 </MenuItem>
               </Menu>
             </Box>
             <Box className="d-flex align-items-center pt-3">
-              <Typography
-                className="text-secondary pl-5"
-                style={{ fontSize: "15px" }}
-              >
+              <Typography className="text-secondary pl-5" style={{ fontSize: '15px' }}>
                 Recommended Browser
               </Typography>
-              <img
-                src={chromeImage}
-                width="25"
-                alt="recomended"
-                className="mx-2"
-              />
+              <img src={chromeImage} width="25" alt="recomended" className="mx-2" />
             </Box>
 
             <Divider className="ml-5 mt-3" />
-            <Typography className="pt-3 px-5" style={{ fontSize: "15px" }}>
-              <span className="LearnMore pr-1" style={{ color: "#494CE2" }}>
+            <Typography className="pt-3 px-5" style={{ fontSize: '15px' }}>
+              <span className="LearnMore pr-1" style={{ color: '#494CE2' }}>
                 Learn more
               </span>
               about Playground
             </Typography>
           </Grid>
           <Grid item={true} xs={12} md={6}>
-            <img
-              className="rounded HomepagePhoto"
-              src={HomepagePhoto}
-              alt="HomepagePhoto"
-            />
+            <img className="rounded HomepagePhoto" src={HomepagePhoto} alt="HomepagePhoto" />
           </Grid>
         </Grid>
       </Grid>

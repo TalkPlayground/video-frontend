@@ -4,7 +4,6 @@ export function useActiveVideo(zmClient: ZoomClient) {
   const [activeVideo, setActiveVideo] = useState<number>(0);
   const [activeSpeaker, setActiveSpeaker] = useState<number>(0);
   const onVideoActiveChange = useCallback((payload:any) => {
-
     const { state, userId } = payload;
     if (state === 'Active') {
       setActiveVideo(userId);

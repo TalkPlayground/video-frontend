@@ -73,7 +73,7 @@ export function AudioVideoSetting({
         }
       });
       if (CameraList?.length == 0) {
-        setCameraList(cameraList[0].label);
+        setCameraList(cameraList[0]?.label);
       }
     }
   }, [onAudioVideoOption]);

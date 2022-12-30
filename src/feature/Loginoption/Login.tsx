@@ -1,202 +1,168 @@
-import {
-  Box,
-  Button,
-  Grid,
-  IconButton,
-  makeStyles,
-  TextField,
-  Typography,
-} from "@material-ui/core";
-import { useStytch } from "@stytch/stytch-react";
-import { createClient } from "@supabase/supabase-js";
-import axios from "axios";
-import { useSnackbar } from "notistack";
-import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { Apis, baseURL, supabase } from "../../Api";
+import { Box, Button, Drawer, Grid, IconButton, Menu, MenuItem, Typography } from '@material-ui/core';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import Header_logo from '../../assets/header_logo.png';
 
-import HeaderIcon from "../../assets/app_image.png";
+import Header_icon from '../../assets/app_image.png';
+import './index.scss';
+import { useHistory, useLocation } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+import LogoutIcon from '@mui/icons-material/Logout';
+// import { supabase } from "../../Api";
+import MenuIcon from '@mui/icons-material/Menu';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
-const useStyles = makeStyles({
-  root: {
-    color: "rgb(73, 76, 226)",
-    cursor: "pointer",
-    "&:hover": {
-      color: "rgb(73, 76, 226)",
-      textDecoration: "underline",
-    },
-  },
-});
-
-function Loginpage(props: any) {
+function Header() {
   const history = useHistory();
-  const classes = useStyles();
-  const [email, setemailData] = useState("");
-  const [passwordData, setpasswordData] = useState("");
-  const [emailValidate, setemailValidate] = useState(false);
-  const [passwordValidation, setpasswordValidation] = useState(false);
-  const [IsError, setIsError] = useState(false);
-  const [SendingEmail, setSendingEmail] = useState(
-    window.localStorage.getItem("SendingEmail") == "true" ? true : false
-  );
+  const path = useLocation();
+  const [LoginOrNot, setLoginOrNot] = useState(false);
+
+  const [openDrawer, setopenDrawer] = useState(false);
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: any) => {
+    if (LoginOrNot) {
+      setAnchorEl(event.currentTarget);
+    } else {
+      history.push('/Loginoption');
+    }
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const { enqueueSnackbar } = useSnackbar();
 
-  useEffect(() => {
-    if (SendingEmail) {
-      setTimeout(() => {
-        window.localStorage.removeItem("SendingEmail");
-        setSendingEmail(false);
-      }, 60000);
-    }
-  }, [SendingEmail]);
-
-  useEffect(() => {
-    setemailValidate(false);
-  }, [email]);
-
-  useEffect(() => {
-    setpasswordValidation(false);
-  }, [passwordData]); /*  */
-
-  function validatePassword(newPassword: string) {
-    var minNumberofChars = 6;
-    var maxNumberofChars = 16;
-    var regularExpression = /^[a-zA-Z0-9!@#$%^&*]{6,16}$/;
-    if (!regularExpression.test(newPassword)) {
-      return "password should contain atleast one number and one special character";
-    } else if (
-      newPassword.length < minNumberofChars ||
-      newPassword.length > maxNumberofChars
-    ) {
-      return "Your password must be at least 8 characters";
-    } else {
-      return true;
-    }
-  }
-
   const handleClickVariant = (variant: any) => {
     // variant could be success, error, warning, info, or default
-    enqueueSnackbar("Logged In", { variant });
+    enqueueSnackbar('Logout successfully', { variant });
   };
 
-  const [LoginStart, setLoginStart] = useState(false);
-
-  const LoginData = async () => {
-    setLoginStart(true);
-    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
-      const user = await supabase.auth.signIn(
-        { email },
-        {
-          shouldCreateUser: false,
-          redirectTo: window.location.origin,
-        }
-      );
-      if (user.error?.message) {
-        setIsError(true);
-        setLoginStart(false);
-      } else {
-        enqueueSnackbar(`Email Sended`, { variant: "success" });
-        window.localStorage.setItem("SendingEmail", "true");
-        setSendingEmail(true);
-      }
-      setemailData("");
-    } else if (
-      !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email) &&
-      !passwordData
-    ) {
-      setemailValidate(true);
-      setpasswordValidation(true);
-      setLoginStart(false);
-    } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
-      setemailValidate(true);
-      setLoginStart(false);
-    }
-    if (!passwordData || !validatePassword(passwordData)) {
-      setpasswordValidation(true);
-      var pdata = validatePassword(passwordData);
-      setLoginStart(false);
-    }
+  const Loggedout = async () => {
+    localStorage.removeItem('accessToken');
+    setLoginOrNot(false);
+    setopenDrawer(false);
+    setAnchorEl(null);
+    // await supabase.auth.signOut();
+    handleClickVariant('success');
   };
+
+  // useEffect(() => {
+  //   const user = supabase.auth.user();
+  //   if (user) {
+  //     setLoginOrNot(true);
+  //   } else {
+  //     supabase.auth.signOut();
+  //     setLoginOrNot(false);
+  //   }
+  // });
 
   return (
-    <Grid container item>
-      <Grid
-        item={true}
-        xs={12}
-        className="d-flex flex-column justify-content-center align-items-center"
-      >
-        <img src={HeaderIcon} alt="header_logo" style={{ width: "10rem" }} />
-        <Typography
-          className="pb-5"
-          style={{
-            fontSize: "3.54rem",
-            lineHeight: "43.3px",
-            color: "#434343",
-          }}
-        >
-          Playground
-        </Typography>
-        {!IsError && !SendingEmail ? (
-          <>
-            <TextField
-              error={emailValidate ? true : false}
-              id="filled-search"
-              label="Email"
-              type="email"
-              style={{ paddingBottom: "20px" }}
-              className="w-72"
-              variant="outlined"
-              size="small"
-              autoComplete="off"
-              onChange={(e) => setemailData(e.target.value)}
-            />
-
-            <Box>
-              <Button
-                disabled={LoginStart}
-                variant="contained"
-                size="small"
-                className="w-20"
-                onClick={LoginData}
-              >
-                <span className="text-capitalize">Send Email</span>
-              </Button>
-            </Box>
-          </>
-        ) : SendingEmail ? (
-          <>
-            <img
-              src="https://c.tenor.com/0ceXa2Dg8ywAAAAC/email-sent.gif"
-              height={200}
-            />
-          </>
-        ) : IsError ? (
-          <>
-            <Button
-              color="primary"
-              size="small"
-              className="mb-3 px-3"
-              style={{ borderRadius: "50px" }}
-              variant="contained"
-              onClick={() => {
-                setIsError(false);
-                setLoginStart(false);
-              }}
-            >
-              <span className="text-capitalize">Send Email Again</span>
-            </Button>
-            <span
-              className={classes.root}
-              onClick={() => history.push("/Register")}
-            >
-              Don't have an Account? Sign up
-            </span>
-          </>
-        ) : null}
+    <Grid container item className="align-items-center py-2 px-5">
+      <Grid item={true} xs={6} md={6} className="d-flex justify-items-start">
+        <img src={Header_logo} className="Header_logo" alt="Header_logo" />
       </Grid>
+      <Grid item={true} xs={6} md={6} className="d-flex justify-content-end">
+        <Box className="align-items-center" sx={{ display: { xs: 'none', sm: 'flex' } }}>
+          <Typography className="pr-4">
+            {moment().format('LT')} <span className="px-1">&#8226;</span>
+            {moment().format('ddd, MMM DD')}
+          </Typography>
+          {/* <Button
+            variant="outlined"
+            style={{ textTransform: "inherit", color: "#949494",display: path.pathname == "/" ? "" : "none" }}
+            id="basic-button"
+            aria-controls={open ? "basic-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            // onClick={() =>
+            //   accessToken ? Loggedout() : history.push("/Loginoption")
+            // }
+            onClick={handleClick}
+            startIcon={
+              <img
+                src={Header_icon}
+                style={{ width: "20px" }}
+                alt="Header_logo"
+              />
+            }
+          >
+            <span className={LoginOrNot ? "text-capitalize" : ""}>
+              {LoginOrNot ? `Logged In` : "Login to view insight"}
+            </span>
+          </Button> */}
+
+          {/* <Button
+            id="basic-button"
+            aria-controls={open ? "basic-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            onClick={handleClick}
+          >
+            Dashboard
+          </Button> */}
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            style={{ marginTop: '2.5em' }}
+            MenuListProps={{
+              'aria-labelledby': 'basic-button'
+            }}
+          >
+            {/* <MenuItem onClick={handleClose}>Logout</MenuItem> */}
+            <MenuItem className="mx-1" onClick={Loggedout} disableRipple>
+              <LogoutIcon style={{ marginRight: '10px', fontSize: '20px' }} />
+              <span style={{ fontSize: '.9rem' }}>Logout</span>
+            </MenuItem>
+          </Menu>
+        </Box>
+        {/* <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
+          <IconButton onClick={() => setopenDrawer(!openDrawer)}>
+            <MenuIcon fontSize="large" style={{ cursor: 'pointer' }} />
+          </IconButton>
+        </Box> */}
+      </Grid>
+      <Drawer anchor="right" open={openDrawer}>
+        <Box sx={{ width: 250 }} className="d-flex flex-column align-items-start h-100">
+          <IconButton onClick={() => setopenDrawer(!openDrawer)}>
+            <ArrowForwardIosIcon fontSize="small" style={{ cursor: 'pointer' }} />
+          </IconButton>
+          <Box className="w-100" style={{ flex: 1 }}>
+            <Typography className="text-center py-2 mt-2" style={{ backgroundColor: '#494CE2', color: '#fff' }}>
+              {moment().format('LT')} <span className="px-1">&#8226;</span>
+              {moment().format('dddd, MMMM DD')}
+            </Typography>
+            <img src={Header_logo} className="Header_logo my-2" alt="Header_logo" />
+          </Box>
+          <Box
+            className={`w-100 my-2 px-3 py-2 d-flex align-items-center ${LoginOrNot && 'bg-danger'} text-white`}
+            style={{
+              cursor: 'pointer',
+              backgroundColor: !LoginOrNot ? '#494CE2' : '',
+              color: '#fff'
+            }}
+            onClick={LoginOrNot ? Loggedout : handleClick}
+          >
+            {LoginOrNot ? (
+              <>
+                <LogoutIcon style={{ marginRight: '10px', fontSize: '20px' }} />
+                <span style={{ fontSize: '1.2rem' }}>Logout</span>
+              </>
+            ) : (
+              <>
+                <AccountCircleIcon style={{ marginRight: '10px', fontSize: '25px' }} />
+                <span style={{ fontSize: '1.2rem' }}>Login</span>
+              </>
+            )}
+          </Box>
+        </Box>
+      </Drawer>
     </Grid>
   );
 }
 
-export default Loginpage;
+export default Header;

@@ -1,39 +1,7 @@
 .video-footer {
   display: flex;
-  // justify-content: space-between;
+  justify-content: space-between;
   align-items: center;
   height: 10vh;
   width: 100%;
 }
-.footer-left{
-  flex: .2;
-}
-.footer-center{
-  flex: .6;
-}
-.footer-right{
-  flex: .2;
-  display: flex;
-  justify-content: end;
-}
-
-.HoverIcon{
-  &:focus{
-    outline: none !important;
-  }
-  &:hover{
-    background-color: rgb(60, 64, 67) !important;
-  }
-}
-
-.AudioSettingtab{
-  background-color: #daeefe !important;
-  border-top-right-radius: 20px !important;
-  border-bottom-right-radius: 20px !important;
-}
-
-.NotActiveAudioSettingtab{
-  border-top-right-radius: 20px !important;
-  border-bottom-right-radius: 20px !important;
-}
-

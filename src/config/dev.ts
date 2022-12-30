@@ -1,17 +1,21 @@
-const dotenv = require("dotenv").config();
+import { getExploreName } from '../utils/platform';
 
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 export const topicInfo = urlParams.get("topic");
 
 export const devConfig = {
-  sdkKey: process.env.REACT_APP_ZOOM_SDK_KEY || "ibquuO2GGD6DjvtP4p2yGC8CcGGlMl72nMJ4",
-  sdkSecret: process.env.REACT_APP_ZOOM_SDK_SECRET || "Xv55BmmlKxAxFiB7rKQNb4u2fT7sNPmTKfnc",
-  topic: topicInfo ? `${topicInfo}` : `${create_UUID()}`,
-  // name: `${getExploreName()}-${Math.floor(Math.random() * 1000)}`,
-  name: "",
-  password: "pass",
-  signature: "",
+  sdkKey: 'ibquuO2GGD6DjvtP4p2yGC8CcGGlMl72nMJ4',
+  sdkSecret: 'Xv55BmmlKxAxFiB7rKQNb4u2fT7sNPmTKfnc',
+  webEndpoint: 'zoom.us',
+  topic:  topicInfo ? `${topicInfo}` : `${create_UUID()}`,
+  name: `${getExploreName()}-${Math.floor(Math.random() * 1000)}`,
+  password: '',
+  signature: '',
+  sessionKey: '',
+  userIdentity: '',
+  // role = 1 to join as host, 0 to join as attendee. The first user must join as host to start the session
+  role: 1
 };
 
 function create_UUID() {

@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState, MutableRefObject } from "react";
-import { getVideoLayout } from "../video-layout-helper";
-import { useRenderVideo } from "./useRenderVideo";
-import { Dimension, Pagination, CellLayout } from "../video-types";
-import { ZoomClient, MediaStream, Participant } from "../../../index-types";
+import { useCallback, useEffect, useState, MutableRefObject } from 'react';
+import { getVideoLayout } from '../video-layout-helper';
+import { useRenderVideo } from './useRenderVideo';
+import { Dimension, Pagination, CellLayout } from '../video-types';
+import { ZoomClient, MediaStream, Participant } from '../../../index-types';
 /**
  * Default order of video:
  *  1. video's participants first
@@ -14,66 +14,35 @@ export function useGalleryLayout(
   isVideoDecodeReady: boolean,
   videoRef: MutableRefObject<HTMLCanvasElement | null>,
   dimension: Dimension,
-  pagination: any
+  pagination: Pagination,
 ) {
-  const [visibleParticipants, setVisibleParticipants] = useState<Participant[]>(
-    []
-  );
+  const [visibleParticipants, setVisibleParticipants] = useState<Participant[]>([]);
   const [layout, setLayout] = useState<CellLayout[]>([]);
   const [subscribedVideos, setSubscribedVideos] = useState<number[]>([]);
-  const {
-    page,
-    pageSize,
-    totalPage,
-    totalSize,
-    selfViewGalleryLayout,
-    myVideoRef,
-  } = pagination;
+  const [SelfVideoToggle, setSelfVideoToggle] = useState(false)
+  const { page, pageSize, totalPage, totalSize } = pagination;
   let size = pageSize;
   if (page === totalPage - 1) {
     size = Math.min(size, totalSize % pageSize || size);
   }
 
   useEffect(() => {
-    setLayout(
-      getVideoLayout(
-        dimension.width,
-        dimension.height,
-        selfViewGalleryLayout ? size - 1 : size
-      )
-    );
-  }, [dimension, size, selfViewGalleryLayout]);
+    setLayout(getVideoLayout(dimension.width, dimension.height, size));
+  }, [dimension, size,SelfVideoToggle]);
   const onParticipantsChange = useCallback(() => {
-    const participants = zmClient.getAllUser();
-    const info = {
-      ...zmClient.getSessionInfo(),
-    };
     const currentUser = zmClient.getCurrentUserInfo();
+    const participants = zmClient.getAllUser()
     if (currentUser && participants.length > 0) {
       let pageParticipants: any[] = [];
-      let demoArray: any[] = [];
       if (participants.length === 1) {
         pageParticipants = participants;
       } else {
-        // if (selfViewGalleryLayout) {
-        //   demoArray = participants.filter((e: any) => e.userId !== info.userId);
-        // } else {
-        //   demoArray = participants;
-        // }
         pageParticipants = participants
           .filter((user) => user.userId !== currentUser.userId)
-          .sort(
-            (user1, user2) => Number(user2.bVideoOn) - Number(user1.bVideoOn)
-          );
+          .sort((user1, user2) => Number(user2.bVideoOn) - Number(user1.bVideoOn));
         pageParticipants.splice(1, 0, currentUser);
-        if (selfViewGalleryLayout) {
-          var index = pageParticipants.findIndex(
-            (e: any) => e.userId === info.userId
-          );
-          pageParticipants.splice(index, 1);
-        }
         pageParticipants = pageParticipants.filter(
-          (_user, index) => Math.floor(index / pageSize) === page
+          (_user, index) => Math.floor(index / pageSize) === page,
         );
       }
       setVisibleParticipants(pageParticipants);
@@ -82,20 +51,30 @@ export function useGalleryLayout(
         .map((user) => user.userId);
       setSubscribedVideos(videoParticipants);
     }
-  }, [zmClient, page, pageSize, selfViewGalleryLayout]);
+  }, [zmClient, page, pageSize]);
   useEffect(() => {
-    zmClient.on("user-added", onParticipantsChange);
-    zmClient.on("user-removed", onParticipantsChange);
-    zmClient.on("user-updated", onParticipantsChange);
+    console.log("first=====>>>>>>>>>>>")
+    if(SelfVideoToggle){
+      var index =  visibleParticipants.findIndex((e: any) => e.userId === zmClient.getCurrentUserInfo().userId);
+      visibleParticipants.splice(index, 1);
+    }else{
+      onParticipantsChange();
+    }
+  }, [SelfVideoToggle])
+  
+  useEffect(() => {
+    zmClient.on('user-added', onParticipantsChange);
+    zmClient.on('user-removed', onParticipantsChange);
+    zmClient.on('user-updated', onParticipantsChange);
     return () => {
-      zmClient.off("user-added", onParticipantsChange);
-      zmClient.off("user-removed", onParticipantsChange);
-      zmClient.off("user-updated", onParticipantsChange);
+      zmClient.off('user-added', onParticipantsChange);
+      zmClient.off('user-removed', onParticipantsChange);
+      zmClient.off('user-updated', onParticipantsChange);
     };
   }, [zmClient, onParticipantsChange]);
   useEffect(() => {
     onParticipantsChange();
-  }, [onParticipantsChange, selfViewGalleryLayout]);
+  }, [onParticipantsChange]);
 
   useRenderVideo(
     mediaStream,
@@ -104,11 +83,12 @@ export function useGalleryLayout(
     layout,
     subscribedVideos,
     visibleParticipants,
-    myVideoRef
+    zmClient.getCurrentUserInfo()?.userId,
+    SelfVideoToggle
   );
   return {
     visibleParticipants,
-    setVisibleParticipants,
     layout,
+    setSelfVideoToggle
   };
 }

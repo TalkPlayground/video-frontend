@@ -5,7 +5,7 @@ import { Dimension } from '../video-types';
 import { ZoomClient } from '../../../index-types';
 const MAX_NUMBER_PER_PAGE = 9;
 // eslint-disable-next-line import/prefer-default-export
-export function usePagination(zmClient: ZoomClient, dimension: Dimension) {
+export function usePagination(zmClient: ZoomClient, dimension: Dimension,selfViewGalleryLayout?:any) {
   const [page, setPage] = useState(0);
   const [totalSize, setTotalSize] = useState(0);
   const [pageSize, setPageSize] = useState(MAX_NUMBER_PER_PAGE);
@@ -15,7 +15,7 @@ export function usePagination(zmClient: ZoomClient, dimension: Dimension) {
       maxViewportVideoCounts(dimension.width, dimension.height),
     );
     setPageSize(size);
-  }, [dimension]);
+  }, [dimension,selfViewGalleryLayout]);
   const onParticipantsChange = useCallback(() => {
     setTotalSize(zmClient.getAllUser().length);
   }, [zmClient]);
@@ -29,6 +29,14 @@ export function usePagination(zmClient: ZoomClient, dimension: Dimension) {
       zmClient.off('user-updated', onParticipantsChange);
     };
   }, [zmClient, onParticipantsChange]);
+  useEffect(() => {
+    if(selfViewGalleryLayout){
+      setTotalSize((prev) => prev - 1);
+    }else{
+      setTotalSize(zmClient.getAllUser().length);
+    }
+  }, [selfViewGalleryLayout])
+  
   useMount(() => {
     setTotalSize(zmClient.getAllUser().length);
   });

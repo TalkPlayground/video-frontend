@@ -6,7 +6,7 @@ const LoadingLayer = (props: { content: any }) => {
   const { content } = props;
   return (
     <div className="loading-layer">
-      <LoadingOutlined style={{ fontSize: '86px', color: '#fff' }} />
+      <LoadingOutlined style={{ fontSize: '50px', color: '#1890ff' }} />
       <p className="loading-text">{content}</p>
     </div>
   );

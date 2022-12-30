@@ -4,8 +4,6 @@
 /node_modules
 /.pnp
 .pnp.js
-package-lock.json
-.env.example
 
 # testing
 /coverage
@@ -15,7 +13,6 @@ package-lock.json
 
 # misc
 .DS_Store
-.env
 .env.local
 .env.development.local
 .env.test.local
@@ -27,3 +24,4 @@ yarn-error.log*
 dist
 /public/lib
 .eslintcache
+src/config/dev.ts
