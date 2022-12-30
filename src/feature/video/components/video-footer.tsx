@@ -897,7 +897,7 @@ const VideoFooter = (props: any) => {
         </>
       )} */}
         </div>
-        <div className="footer-right d-flex">
+        <Box className="footer-right d-flex" sx={{ display: { xs: 'none', md: 'block' } }}>
           <Tooltip title="Meeting details">
             <IconButton
               sx={{ display: { xs: 'none', md: 'block' } }}
@@ -940,7 +940,7 @@ const VideoFooter = (props: any) => {
               />
             </IconButton>
           </Tooltip>
-        </div>
+        </Box>
         <AudioVideoStatisticModal
           visible={statisticVisible}
           setVisible={setStatisticVisible}
