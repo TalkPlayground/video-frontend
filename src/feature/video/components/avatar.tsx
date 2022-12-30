@@ -86,7 +86,7 @@ const Avatar = (props: AvatarProps) => {
           </p>
         </div>
       )}
-      {isHover && audio === 'computer' && zmClient.getSessionInfo().userId !== userId && (
+      {/* {isHover && audio === 'computer' && zmClient.getSessionInfo().userId !== userId && (
         <div className={classNames('avatar-volume')}>
           <label>Volume:</label>
           <Slider
@@ -97,7 +97,7 @@ const Avatar = (props: AvatarProps) => {
             value={volume}
           />
         </div>
-      )}
+      )} */}
     </div>
   );
 };

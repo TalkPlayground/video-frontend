@@ -460,7 +460,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
           </IconButton>
         </div>
       )}
-      {isMobile && (
+      {/* {isMobile && (
         <div
           className="MyVideo"
           style={{
@@ -474,27 +474,19 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         >
           {isUseVideoElementToDrawSelfVideo ? (
             <video
-              ref={PIPRef}
-              id={SELF_VIDEO_ID}
-              className={classnames('self-video', {
-                'single-self-video': participants.length === 1,
-                'self-video-show': isCurrentUserStartedVideo
-              })}
+              id="myVideoTag"
+              style={{
+                borderRadius: '10px',
+                visibility: participants.length == 1 ? 'hidden' : !IsCameraActive ? 'hidden' : 'inherit'
+              }}
+              width="118"
+              height="165"
+              // className={classnames('self-video', {
+              //   'single-self-video': participants.length > 1,
+              //   'self-video-show': isCurrentUserStartedVideo
+              // })}
             />
           ) : (
-            // <video
-            //   id="myVideoTag"
-            //   style={{
-            //     borderRadius: '10px',
-            //     visibility: participants.length == 1 ? 'hidden' : !IsCameraActive ? 'hidden' : 'inherit'
-            //   }}
-            //   width="118"
-            //   height="165"
-            //   // className={classnames('self-video', {
-            //   //   'single-self-video': participants.length > 1,
-            //   //   'self-video-show': isCurrentUserStartedVideo
-            //   // })}
-            // />
             <canvas
               id={SELF_VIDEO_ID}
               width="254"
@@ -506,35 +498,33 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
             />
           )}
         </div>
-      )}
+      )} */}
       <div
         className={classnames('video-container', {
           'in-sharing': isSharing
         })}
       >
         <canvas className="video-canvas" id="video-canvas" width="800" height="600" ref={videoRef} />
-        {!isMobile ? (
-          isUseVideoElementToDrawSelfVideo ? (
-            <video
-              ref={PIPRef}
-              id={SELF_VIDEO_ID}
-              className={classnames('self-video', {
-                'single-self-video': participants.length === 1,
-                'self-video-show': isCurrentUserStartedVideo
-              })}
-            />
-          ) : (
-            <canvas
-              id={SELF_VIDEO_ID}
-              width="254"
-              height="143"
-              className={classnames('self-video', {
-                'single-self-video': participants.length === 1,
-                'self-video-show': isCurrentUserStartedVideo
-              })}
-            />
-          )
-        ) : null}
+        {isUseVideoElementToDrawSelfVideo ? (
+          <video
+            ref={PIPRef}
+            id={SELF_VIDEO_ID}
+            className={classnames('self-video', {
+              'single-self-video': participants.length === 1,
+              'self-video-show': isCurrentUserStartedVideo
+            })}
+          />
+        ) : (
+          <canvas
+            id={SELF_VIDEO_ID}
+            width="254"
+            height="143"
+            className={classnames('self-video', {
+              'single-self-video': participants.length === 1,
+              'self-video-show': isCurrentUserStartedVideo
+            })}
+          />
+        )}
         {activeUser && (
           <Avatar
             participant={activeUser}
