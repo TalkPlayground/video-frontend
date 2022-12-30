@@ -41,10 +41,9 @@
       height: 100%;
     }
     .isMobileView {
-      position: absolute;
-      right: 10px;
-      bottom: 25px;
-      top: unset;
+      right: 10px !important;
+      bottom: 25px !important;
+      top: unset !important;
     }
     .self-video {
       position: absolute;
