@@ -366,14 +366,14 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
           : MobileVideoFacingMode.User
       );
 
-      await localVideo.stop();
-      localVideo = ZoomVideo.createLocalVideoTrack(
-        mediaStream.getActiveCamera() === MobileVideoFacingMode.User
-          ? MobileVideoFacingMode.Environment
-          : MobileVideoFacingMode.User
-      );
-      const VideoElement = document.querySelector(`#myVideoTag`) as HTMLVideoElement;
-      await localVideo?.start(VideoElement);
+      // await localVideo.stop();
+      // localVideo = ZoomVideo.createLocalVideoTrack(
+      //   mediaStream.getActiveCamera() === MobileVideoFacingMode.User
+      //     ? MobileVideoFacingMode.Environment
+      //     : MobileVideoFacingMode.User
+      // );
+      // const VideoElement = document.querySelector(`#myVideoTag`) as HTMLVideoElement;
+      // await localVideo?.start(VideoElement);
 
       // console.log(mediaStream.getActiveCamera());
       //   if (activeCamera !== key) {
@@ -408,11 +408,11 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
 
   const onVideoCaptureChange = useCallback(async (payload: any) => {
     if (payload.state === VideoCapturingState.Started) {
-      const VideoElement = document.querySelector(`#myVideoTag`) as HTMLVideoElement;
-      await localVideo?.start(VideoElement);
+      // const VideoElement = document.querySelector(`#myVideoTag`) as HTMLVideoElement;
+      // await localVideo?.start(VideoElement);
       setIsCameraActive(true);
     } else {
-      await localVideo?.stop();
+      // await localVideo?.stop();
       setIsCameraActive(false);
     }
   }, []);
@@ -474,19 +474,27 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         >
           {isUseVideoElementToDrawSelfVideo ? (
             <video
-              id="myVideoTag"
-              style={{
-                borderRadius: '10px',
-                visibility: participants.length == 1 ? 'hidden' : !IsCameraActive ? 'hidden' : 'inherit'
-              }}
-              width="118"
-              height="165"
-              // className={classnames('self-video', {
-              //   'single-self-video': participants.length > 1,
-              //   'self-video-show': isCurrentUserStartedVideo
-              // })}
+              ref={PIPRef}
+              id={SELF_VIDEO_ID}
+              className={classnames('self-video', {
+                'single-self-video': participants.length === 1,
+                'self-video-show': isCurrentUserStartedVideo
+              })}
             />
           ) : (
+            // <video
+            //   id="myVideoTag"
+            //   style={{
+            //     borderRadius: '10px',
+            //     visibility: participants.length == 1 ? 'hidden' : !IsCameraActive ? 'hidden' : 'inherit'
+            //   }}
+            //   width="118"
+            //   height="165"
+            //   // className={classnames('self-video', {
+            //   //   'single-self-video': participants.length > 1,
+            //   //   'self-video-show': isCurrentUserStartedVideo
+            //   // })}
+            // />
             <canvas
               id={SELF_VIDEO_ID}
               width="254"
@@ -505,26 +513,28 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         })}
       >
         <canvas className="video-canvas" id="video-canvas" width="800" height="600" ref={videoRef} />
-        {isUseVideoElementToDrawSelfVideo ? (
-          <video
-            ref={PIPRef}
-            id={SELF_VIDEO_ID}
-            className={classnames('self-video', {
-              'single-self-video': participants.length === 1,
-              'self-video-show': isCurrentUserStartedVideo
-            })}
-          />
-        ) : (
-          <canvas
-            id={SELF_VIDEO_ID}
-            width="254"
-            height="143"
-            className={classnames('self-video', {
-              'single-self-video': participants.length === 1,
-              'self-video-show': isCurrentUserStartedVideo
-            })}
-          />
-        )}
+        {!isMobile ? (
+          isUseVideoElementToDrawSelfVideo ? (
+            <video
+              ref={PIPRef}
+              id={SELF_VIDEO_ID}
+              className={classnames('self-video', {
+                'single-self-video': participants.length === 1,
+                'self-video-show': isCurrentUserStartedVideo
+              })}
+            />
+          ) : (
+            <canvas
+              id={SELF_VIDEO_ID}
+              width="254"
+              height="143"
+              className={classnames('self-video', {
+                'single-self-video': participants.length === 1,
+                'self-video-show': isCurrentUserStartedVideo
+              })}
+            />
+          )
+        ) : null}
         {activeUser && (
           <Avatar
             participant={activeUser}
