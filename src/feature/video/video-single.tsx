@@ -509,7 +509,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
           <video
             ref={PIPRef}
             id={SELF_VIDEO_ID}
-            className={classnames('self-video', {
+            className={classnames(`self-video ${isMobile && 'isMobileView'}`, {
               'single-self-video': participants.length === 1,
               'self-video-show': isCurrentUserStartedVideo
             })}
