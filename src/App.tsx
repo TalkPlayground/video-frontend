@@ -293,7 +293,7 @@ function App(props: AppProps) {
                                   setLoadingText={setLoadingText}
                                   SaveTranscript={SaveTranscript}
                                 />
-                              ) : galleryViewWithoutSAB || true ? (
+                              ) : galleryViewWithoutSAB ? (
                                 <VideoNonSAB
                                   {...props}
                                   DisplayDataInfo={DisplayDataInfo}
