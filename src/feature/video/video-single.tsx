@@ -25,6 +25,8 @@ import { getQueryString } from '../../Api';
 import moment from 'moment';
 import { useSnackbar } from 'notistack';
 import nosleep from 'nosleep.js';
+import useStayAwake from 'use-stay-awake';
+
 import { ChatRecord } from '../chat/chat-types';
 import { AnyArray } from 'immer/dist/internal';
 import { useGalleryLayout } from './hooks/useGalleryLayout';
@@ -80,6 +82,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
 
   const [NewMsg, setNewMsg] = useState(false);
   var noSleep = new nosleep();
+  const device = useStayAwake();
   const [ShowAlert, setShowAlert] = useState(false);
   const [RenderShowHide, setRenderShowHide] = useState(false);
   const [AllvisibleParticipants, setAllvisibleParticipants] = useState<AnyArray>([]);
@@ -223,7 +226,8 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   useEffect(() => {
     const participants = zmClient.getAllUser();
     console.log(zmClient.getSessionInfo().userId, participants);
-    noSleep.enable();
+    // noSleep.enable();
+    device.preventSleeping();
 
     const info = {
       ...zmClient.getSessionInfo()
@@ -358,49 +362,15 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
 
   const ToggleCamera = async () => {
     if (mediaStream) {
-      // var items = mediaStream.getCameraList().filter((e) => e.deviceId !== mediaStream.getActiveCamera());
-      // console.log(mediaStream.getCameraList(), items, 'data', mediaStream.getActiveCamera());
       await mediaStream.switchCamera(
         mediaStream.getActiveCamera() === MobileVideoFacingMode.User
           ? MobileVideoFacingMode.Environment
           : MobileVideoFacingMode.User
       );
-
-      // await localVideo.stop();
-      // localVideo = ZoomVideo.createLocalVideoTrack(
-      //   mediaStream.getActiveCamera() === MobileVideoFacingMode.User
-      //     ? MobileVideoFacingMode.Environment
-      //     : MobileVideoFacingMode.User
-      // );
-      // const VideoElement = document.querySelector(`#myVideoTag`) as HTMLVideoElement;
-      // await localVideo?.start(VideoElement);
-
-      // console.log(mediaStream.getActiveCamera());
-      //   if (activeCamera !== key) {
-      //     await mediaStream.switchCamera(key);
-      //     setActiveCamera(mediaStream.getActiveCamera());
-      //   }
     }
   };
 
-  // const videoElement = document.querySelector(`#${SELF_VIDEO_ID}`) as HTMLVideoElement;
-  // if (videoElement) {
-  //   videoElement.addEventListener('loadedmetadata', async () => {
-  //     const pip = await videoElement.requestPictureInPicture();
-  //   });
-  // }
   const [IsCameraActive, setIsCameraActive] = useState(false);
-  // useEffect(() => {
-  //   const startSelfVideoTag = async () => {
-  //     var localVideo = ZoomVideo.createLocalVideoTrack();
-  //     const VideoElement = document.querySelector(`#myVideoTag`) as HTMLVideoElement;
-  //     await localVideo?.start(VideoElement);
-  //   };
-
-  //   if (IsCameraActive) {
-  //     startSelfVideoTag();
-  //   }
-  // }, [IsCameraActive]);
 
   const PIPMode = () => {
     togglePictureInPicture(!isPictureInPictureActive);
@@ -408,11 +378,8 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
 
   const onVideoCaptureChange = useCallback(async (payload: any) => {
     if (payload.state === VideoCapturingState.Started) {
-      // const VideoElement = document.querySelector(`#myVideoTag`) as HTMLVideoElement;
-      // await localVideo?.start(VideoElement);
       setIsCameraActive(true);
     } else {
-      // await localVideo?.stop();
       setIsCameraActive(false);
     }
   }, []);

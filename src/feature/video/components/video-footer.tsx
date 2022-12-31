@@ -37,6 +37,7 @@ import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
 import { useSnackbar } from 'notistack';
 import nosleep from 'nosleep.js';
+import useStayAwake from 'use-stay-awake';
 import { Box, Grid, Menu, MenuItem, Tooltip, Typography } from '@material-ui/core';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
@@ -142,13 +143,15 @@ const VideoFooter = (props: any) => {
     onMicrophoneClick();
   }, []);
 
-  var noSleep = new nosleep();
+  // var noSleep = new nosleep();
+  const device = useStayAwake();
 
   window.onbeforeunload = function () {
     if (participants?.length == 1 && RecordingStatus) {
       // StartStopRecording(false).then(async () => {
       zmClient.leave();
-      noSleep.disable();
+      // noSleep.disable();
+      device.allowSleeping();
       localStorage.removeItem('UserID');
       history.push('/');
       window.location.reload();
@@ -183,6 +186,8 @@ const VideoFooter = (props: any) => {
           const videoElement = document.querySelector(`#${SELF_VIDEO_ID}`) as HTMLVideoElement;
           if (videoElement) {
             await mediaStream?.startVideo({ videoElement });
+            await mediaStream?.mirrorVideo(true);
+            setIsMirrored(true);
             if (!isSupportWebCodecs() && !isAndroidBrowser()) {
               const canvasElement = document.querySelector(`#${SELF_VIDEO_ID}`) as HTMLCanvasElement;
               mediaStream?.renderVideo(canvasElement, zmClient.getSessionInfo().userId, 254, 143, 0, 0, 3);
@@ -194,6 +199,8 @@ const VideoFooter = (props: any) => {
             Object.assign(startVideoOptions, { virtualBackground: { imageUrl: 'blur' } });
           }
           await mediaStream?.startVideo(startVideoOptions);
+          await mediaStream?.mirrorVideo(true);
+          setIsMirrored(true);
           if (!mediaStream?.isSupportMultipleVideos()) {
             const canvasElement = document.querySelector(`#${SELF_VIDEO_ID}`) as HTMLCanvasElement;
             mediaStream?.renderVideo(canvasElement, zmClient.getSessionInfo().userId, 254, 143, 0, 0, 3);
@@ -853,7 +860,8 @@ const VideoFooter = (props: any) => {
                 setIsLoading(true);
                 StartStopRecording(false).then(async () => {
                   zmClient.leave();
-                  noSleep.disable();
+                  // noSleep.disable();
+                  device.allowSleeping();
                   localStorage.removeItem('UserID');
                   history.push('/');
                   window.location.reload();
@@ -865,7 +873,8 @@ const VideoFooter = (props: any) => {
                 setLoadingText('You left the meeting');
                 setIsLoading(true);
                 zmClient.leave();
-                noSleep.disable();
+                // noSleep.disable();
+                device.allowSleeping();
                 localStorage.removeItem('UserID');
                 history.push('/');
                 window.location.reload();

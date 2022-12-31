@@ -29,6 +29,7 @@ import { Alert } from '@mui/material';
 import BasicCard from '../../component/pages/Linkcard';
 import nosleep from 'nosleep.js';
 import { SELF_VIDEO_ID } from './video-constants';
+import useStayAwake from 'use-stay-awake';
 
 interface VideoProps extends RouteComponentProps {
   DisplayDataInfo?: any;
@@ -72,6 +73,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   const myVideoRef = useRef<HTMLCanvasElement | null>(null);
   const [NewMsg, setNewMsg] = useState(false);
   var noSleep = new nosleep();
+  const device = useStayAwake();
 
   const activeVideo = useActiveVideo(zmClient);
   const { page, pageSize, totalPage, totalSize, setPage } = usePagination(
@@ -144,7 +146,8 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   const participants = zmClient.getAllUser();
 
   useEffect(() => {
-    noSleep.enable();
+    // noSleep.enable();
+    device.preventSleeping();
 
     const info = {
       ...zmClient.getSessionInfo()

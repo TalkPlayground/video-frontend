@@ -18,7 +18,7 @@ import { isShallowEqual } from '../../utils/util';
 import { useSizeCallback } from '../../hooks/useSizeCallback';
 import { SELF_VIDEO_ID } from './video-constants';
 import ChatContainer from '../chat/chat';
-import { Box, Slide } from '@material-ui/core';
+import { Box, Divider, IconButton, Slide, Typography } from '@material-ui/core';
 import { Alert } from '@mui/material';
 import { getQueryString } from '../../Api';
 import moment from 'moment';
@@ -26,9 +26,21 @@ import axios from 'axios';
 import { useSnackbar } from 'notistack';
 import { ChatRecord } from '../chat/chat-types';
 import nosleep from 'nosleep.js';
+import useStayAwake from 'use-stay-awake';
+
 import { AnyArray } from 'immer/dist/internal';
 import BasicCard from '../../component/pages/Linkcard';
 import DemoTabs from './components/DemoTabs';
+import ZoomVideo, { MobileVideoFacingMode, VideoCapturingState } from '@zoom/videosdk';
+
+import mobile from 'is-mobile';
+import { url } from '../../App';
+import CloseIcon from '@mui/icons-material/Close';
+
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import FlipCameraIosIcon from '@mui/icons-material/FlipCameraIos';
+import usePictureInPicture from 'react-use-pip';
+import PictureInPictureAltIcon from '@mui/icons-material/PictureInPictureAlt';
 
 const isUseVideoElementToDrawSelfVideo = isAndroidBrowser() || isSupportOffscreenCanvas();
 
@@ -42,6 +54,7 @@ interface VideoProps extends RouteComponentProps {
 const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   const { DisplayDataInfo, setIsLoading, setLoadingText, SaveTranscript } = props;
   const zmClient = useContext(ZoomContext);
+
   const {
     mediaStream,
     video: { decode: isVideoDecodeReady }
@@ -79,6 +92,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
 
   const [NewMsg, setNewMsg] = useState(false);
   var noSleep = new nosleep();
+  const device = useStayAwake();
   const [ShowAlert, setShowAlert] = useState(false);
   const [RenderShowHide, setRenderShowHide] = useState(false);
   const [AllvisibleParticipants, setAllvisibleParticipants] = useState<AnyArray>([]);
@@ -91,6 +105,11 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   const [RecordingStatus, setRecordingStatus] = useState(false);
   const [selfViewGalleryLayout, setselfViewGalleryLayout] = useState(false);
   const myVideoRef = useRef<HTMLCanvasElement | null>(null);
+
+  const PIPRef = useRef(null);
+  const { isPictureInPictureActive, isPictureInPictureAvailable, togglePictureInPicture } = usePictureInPicture(PIPRef);
+  var isMobile = mobile();
+  const [IncallMemberCard, setIncallMemberCard] = useState(false);
 
   /**
    * position for self video
@@ -155,7 +174,8 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   const participants = zmClient.getAllUser();
 
   useEffect(() => {
-    noSleep.enable();
+    // noSleep.enable();
+    device.preventSleeping();
 
     const info = {
       ...zmClient.getSessionInfo()
@@ -274,11 +294,44 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     }
   };
 
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+
+  var localVideo = ZoomVideo.createLocalVideoTrack();
+
+  const ToggleCamera = async () => {
+    if (mediaStream) {
+      await mediaStream.switchCamera(
+        mediaStream.getActiveCamera() === MobileVideoFacingMode.User
+          ? MobileVideoFacingMode.Environment
+          : MobileVideoFacingMode.User
+      );
+    }
+  };
+
+  const [IsCameraActive, setIsCameraActive] = useState(false);
+
+  const PIPMode = () => {
+    togglePictureInPicture(!isPictureInPictureActive);
+  };
+
+  const onVideoCaptureChange = useCallback(async (payload: any) => {
+    if (payload.state === VideoCapturingState.Started) {
+      setIsCameraActive(true);
+    } else {
+      setIsCameraActive(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    zmClient.on('video-capturing-change', onVideoCaptureChange);
+    return () => {
+      zmClient.off('video-capturing-change', onVideoCaptureChange);
+    };
+  }, [zmClient, onVideoCaptureChange]);
+
   return (
     <div className="viewport">
-      {LinkShowCard && (
-        <BasicCard setLinkShowCard={setLinkShowCard} LinkShowCard={LinkShowCard} DisplayDataInfo={DisplayDataInfo} />
-      )}
       <div
         className={classnames('share-container', {
           'in-sharing': isSharing
@@ -310,6 +363,19 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
           )}
         </div>
       </div>
+      {isMobile && (
+        <div className="d-flex align-items-center px-3 position-absolute" style={{ width: '100vw', top: 0 }}>
+          <div style={{ flex: 1 }} className="d-flex">
+            <p style={{ color: '#fff', fontSize: '15px', fontWeight: 700 }}>{urlParams.get('topic')}</p>
+          </div>
+          <IconButton onClick={PIPMode}>
+            <PictureInPictureAltIcon style={{ fill: '#fff' }} />
+          </IconButton>
+          <IconButton onClick={ToggleCamera}>
+            <FlipCameraIosIcon style={{ fill: '#fff' }} />
+          </IconButton>
+        </div>
+      )}
       <div
         className={classnames('video-container', {
           'in-sharing': isSharing
@@ -318,8 +384,9 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         <canvas className="video-canvas" id="video-canvas" width="800" height="600" ref={videoRef} />
         {isUseVideoElementToDrawSelfVideo && (
           <video
+            ref={PIPRef}
             id={SELF_VIDEO_ID}
-            className={classnames('self-video-non-sab')}
+            className={classnames(`self-video-non-sab ${isMobile && participants.length > 1 && 'isMobileView'}`)}
             style={
               selfVideoLayout
                 ? {
@@ -327,7 +394,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
                     width: `${selfVideoLayout.width}px`,
                     height: `${selfVideoLayout.height}px`,
                     top: `${selfVideoLayout.y}px`,
-                    left: `${selfVideoLayout.x}px`,
+                    left: participants.length > 1 ? 'inherit' : `${selfVideoLayout.x}px`,
                     pointerEvents: 'none'
                   }
                 : undefined
@@ -365,14 +432,107 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         </Box>
       </Slide>
 
-      <Box>
-        <DemoTabs />
-        {/* <ChatContainer
+      {isMobile ? (
+        <Slide
+          direction={'left'}
+          in={LinkShowCard}
+          mountOnEnter
+          unmountOnExit
+          style={{
+            position: 'absolute',
+            backgroundColor: '#202123',
+            height: '90vh',
+            zIndex: '10',
+            width: ' 100vw',
+            color: '#fff',
+            borderTopLeftRadius: '30px',
+            borderTopRightRadius: '30px'
+          }}
+        >
+          <Box>
+            <Box className="d-flex justify-content-between align-items-center pt-3 px-4">
+              <Typography variant="h6" color="inherit" style={{ color: '#fff' }}>
+                Info
+              </Typography>
+              <IconButton className="" onClick={() => setLinkShowCard(false)}>
+                <CloseIcon className="cursor-pointer" style={{ fill: '#fff' }} />
+              </IconButton>
+            </Box>
+            <Box className="px-3">
+              <Divider className="py-2" style={{ borderColor: 'white' }} />
+            </Box>
+            <Box className="d-flex justify-content-between align-items-center px-4 py-2">
+              <Typography>Joining Info</Typography>
+              <IconButton onClick={() => navigator.clipboard.writeText(url)}>
+                <ContentCopyIcon className="cursor-pointer" style={{ fill: '#fff' }} />
+              </IconButton>
+            </Box>
+            <Typography className="mx-4 p-2" style={{ backgroundColor: 'rgb(73, 76, 226)', borderRadius: '10px' }}>
+              {url}
+            </Typography>
+          </Box>
+        </Slide>
+      ) : (
+        LinkShowCard && (
+          <BasicCard setLinkShowCard={setLinkShowCard} LinkShowCard={LinkShowCard} DisplayDataInfo={DisplayDataInfo} />
+        )
+      )}
+
+      {isMobile && (
+        <Slide
+          direction={'left'}
+          in={IncallMemberCard}
+          mountOnEnter
+          unmountOnExit
+          style={{
+            position: 'absolute',
+            backgroundColor: '#202123',
+            height: '90vh',
+            zIndex: '10',
+            width: ' 100vw',
+            color: '#fff',
+            borderTopLeftRadius: '30px',
+            borderTopRightRadius: '30px'
+          }}
+        >
+          <Box>
+            <Box className="d-flex justify-content-between align-items-center pt-3 px-4">
+              <Typography variant="h6" color="inherit" style={{ color: '#fff' }}>
+                In Call Member
+              </Typography>
+              <IconButton className="" onClick={() => setIncallMemberCard(false)}>
+                <CloseIcon className="cursor-pointer" style={{ fill: '#fff' }} />
+              </IconButton>
+            </Box>
+            <Box className="px-3">
+              <Divider className="py-2" style={{ borderColor: 'white' }} />
+            </Box>
+            <Box className="">
+              {zmClient.getAllUser().map((e: any) => (
+                <Box className="d-flex align-items-center pt-3 px-4">
+                  <img src={e.avatar} style={{ width: '40px', borderRadius: '54px' }} />
+                  <Typography
+                    variant="inherit"
+                    color="inherit"
+                    style={{ color: '#fff', fontSize: '18px', marginLeft: '15px' }}
+                  >
+                    {e.displayName?.split('-')[e.displayName?.split('-')?.length - 1]}
+                    <span className="ml-3">{e.userId == zmClient.getSessionInfo().userId && '( You )'}</span>
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
+          </Box>
+        </Slide>
+      )}
+
+      <Box style={{ width: modalOpenClose ? '100vw' : '' }}>
+        <ChatContainer
           modalOpenClose={modalOpenClose}
           setmodalOpenClose={setmodalOpenClose}
           setChatRecords={setChatRecords}
           chatRecords={chatRecords}
-        /> */}
+        />
       </Box>
 
       <VideoFooter
@@ -392,6 +552,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         setIsLoading={setIsLoading}
         setLoadingText={setLoadingText}
         SaveTranscript={SaveTranscript}
+        setIncallMemberCard={setIncallMemberCard}
       />
       {totalPage > 1 && <Pagination page={page} totalPage={totalPage} setPage={setPage} inSharing={isSharing} />}
     </div>

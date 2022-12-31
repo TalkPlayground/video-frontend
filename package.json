@@ -37,6 +37,7 @@
     "react-swipeable-views": "^0.14.0",
     "react-use-pip": "^1.5.0",
     "styled-components": "^5.3.6",
+    "use-stay-awake": "^0.1.7",
     "web-vitals": "1.1.1"
   },
   "scripts": {
