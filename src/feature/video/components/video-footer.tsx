@@ -49,6 +49,8 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { AudioVideoSetting } from './AudioVideoSetting';
 import moment from 'moment';
 import { topicInfo } from '../../../config/dev';
+// var Airtable = require('airtable');
+import Airtable from 'airtable';
 
 interface VideoFooterProps {
   className?: string;
@@ -91,6 +93,11 @@ const VideoFooter = (props: any) => {
     SaveTranscript,
     setIncallMemberCard
   } = props;
+
+  var base = new Airtable({
+    apiKey: 'patKPLJNYZkVObstV.b30794e0717fa5f41f631cfaff71aed6ba09f62499c2c540d89ffa1d1839d213'
+  }).base('appNnssyjFDqcoSKd');
+
   const [isStartedAudio, setIsStartedAudio] = useState(false);
   const [isStartedVideo, setIsStartedVideo] = useState(false);
   const [audio, setAudio] = useState('');
@@ -177,6 +184,24 @@ const VideoFooter = (props: any) => {
   const [onAudioVideoOption, setonAudioVideoOption] = useState(false);
 
   const onCameraClick = useCallback(async () => {
+    // base('Error Logs').create(
+    //   [
+    //     {
+    //       fields: {
+    //         RecordID: 'kjbjkbkj'
+    //       }
+    //     }
+    //   ],
+    //   function (err: any, records: any) {
+    //     if (err) {
+    //       console.error(err);
+    //       return;
+    //     }
+    //     records.forEach(function (record: any) {
+    //       console.log(record.getId());
+    //     });
+    //   }
+    // );
     if (!HideSelfView) {
       if (isStartedVideo) {
         await mediaStream?.stopVideo();
@@ -819,9 +844,9 @@ const VideoFooter = (props: any) => {
                 <MenuItem
                   // disabled={zmClient.getAllUser()?.length > 1 ? false : true}
                   onClick={async () => {
-                    if (isStartedVideo) {
-                      await onCameraClick();
-                    }
+                    // if (isStartedVideo) {
+                    //   await onCameraClick();
+                    // }
                     handleselfView(!HideSelfView);
                     await setHideSelfView(true);
                     setAnchorEl(null);

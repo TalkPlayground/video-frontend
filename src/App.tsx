@@ -293,15 +293,16 @@ function App(props: AppProps) {
                                   setLoadingText={setLoadingText}
                                   SaveTranscript={SaveTranscript}
                                 />
-                              ) : galleryViewWithoutSAB ? (
-                                <VideoNonSAB
-                                  {...props}
-                                  DisplayDataInfo={DisplayDataInfo}
-                                  setIsLoading={setIsLoading}
-                                  setLoadingText={setLoadingText}
-                                  SaveTranscript={SaveTranscript}
-                                />
                               ) : (
+                                // galleryViewWithoutSAB ? (
+                                //   <VideoNonSAB
+                                //     {...props}
+                                //     DisplayDataInfo={DisplayDataInfo}
+                                //     setIsLoading={setIsLoading}
+                                //     setLoadingText={setLoadingText}
+                                //     SaveTranscript={SaveTranscript}
+                                //   />
+                                // ) :
                                 <VideoSingle
                                   {...props}
                                   DisplayDataInfo={DisplayDataInfo}

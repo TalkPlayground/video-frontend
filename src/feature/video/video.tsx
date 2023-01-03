@@ -265,6 +265,15 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
       setSelfVideoToggle(data);
       enqueueSnackbar('Show Self View', { variant: 'info' });
       setselfViewGalleryLayout(data);
+      await mediaStream?.renderVideo(
+        videoRef.current as HTMLCanvasElement,
+        zmClient.getSessionInfo().userId,
+        254,
+        143,
+        0,
+        0,
+        3
+      );
       // visibleParticipants.push(AllvisibleParticipants[0]);
       // setRenderShowHide(false);
       // setAllvisibleParticipants([]);
