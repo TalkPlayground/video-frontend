@@ -491,13 +491,17 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
           />
         ) : (
           <canvas
+            ref={PIPRef}
             id={SELF_VIDEO_ID}
             width="254"
             height="143"
-            className={classnames('self-video', {
-              'single-self-video': participants.length === 1,
-              'self-video-show': isCurrentUserStartedVideo
-            })}
+            className={classnames(
+              `self-video ${isAndroidOrIOSBrowser() && participants.length > 1 && 'isMobileView'}`,
+              {
+                'single-self-video': participants.length === 1,
+                'self-video-show': isCurrentUserStartedVideo
+              }
+            )}
           />
         )}
         {activeUser && (
