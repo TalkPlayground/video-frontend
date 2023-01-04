@@ -13,7 +13,12 @@ import { useCanvasDimension } from './hooks/useCanvasDimension';
 import { useMount, useSizeCallback } from '../../hooks';
 import { Participant } from '../../index-types';
 import './video.scss';
-import { isAndroidBrowser, isSupportOffscreenCanvas, isSupportWebCodecs } from '../../utils/platform';
+import {
+  isAndroidBrowser,
+  isAndroidOrIOSBrowser,
+  isSupportOffscreenCanvas,
+  isSupportWebCodecs
+} from '../../utils/platform';
 import { SELF_VIDEO_ID } from './video-constants';
 import { isShallowEqual } from '../../utils/util';
 import { useLocalVolume } from './hooks/useLocalVolume';
@@ -243,7 +248,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
           if (SaveTranscript) {
             enqueueSnackbar('Transcript Started', {
               variant: 'info',
-              anchorOrigin: { horizontal: 'left', vertical: isMobile ? 'top' : 'bottom' }
+              anchorOrigin: { horizontal: 'left', vertical: isAndroidOrIOSBrowser() ? 'top' : 'bottom' }
             });
           } else {
             await axios.post('/api/v1/user/transcripts/delete/statusChange', {
@@ -272,7 +277,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
           if (SaveTranscript) {
             enqueueSnackbar('Transcript Started', {
               variant: 'info',
-              anchorOrigin: { horizontal: 'left', vertical: isMobile ? 'top' : 'bottom' }
+              anchorOrigin: { horizontal: 'left', vertical: isAndroidOrIOSBrowser() ? 'top' : 'bottom' }
             });
           } else {
             await axios.post('/api/v1/user/transcripts/delete/statusChange', {
@@ -307,7 +312,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
           if (SaveTranscript) {
             enqueueSnackbar('Transcript Stoped', {
               variant: 'info',
-              anchorOrigin: { horizontal: 'left', vertical: isMobile ? 'top' : 'bottom' }
+              anchorOrigin: { horizontal: 'left', vertical: isAndroidOrIOSBrowser() ? 'top' : 'bottom' }
             });
           }
           await axios.post(
@@ -414,7 +419,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
           )}
         </div>
       </div>
-      {isMobile && (
+      {isAndroidOrIOSBrowser() && (
         <div className="d-flex align-items-center px-3 position-absolute" style={{ width: '100vw', top: 0 }}>
           <div style={{ flex: 1 }} className="d-flex">
             <p style={{ color: '#fff', fontSize: '15px', fontWeight: 700 }}>{urlParams.get('topic')}</p>
@@ -427,7 +432,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
           </IconButton>
         </div>
       )}
-      {/* {isMobile && (
+      {/* {isAndroidOrIOSBrowser() && (
         <div
           className="MyVideo"
           style={{
@@ -476,10 +481,13 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
           <video
             ref={PIPRef}
             id={SELF_VIDEO_ID}
-            className={classnames(`self-video ${isMobile && participants.length > 1 && 'isMobileView'}`, {
-              'single-self-video': participants.length === 1,
-              'self-video-show': isCurrentUserStartedVideo
-            })}
+            className={classnames(
+              `self-video ${isAndroidOrIOSBrowser() && participants.length > 1 && 'isMobileView'}`,
+              {
+                'single-self-video': participants.length === 1,
+                'self-video-show': isCurrentUserStartedVideo
+              }
+            )}
           />
         ) : (
           <canvas
@@ -513,7 +521,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
        
        
       </Box> */}
-      {isMobile ? (
+      {isAndroidOrIOSBrowser() ? (
         <Slide
           direction={'left'}
           in={LinkShowCard}
@@ -559,7 +567,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         )
       )}
 
-      {isMobile && (
+      {isAndroidOrIOSBrowser() && (
         <Slide
           direction={'left'}
           in={IncallMemberCard}

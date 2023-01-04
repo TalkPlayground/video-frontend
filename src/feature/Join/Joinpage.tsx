@@ -30,6 +30,7 @@ import LinkIcon from '@mui/icons-material/Link';
 import Slide from '@mui/material/Slide';
 import { url } from '../../App';
 import mobile from 'is-mobile';
+import { isAndroidOrIOSBrowser } from '../../utils/platform';
 
 interface JoinProps extends RouteComponentProps {
   status: string;
@@ -94,7 +95,7 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
     // variant could be success, error, warning, info, or default
     enqueueSnackbar('Joined Successfully', {
       variant,
-      anchorOrigin: { horizontal: 'left', vertical: isMobile ? 'top' : 'bottom' }
+      anchorOrigin: { horizontal: 'left', vertical: isAndroidOrIOSBrowser() ? 'top' : 'bottom' }
     });
   };
 

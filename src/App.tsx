@@ -152,10 +152,6 @@ function App(props: AppProps) {
       const stream = zmClient.getMediaStream();
       setMediaStream(stream);
       setIsSupportGalleryView(stream.isSupportMultipleVideos() && !isAndroidBrowser());
-
-      alert(`IsSupportGalleryView : ${stream.isSupportMultipleVideos() && !isAndroidBrowser()}`);
-      alert(`galleryViewWithoutSAB : ${galleryViewWithoutSAB}`);
-
       const chatClient = zmClient.getChatClient();
       const commandClient = zmClient.getCommandClient();
       const recordingClient = zmClient.getRecordingClient();

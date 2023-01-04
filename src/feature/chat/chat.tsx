@@ -16,6 +16,7 @@ import mobile from 'is-mobile';
 import CloseIcon from '@mui/icons-material/Close';
 import { Alert } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
+import { isAndroidOrIOSBrowser } from '../../utils/platform';
 
 const { TextArea } = Input;
 const ChatContainer = ({ modalOpenClose, setmodalOpenClose, setChatRecords, chatRecords, setNewMsg }: any) => {
@@ -144,15 +145,15 @@ const ChatContainer = ({ modalOpenClose, setmodalOpenClose, setChatRecords, chat
       <div
         className="chat-container"
         style={{
-          width: isMobile ? '100vw' : '25vw',
-          height: isMobile ? '' : '85vh'
+          width: isAndroidOrIOSBrowser() ? '100vw' : '25vw',
+          height: isAndroidOrIOSBrowser() ? '' : '85vh'
         }}
       >
         <div
           className="chat-wrap px-2"
           style={{
-            width: isMobile ? '' : '25vw',
-            height: isMobile ? '95vh' : '85vh'
+            width: isAndroidOrIOSBrowser() ? '' : '25vw',
+            height: isAndroidOrIOSBrowser() ? '95vh' : '85vh'
           }}
         >
           <div className="d-flex justify-content-between align-items-center px-3">

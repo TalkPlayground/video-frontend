@@ -605,7 +605,7 @@ const VideoFooter = (props: any) => {
             isBlur={isBlur}
             HideSelfView={HideSelfView}
           />
-          {sharing && !isMobile && (
+          {sharing && !isAndroidOrIOSBrowser() && (
             <ScreenShareButton
               sharePrivilege={sharePrivilege}
               isHostOrManager={zmClient.isHost() || zmClient.isManager()}
@@ -630,7 +630,7 @@ const VideoFooter = (props: any) => {
             <MoreVertOutlinedIcon style={{ fill: '#fff' }} />
           </IconButton>
 
-          {isMobile ? (
+          {isAndroidOrIOSBrowser() ? (
             <Menu
               id="basic-menu"
               anchorEl={anchorEl}
