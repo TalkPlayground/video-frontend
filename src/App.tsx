@@ -127,7 +127,6 @@ function App(props: AppProps) {
   });
 
   const [SaveTranscript, setSaveTranscript] = useState(true);
-
   const zmClient = useContext(ZoomContext);
   let webEndpoint: any;
   if (webEndpointArg) {
@@ -153,6 +152,10 @@ function App(props: AppProps) {
       const stream = zmClient.getMediaStream();
       setMediaStream(stream);
       setIsSupportGalleryView(stream.isSupportMultipleVideos() && !isAndroidBrowser());
+
+      alert(`IsSupportGalleryView : ${stream.isSupportMultipleVideos() && !isAndroidBrowser()}`);
+      alert(`galleryViewWithoutSAB : ${galleryViewWithoutSAB}`);
+
       const chatClient = zmClient.getChatClient();
       const commandClient = zmClient.getCommandClient();
       const recordingClient = zmClient.getRecordingClient();
@@ -293,16 +296,15 @@ function App(props: AppProps) {
                                   setLoadingText={setLoadingText}
                                   SaveTranscript={SaveTranscript}
                                 />
+                              ) : galleryViewWithoutSAB ? (
+                                <VideoNonSAB
+                                  {...props}
+                                  DisplayDataInfo={DisplayDataInfo}
+                                  setIsLoading={setIsLoading}
+                                  setLoadingText={setLoadingText}
+                                  SaveTranscript={SaveTranscript}
+                                />
                               ) : (
-                                // galleryViewWithoutSAB ? (
-                                //   <VideoNonSAB
-                                //     {...props}
-                                //     DisplayDataInfo={DisplayDataInfo}
-                                //     setIsLoading={setIsLoading}
-                                //     setLoadingText={setLoadingText}
-                                //     SaveTranscript={SaveTranscript}
-                                //   />
-                                // ) :
                                 <VideoSingle
                                   {...props}
                                   DisplayDataInfo={DisplayDataInfo}
