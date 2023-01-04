@@ -22,7 +22,8 @@ export function useRenderVideo(
   /**
    * gallery view without SharedArrayBuffer mode, self video is present by Video Element
    */
-  const isSkipSelfVideo = SelfVideoToggle ? SelfVideoToggle : !window.crossOriginIsolated;
+  // const isSkipSelfVideo = SelfVideoToggle ? SelfVideoToggle : !window.crossOriginIsolated;
+  const isSkipSelfVideo = !window.crossOriginIsolated;
   useEffect(() => {
     async function HideShowRenderControl(SelfVideoToggle: boolean) {
       if (SelfVideoToggle) {

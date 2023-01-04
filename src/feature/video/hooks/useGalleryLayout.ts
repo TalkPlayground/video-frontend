@@ -3,6 +3,7 @@ import { getVideoLayout } from '../video-layout-helper';
 import { useRenderVideo } from './useRenderVideo';
 import { Dimension, Pagination, CellLayout } from '../video-types';
 import { ZoomClient, MediaStream, Participant } from '../../../index-types';
+import { isAndroidOrIOSBrowser } from '../../../utils/platform';
 /**
  * Default order of video:
  *  1. video's participants first

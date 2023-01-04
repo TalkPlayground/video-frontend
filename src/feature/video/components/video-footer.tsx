@@ -184,24 +184,6 @@ const VideoFooter = (props: any) => {
   const [onAudioVideoOption, setonAudioVideoOption] = useState(false);
 
   const onCameraClick = useCallback(async () => {
-    // base('Error Logs').create(
-    //   [
-    //     {
-    //       fields: {
-    //         RecordID: 'kjbjkbkj'
-    //       }
-    //     }
-    //   ],
-    //   function (err: any, records: any) {
-    //     if (err) {
-    //       console.error(err);
-    //       return;
-    //     }
-    //     records.forEach(function (record: any) {
-    //       console.log(record.getId());
-    //     });
-    //   }
-    // );
     if (!HideSelfView) {
       if (isStartedVideo) {
         await mediaStream?.stopVideo();
