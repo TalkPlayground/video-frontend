@@ -105,7 +105,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   const RecordingZoomApi: any = zmClient?.getRecordingClient();
   var UserId = localStorage.getItem('UserID');
   const [modalOpenClose, setmodalOpenClose] = useState(false);
-  const [LinkShowCard, setLinkShowCard] = useState(true);
+  const [LinkShowCard, setLinkShowCard] = useState(isAndroidOrIOSBrowser() ? false : true);
   const [chatRecords, setChatRecords] = useState<ChatRecord[]>([]);
   const [RecordingStatus, setRecordingStatus] = useState(false);
   const [selfViewGalleryLayout, setselfViewGalleryLayout] = useState(false);
@@ -409,27 +409,29 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
           />
         )}
         <ul className="avatar-list">
-          {visibleParticipants.map((user, index) => {
-            if (index > videoLayout.length - 1) {
-              return null;
-            }
-            const dimension = videoLayout[index];
-            const { width, height, x, y } = dimension;
-            const { height: canvasHeight } = canvasDimension;
-            return (
-              <Avatar
-                participant={user}
-                key={user.userId}
-                isActive={activeVideo === user.userId}
-                style={{
-                  width: `${width}px`,
-                  height: `${height}px`,
-                  top: `${canvasHeight - y - height}px`,
-                  left: `${x}px`
-                }}
-              />
-            );
-          })}
+          {visibleParticipants
+            .filter((e) => (visibleParticipants?.length > 1 ? e.userId !== zmClient.getSessionInfo().userId : e))
+            .map((user, index) => {
+              if (index > videoLayout.length - 1) {
+                return null;
+              }
+              const dimension = videoLayout[index];
+              const { width, height, x, y } = dimension;
+              const { height: canvasHeight } = canvasDimension;
+              return (
+                <Avatar
+                  participant={user}
+                  key={user.userId}
+                  isActive={activeVideo === user.userId}
+                  style={{
+                    width: `${width}px`,
+                    height: `${height}px`,
+                    top: `${canvasHeight - y - height}px`,
+                    left: `${x}px`
+                  }}
+                />
+              );
+            })}
         </ul>
       </div>
 
