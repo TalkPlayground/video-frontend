@@ -387,10 +387,53 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         })}
       >
         <canvas className="video-canvas" id="video-canvas" width="800" height="600" ref={videoRef} />
-        {isUseVideoElementToDrawSelfVideo && (
+        {/* {isUseVideoElementToDrawSelfVideo && (
           <video
             ref={PIPRef}
             id={SELF_VIDEO_ID}
+            className={classnames(
+              `self-video-non-sab ${isAndroidOrIOSBrowser() && participants.length > 1 && 'isMobileView'}`
+            )}
+            style={
+              selfVideoLayout
+                ? {
+                    display: 'block',
+                    width: `${selfVideoLayout.width}px`,
+                    height: `${selfVideoLayout.height}px`,
+                    top: `${selfVideoLayout.y}px`,
+                    left: participants.length > 1 ? 'inherit' : `${selfVideoLayout.x}px`,
+                    pointerEvents: 'none'
+                  }
+                : undefined
+            }
+          />
+        )} */}
+        {isUseVideoElementToDrawSelfVideo ? (
+          <video
+            ref={PIPRef}
+            id={SELF_VIDEO_ID}
+            className={classnames(
+              `self-video-non-sab ${isAndroidOrIOSBrowser() && participants.length > 1 && 'isMobileView'}`
+            )}
+            style={
+              selfVideoLayout
+                ? {
+                    display: 'block',
+                    width: `${selfVideoLayout.width}px`,
+                    height: `${selfVideoLayout.height}px`,
+                    top: `${selfVideoLayout.y}px`,
+                    left: participants.length > 1 ? 'inherit' : `${selfVideoLayout.x}px`,
+                    pointerEvents: 'none'
+                  }
+                : undefined
+            }
+          />
+        ) : (
+          <canvas
+            ref={PIPRef}
+            id={SELF_VIDEO_ID}
+            // width="254"
+            // height="143"
             className={classnames(
               `self-video-non-sab ${isAndroidOrIOSBrowser() && participants.length > 1 && 'isMobileView'}`
             )}
