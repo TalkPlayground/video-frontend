@@ -29,7 +29,7 @@ import {
 } from './index-types';
 import './App.css';
 import SubsessionContext from './context/subsession-context';
-import { isAndroidBrowser } from './utils/platform';
+import { isAndroidBrowser, isAndroidOrIOSBrowser } from './utils/platform';
 import { devConfig, topicInfo } from './config/dev';
 import Homepage from './feature/home/Homepage';
 import Joinpage from './feature/Join/Joinpage';
@@ -141,7 +141,8 @@ function App(props: AppProps) {
     setIsLoading(true);
     await zmClient.init('en-US', `${window.location.origin}/lib`, {
       webEndpoint,
-      enforceMultipleVideos: galleryViewWithoutSAB,
+      // enforceMultipleVideos: galleryViewWithoutSAB,
+      enforceMultipleVideos: isAndroidOrIOSBrowser() ? isAndroidOrIOSBrowser() : galleryViewWithoutSAB,
       stayAwake: true
     });
     try {
@@ -292,7 +293,7 @@ function App(props: AppProps) {
                                   setLoadingText={setLoadingText}
                                   SaveTranscript={SaveTranscript}
                                 />
-                              ) : galleryViewWithoutSAB ? (
+                              ) : isAndroidOrIOSBrowser() ? (
                                 <VideoNonSAB
                                   {...props}
                                   DisplayDataInfo={DisplayDataInfo}

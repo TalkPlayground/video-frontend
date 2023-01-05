@@ -13,7 +13,12 @@ import { usePagination } from './hooks/usePagination';
 import { useActiveVideo } from './hooks/useAvtiveVideo';
 import { useShare } from './hooks/useShare';
 import './video.scss';
-import { isAndroidBrowser, isSupportOffscreenCanvas, isSupportWebCodecs } from '../../utils/platform';
+import {
+  isAndroidBrowser,
+  isAndroidOrIOSBrowser,
+  isSupportOffscreenCanvas,
+  isSupportWebCodecs
+} from '../../utils/platform';
 import { isShallowEqual } from '../../utils/util';
 import { useSizeCallback } from '../../hooks/useSizeCallback';
 import { SELF_VIDEO_ID } from './video-constants';
@@ -363,7 +368,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
           )}
         </div>
       </div>
-      {isMobile && (
+      {isAndroidOrIOSBrowser() && (
         <div className="d-flex align-items-center px-3 position-absolute" style={{ width: '100vw', top: 0 }}>
           <div style={{ flex: 1 }} className="d-flex">
             <p style={{ color: '#fff', fontSize: '15px', fontWeight: 700 }}>{urlParams.get('topic')}</p>
@@ -386,7 +391,9 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
           <video
             ref={PIPRef}
             id={SELF_VIDEO_ID}
-            className={classnames(`self-video-non-sab ${isMobile && participants.length > 1 && 'isMobileView'}`)}
+            className={classnames(
+              `self-video-non-sab ${isAndroidOrIOSBrowser() && participants.length > 1 && 'isMobileView'}`
+            )}
             style={
               selfVideoLayout
                 ? {
@@ -432,7 +439,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         </Box>
       </Slide>
 
-      {isMobile ? (
+      {isAndroidOrIOSBrowser() ? (
         <Slide
           direction={'left'}
           in={LinkShowCard}
@@ -478,7 +485,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         )
       )}
 
-      {isMobile && (
+      {isAndroidOrIOSBrowser() && (
         <Slide
           direction={'left'}
           in={IncallMemberCard}

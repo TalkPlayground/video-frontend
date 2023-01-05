@@ -134,7 +134,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   var isMobile = mobile();
 
   const activeUser = useMemo(
-    () => participants.find((user) => user.userId === activeVideo),
+    () => participants.find((user) => user.userId === activeVideo && user.userId !== zmClient.getSessionInfo().userId),
     [participants, activeVideo]
   );
   const isCurrentUserStartedVideo = zmClient.getCurrentUserInfo()?.bVideoOn;
