@@ -4,6 +4,7 @@ import { CaretLeftOutlined, CaretRightOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import classnames from 'classnames';
 import './pagination.scss';
+import { isAndroidOrIOSBrowser } from '../../../utils/platform';
 interface PaginationProps {
   page: number;
   totalPage: number;
@@ -24,7 +25,10 @@ const Pagination = (props: PaginationProps) => {
     }
   }, [page, totalPage, setPage]);
   return (
-    <div className={classnames('pagination', { 'in-sharing': inSharing })}>
+    <div
+      className={classnames('pagination', { 'in-sharing': inSharing })}
+      style={{ display: inSharing && isAndroidOrIOSBrowser() ? 'none' : 'flex' }}
+    >
       <Button
         key="left"
         className="previous-page-button"

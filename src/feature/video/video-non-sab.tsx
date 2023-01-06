@@ -194,7 +194,10 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         if (RecordingZoomApi?.getCloudRecordingStatus() == 'Recording') {
           setRecordingStatus(true);
           if (SaveTranscript) {
-            enqueueSnackbar('Transcript Started', { variant: 'info' });
+            enqueueSnackbar('Transcript Started', {
+              variant: 'info',
+              anchorOrigin: { horizontal: 'left', vertical: isAndroidOrIOSBrowser() ? 'top' : 'bottom' }
+            });
           } else {
             await axios.post('/api/v1/user/transcripts/delete/statusChange', {
               userId: UserId,
@@ -220,7 +223,10 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         .then(async function (response: any) {
           setRecordingStatus(data);
           if (SaveTranscript) {
-            enqueueSnackbar('Transcript Started', { variant: 'info' });
+            enqueueSnackbar('Transcript Started', {
+              variant: 'info',
+              anchorOrigin: { horizontal: 'left', vertical: isAndroidOrIOSBrowser() ? 'top' : 'bottom' }
+            });
           } else {
             await axios.post('/api/v1/user/transcripts/delete/statusChange', {
               userId: UserId,
@@ -252,7 +258,10 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         .then(async function (response: any) {
           setRecordingStatus(data);
           if (SaveTranscript) {
-            enqueueSnackbar('Transcript Stoped', { variant: 'info' });
+            enqueueSnackbar('Transcript Stoped', {
+              variant: 'info',
+              anchorOrigin: { horizontal: 'left', vertical: isAndroidOrIOSBrowser() ? 'top' : 'bottom' }
+            });
           }
           await axios.post(
             '/api/v1/user/session/frontend/loggers' +
@@ -385,6 +394,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         className={classnames('video-container', {
           'in-sharing': isSharing
         })}
+        style={{ display: isSharing && isAndroidOrIOSBrowser() ? 'none' : 'flex' }}
       >
         <canvas className="video-canvas" id="video-canvas" width="800" height="600" ref={videoRef} />
         {/* {isUseVideoElementToDrawSelfVideo && (
@@ -412,9 +422,10 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
           <video
             ref={PIPRef}
             id={SELF_VIDEO_ID}
-            className={classnames(
-              `self-video-non-sab ${isAndroidOrIOSBrowser() && participants.length > 1 && 'isMobileView'}`
-            )}
+            className={classnames(`self-video-non-sab`)}
+            // className={classnames(
+            //   `self-video-non-sab ${isAndroidOrIOSBrowser() && participants.length > 1 && 'isMobileView'}`
+            // )}
             style={
               selfVideoLayout
                 ? {
@@ -434,9 +445,10 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
             id={SELF_VIDEO_ID}
             // width="254"
             // height="143"
-            className={classnames(
-              `self-video-non-sab ${isAndroidOrIOSBrowser() && participants.length > 1 && 'isMobileView'}`
-            )}
+            className={classnames(`self-video-non-sab`)}
+            // className={classnames(
+            //   `self-video-non-sab ${isAndroidOrIOSBrowser() && participants.length > 1 && 'isMobileView'}`
+            // )}
             style={
               selfVideoLayout
                 ? {
@@ -453,7 +465,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         )}
         <ul className="avatar-list">
           {visibleParticipants
-            .filter((e) => (visibleParticipants?.length > 1 ? e.userId !== zmClient.getSessionInfo().userId : e))
+            // .filter((e) => (visibleParticipants?.length > 1 ? e.userId !== zmClient.getSessionInfo().userId : e))
             .map((user, index) => {
               if (index > videoLayout.length - 1) {
                 return null;
