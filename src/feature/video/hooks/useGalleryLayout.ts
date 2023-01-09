@@ -80,6 +80,13 @@ export function useGalleryLayout(
   }, [SelfVideoToggle]);
 
   useEffect(() => {
+    if (SelfVideoToggle) {
+      var index = visibleParticipants.findIndex((e: any) => e.userId === zmClient.getCurrentUserInfo().userId);
+      visibleParticipants.splice(index, 1);
+    }
+  }, [visibleParticipants?.length]);
+
+  useEffect(() => {
     zmClient.on('user-added', onParticipantsChange);
     zmClient.on('user-removed', onParticipantsChange);
     zmClient.on('user-updated', onParticipantsChange);

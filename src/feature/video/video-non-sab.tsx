@@ -46,6 +46,8 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import FlipCameraIosIcon from '@mui/icons-material/FlipCameraIos';
 import usePictureInPicture from 'react-use-pip';
 import PictureInPictureAltIcon from '@mui/icons-material/PictureInPictureAlt';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 const isUseVideoElementToDrawSelfVideo = isAndroidBrowser() || isSupportOffscreenCanvas();
 
@@ -110,6 +112,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   const [RecordingStatus, setRecordingStatus] = useState(false);
   const [selfViewGalleryLayout, setselfViewGalleryLayout] = useState(false);
   const myVideoRef = useRef<HTMLCanvasElement | null>(null);
+  const [toggleViewScreenPort, settoggleViewScreenPort] = useState(false);
 
   const PIPRef = useRef(null);
   const { isPictureInPictureActive, isPictureInPictureAvailable, togglePictureInPicture } = usePictureInPicture(PIPRef);
@@ -394,7 +397,10 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         className={classnames('video-container', {
           'in-sharing': isSharing
         })}
-        style={{ display: isSharing && isAndroidOrIOSBrowser() ? 'none' : 'flex' }}
+        style={{
+          width: isSharing && isAndroidOrIOSBrowser() ? (toggleViewScreenPort ? '264px' : '0px') : '100%',
+          position: isSharing && isAndroidOrIOSBrowser() ? (toggleViewScreenPort ? 'inherit' : 'absolute') : 'inherit'
+        }}
       >
         <canvas className="video-canvas" id="video-canvas" width="800" height="600" ref={videoRef} />
         {/* {isUseVideoElementToDrawSelfVideo && (
@@ -617,6 +623,8 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         setLoadingText={setLoadingText}
         SaveTranscript={SaveTranscript}
         setIncallMemberCard={setIncallMemberCard}
+        settoggleViewScreenPort={settoggleViewScreenPort}
+        toggleViewScreenPort={toggleViewScreenPort}
       />
       {totalPage > 1 && <Pagination page={page} totalPage={totalPage} setPage={setPage} inSharing={isSharing} />}
     </div>

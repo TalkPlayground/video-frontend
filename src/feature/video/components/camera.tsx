@@ -14,7 +14,7 @@ interface CameraButtonProps {
   isStartedVideo: boolean;
   isMirrored?: boolean;
   isBlur?: boolean;
-  onCameraClick: () => void;
+  onCameraClick: (isStartedVideo?: boolean) => void;
   onSwitchCamera: (deviceId: string) => void;
   onMirrorVideo?: () => void;
   onVideoStatistic?: () => void;
@@ -91,10 +91,13 @@ const CameraButton = (props: CameraButtonProps) => {
           onClick={onCameraClick}
         /> */}
         <IconButton
-          disabled={HideSelfView}
+          // disabled={HideSelfView}
           className={classNames(isStartedVideo ? 'camere-button ml-3' : 'camere-button ml-3', className)}
-          style={{ backgroundColor: !isStartedVideo ? '#ea4335 ' : '#3c4043', opacity: HideSelfView ? 0.5 : 1 }}
-          onClick={onCameraClick}
+          style={{
+            backgroundColor: !isStartedVideo ? '#ea4335 ' : '#3c4043'
+            // , opacity: HideSelfView ? 0.5 : 1
+          }}
+          onClick={() => onCameraClick(isStartedVideo)}
         >
           {isStartedVideo ? (
             <VideocamOutlinedIcon style={{ fill: '#fff' }} />

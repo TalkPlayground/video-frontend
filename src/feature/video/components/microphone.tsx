@@ -143,9 +143,12 @@ const MicrophoneButton = (props: MicrophoneButtonProps) => {
     <div className={classNames('microphone-footer', className)}>
       <Tooltip title={tooltipText}>
         <IconButton
-          disabled={HideSelfView}
+          // disabled={HideSelfView}
           className={isMuted ? 'microphone-button' : 'microphone-button'}
-          style={{ backgroundColor: !isMuted ? '#3c4043' : '#ea4335 ', opacity: HideSelfView ? 0.5 : 1 }}
+          style={{
+            backgroundColor: !isMuted ? '#3c4043' : '#ea4335 '
+            // , opacity: HideSelfView ? 0.5 : 1
+          }}
           onClick={onMicrophoneClick}
         >
           {isMuted ? <MicOffIcon style={{ fill: '#fff' }} /> : <KeyboardVoiceIcon style={{ fill: '#fff' }} />}

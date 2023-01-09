@@ -25,7 +25,7 @@ import moment from 'moment';
 import { AnyArray } from 'immer/dist/internal';
 import { Box, Slide } from '@material-ui/core';
 import ChatContainer from '../chat/chat';
-import { Alert } from '@mui/material';
+import { Alert, IconButton } from '@mui/material';
 import BasicCard from '../../component/pages/Linkcard';
 import nosleep from 'nosleep.js';
 import { SELF_VIDEO_ID } from './video-constants';
@@ -322,6 +322,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         })}
       >
         <canvas className="video-canvas" id="video-canvas" width="800" height="600" ref={videoRef} />
+        <IconButton></IconButton>
         <ul className="avatar-list">
           {visibleParticipants.map((user, index) => {
             if (index > videoLayout.length - 1) {

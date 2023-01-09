@@ -13,6 +13,9 @@ import { useUnmount, useMount } from '../../../hooks';
 import { MediaDevice } from '../video-types';
 import './video-footer.scss';
 import {
+  getExploreName,
+  getWindowOS,
+  get_browser,
   isAndroidBrowser,
   isAndroidOrIOSBrowser,
   isSupportOffscreenCanvas,
@@ -51,6 +54,7 @@ import moment from 'moment';
 import { topicInfo } from '../../../config/dev';
 // var Airtable = require('airtable');
 import Airtable from 'airtable';
+import axios from 'axios';
 
 interface VideoFooterProps {
   className?: string;
@@ -70,6 +74,8 @@ interface VideoFooterProps {
   setLoadingText?: any;
   SaveTranscript?: any;
   setIncallMemberCard?: any;
+  settoggleViewScreenPort?: any;
+  toggleViewScreenPort?: any;
 }
 
 const isAudioEnable = typeof AudioWorklet === 'function';
@@ -91,7 +97,9 @@ const VideoFooter = (props: any) => {
     setIsLoading,
     setLoadingText,
     SaveTranscript,
-    setIncallMemberCard
+    setIncallMemberCard,
+    settoggleViewScreenPort,
+    toggleViewScreenPort
   } = props;
 
   var base = new Airtable({
@@ -184,7 +192,7 @@ const VideoFooter = (props: any) => {
   const [onAudioVideoOption, setonAudioVideoOption] = useState(false);
 
   const onCameraClick = useCallback(async () => {
-    if (!HideSelfView) {
+    try {
       if (isStartedVideo) {
         await mediaStream?.stopVideo();
         setIsStartedVideo(false);
@@ -212,25 +220,53 @@ const VideoFooter = (props: any) => {
             const canvasElement = document.querySelector(`#${SELF_VIDEO_ID}`) as HTMLCanvasElement;
             mediaStream?.renderVideo(canvasElement, zmClient.getSessionInfo().userId, 254, 143, 0, 0, 3);
           }
-        }
 
-        setIsStartedVideo(true);
+          setIsStartedVideo(true);
+        }
+      }
+    } catch (error: any) {
+      if (error?.message) {
+        await axios.post('/api/v1/user/airtableCL/errorLog', {
+          browserDetails: `${getExploreName()}`,
+          browserVersion: `${get_browser()?.version}`,
+          computerOS: `${getWindowOS()}`,
+          consoleErrorMessage: error?.message,
+          sectionBug: 'Camera',
+          sessionId: `${zmClient.getSessionInfo().sessionId}`,
+          timeStamp: `${moment().format('LT') + ' ' + moment().format('ddd, MMM DD')}`,
+          userId: `${zmClient.getSessionInfo().userId}`
+        });
       }
     }
   }, [mediaStream, isStartedVideo, zmClient, isBlur]);
   const onMicrophoneClick = useCallback(async () => {
-    if (isStartedAudio) {
-      if (isMuted) {
-        await mediaStream?.unmuteAudio();
-        setIsMuted(false);
+    try {
+      if (isStartedAudio) {
+        if (isMuted) {
+          await mediaStream?.unmuteAudio();
+          setIsMuted(false);
+        } else {
+          await mediaStream?.muteAudio();
+          setIsMuted(true);
+        }
       } else {
-        await mediaStream?.muteAudio();
-        setIsMuted(true);
+        // await mediaStream?.startAudio({ speakerOnly: true });
+        await mediaStream?.startAudio();
+        setIsStartedAudio(true);
       }
-    } else {
-      // await mediaStream?.startAudio({ speakerOnly: true });
-      await mediaStream?.startAudio();
-      setIsStartedAudio(true);
+    } catch (error: any) {
+      if (error?.message) {
+        await axios.post('/api/v1/user/airtableCL/errorLog', {
+          browserDetails: `${getExploreName()}`,
+          browserVersion: `${get_browser()?.version}`,
+          computerOS: `${getWindowOS()}`,
+          consoleErrorMessage: error?.message,
+          sectionBug: 'Microphone',
+          sessionId: `${zmClient.getSessionInfo().sessionId}`,
+          timeStamp: `${moment().format('LT') + ' ' + moment().format('ddd, MMM DD')}`,
+          userId: `${zmClient.getSessionInfo().userId}`
+        });
+      }
     }
   }, [mediaStream, isStartedAudio, isMuted]);
   const onMicrophoneMenuClick = async (key: string) => {
@@ -325,12 +361,27 @@ const VideoFooter = (props: any) => {
     }
   }, []);
   const onScreenShareClick = useCallback(async () => {
-    if (!isStartedScreenShare && shareRef && shareRef.current) {
-      await mediaStream?.startShareScreen(shareRef.current, { requestReadReceipt: true });
-      setIsStartedScreenShare(true);
-    } else if (isStartedScreenShare) {
-      await mediaStream?.stopShareScreen();
-      setIsStartedScreenShare(false);
+    try {
+      if (!isStartedScreenShare && shareRef && shareRef.current) {
+        await mediaStream?.startShareScreen(shareRef.current, { requestReadReceipt: true });
+        setIsStartedScreenShare(true);
+      } else if (isStartedScreenShare) {
+        await mediaStream?.stopShareScreen();
+        setIsStartedScreenShare(false);
+      }
+    } catch (error: any) {
+      if (error?.message) {
+        await axios.post('/api/v1/user/airtableCL/errorLog', {
+          browserDetails: `${getExploreName()}`,
+          browserVersion: `${get_browser()?.version}`,
+          computerOS: `${getWindowOS()}`,
+          consoleErrorMessage: error?.message,
+          sectionBug: 'ScreenShare',
+          sessionId: `${zmClient.getSessionInfo().sessionId}`,
+          timeStamp: `${moment().format('LT') + ' ' + moment().format('ddd, MMM DD')}`,
+          userId: `${zmClient.getSessionInfo().userId}`
+        });
+      }
     }
   }, [mediaStream, isStartedScreenShare, shareRef]);
 
@@ -755,6 +806,37 @@ const VideoFooter = (props: any) => {
                         <PeopleAltIcon fontSize="medium" style={{ fill: '#fff' }} />
                         <Typography variant="body1" style={{ color: 'white' }}>
                           People
+                        </Typography>
+                      </IconButton>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginTop: 20
+                      }}
+                    >
+                      <IconButton
+                        onClick={() => {
+                          settoggleViewScreenPort((prev: any) => !prev);
+                          setmodalOpenClose(false);
+                          setLinkShowCard(false);
+                          setAnchorEl(null);
+                        }}
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'center',
+                          alignItems: 'center'
+                        }}
+                      >
+                        <PeopleAltIcon fontSize="medium" style={{ fill: '#fff' }} />
+                        <Typography variant="body1" style={{ color: 'white' }}>
+                          {toggleViewScreenPort ? 'Hide Member' : 'View Member'}
                         </Typography>
                       </IconButton>
                     </Box>
