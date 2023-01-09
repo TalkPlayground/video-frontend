@@ -35,13 +35,13 @@ export function usePagination(zmClient: ZoomClient, dimension: Dimension, selfVi
     } else {
       setTotalSize(zmClient.getAllUser().length);
     }
-  }, [selfViewGalleryLayout, mediaStream?.isCapturingVideo(), mediaStream?.isAudioMuted]);
+  }, [selfViewGalleryLayout, mediaStream?.isCapturingVideo(), mediaStream?.isAudioMuted()]);
 
-  useEffect(() => {
-    if (isAndroidOrIOSBrowser() && zmClient.getAllUser().length > 1) {
-      setTotalSize((prev) => prev - 1);
-    }
-  }, [zmClient.getAllUser().length]);
+  // useEffect(() => {
+  //   if (isAndroidOrIOSBrowser() && zmClient.getAllUser().length > 1) {
+  //     setTotalSize((prev) => prev - 1);
+  //   }
+  // }, [zmClient.getAllUser().length]);
 
   useMount(() => {
     setTotalSize(zmClient.getAllUser().length);

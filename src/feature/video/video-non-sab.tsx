@@ -625,8 +625,17 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         setIncallMemberCard={setIncallMemberCard}
         settoggleViewScreenPort={settoggleViewScreenPort}
         toggleViewScreenPort={toggleViewScreenPort}
+        inSharing={isSharing}
       />
-      {totalPage > 1 && <Pagination page={page} totalPage={totalPage} setPage={setPage} inSharing={isSharing} />}
+      {totalPage > 1 && (
+        <Pagination
+          page={page}
+          totalPage={totalPage}
+          setPage={setPage}
+          inSharing={isSharing}
+          toggleViewScreenPort={toggleViewScreenPort}
+        />
+      )}
     </div>
   );
 };

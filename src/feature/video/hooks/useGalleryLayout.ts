@@ -73,7 +73,9 @@ export function useGalleryLayout(
     console.log('first=====>>>>>>>>>>>');
     if (SelfVideoToggle) {
       var index = visibleParticipants.findIndex((e: any) => e.userId === zmClient.getCurrentUserInfo().userId);
-      visibleParticipants.splice(index, 1);
+      if (index >= 0) {
+        visibleParticipants.splice(index, 1);
+      }
     } else {
       onParticipantsChange();
     }
@@ -82,7 +84,9 @@ export function useGalleryLayout(
   useEffect(() => {
     if (SelfVideoToggle) {
       var index = visibleParticipants.findIndex((e: any) => e.userId === zmClient.getCurrentUserInfo().userId);
-      visibleParticipants.splice(index, 1);
+      if (index >= 0) {
+        visibleParticipants.splice(index, 1);
+      }
     }
   }, [visibleParticipants?.length]);
 

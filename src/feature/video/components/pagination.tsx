@@ -10,9 +10,10 @@ interface PaginationProps {
   totalPage: number;
   setPage: (page: number) => void;
   inSharing?: boolean;
+  toggleViewScreenPort?: boolean;
 }
 const Pagination = (props: PaginationProps) => {
-  const { page, totalPage, setPage, inSharing } = props;
+  const { page, totalPage, setPage, inSharing, toggleViewScreenPort } = props;
   const pageIndication = `${page + 1}/${totalPage}`;
   const toPreviousPage = useCallback(() => {
     if (page > 0) {
@@ -27,7 +28,10 @@ const Pagination = (props: PaginationProps) => {
   return (
     <div
       className={classnames('pagination', { 'in-sharing': inSharing })}
-      style={{ display: inSharing && isAndroidOrIOSBrowser() ? 'none' : 'flex' }}
+      style={{
+        display: inSharing && isAndroidOrIOSBrowser() ? (toggleViewScreenPort ? 'flex' : 'none') : 'flex',
+        padding: inSharing && isAndroidOrIOSBrowser() ? (toggleViewScreenPort ? '20px 0px 80px 0px' : '') : ''
+      }}
     >
       <Button
         key="left"

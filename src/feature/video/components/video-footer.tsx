@@ -76,6 +76,7 @@ interface VideoFooterProps {
   setIncallMemberCard?: any;
   settoggleViewScreenPort?: any;
   toggleViewScreenPort?: any;
+  inSharing?: boolean;
 }
 
 const isAudioEnable = typeof AudioWorklet === 'function';
@@ -99,7 +100,8 @@ const VideoFooter = (props: any) => {
     SaveTranscript,
     setIncallMemberCard,
     settoggleViewScreenPort,
-    toggleViewScreenPort
+    toggleViewScreenPort,
+    inSharing
   } = props;
 
   var base = new Airtable({
@@ -821,6 +823,7 @@ const VideoFooter = (props: any) => {
                       }}
                     >
                       <IconButton
+                        disabled={!inSharing}
                         onClick={() => {
                           settoggleViewScreenPort((prev: any) => !prev);
                           setmodalOpenClose(false);
