@@ -73,7 +73,7 @@ export function useGalleryLayout(
     console.log('first=====>>>>>>>>>>>');
     if (SelfVideoToggle) {
       var index = visibleParticipants.findIndex((e: any) => e.userId === zmClient.getCurrentUserInfo().userId);
-      if (index >= 0) {
+      if (index) {
         visibleParticipants.splice(index, 1);
       }
     } else {
@@ -88,7 +88,7 @@ export function useGalleryLayout(
         visibleParticipants.splice(index, 1);
       }
     }
-  }, [visibleParticipants?.length]);
+  }, [visibleParticipants?.length,zmClient.getAllUser().length]);
 
   useEffect(() => {
     zmClient.on('user-added', onParticipantsChange);

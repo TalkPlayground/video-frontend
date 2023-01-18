@@ -227,18 +227,18 @@ const VideoFooter = (props: any) => {
         }
       }
     } catch (error: any) {
-      if (error?.message) {
+      // if (error?.message) {
         await axios.post('/api/v1/user/airtableCL/errorLog', {
           browserDetails: `${getExploreName()}`,
           browserVersion: `${get_browser()?.version}`,
           computerOS: `${getWindowOS()}`,
-          consoleErrorMessage: error?.message,
+          consoleErrorMessage: JSON.stringify(error),
           sectionBug: 'Camera',
           sessionId: `${zmClient.getSessionInfo().sessionId}`,
           timeStamp: `${moment().format('LT') + ' ' + moment().format('ddd, MMM DD')}`,
           userId: `${zmClient.getSessionInfo().userId}`
         });
-      }
+      // }
     }
   }, [mediaStream, isStartedVideo, zmClient, isBlur]);
   const onMicrophoneClick = useCallback(async () => {
@@ -257,18 +257,18 @@ const VideoFooter = (props: any) => {
         setIsStartedAudio(true);
       }
     } catch (error: any) {
-      if (error?.message) {
+      // if (error?.message) {
         await axios.post('/api/v1/user/airtableCL/errorLog', {
           browserDetails: `${getExploreName()}`,
           browserVersion: `${get_browser()?.version}`,
           computerOS: `${getWindowOS()}`,
-          consoleErrorMessage: error?.message,
+          consoleErrorMessage: JSON.stringify(error),
           sectionBug: 'Microphone',
           sessionId: `${zmClient.getSessionInfo().sessionId}`,
           timeStamp: `${moment().format('LT') + ' ' + moment().format('ddd, MMM DD')}`,
           userId: `${zmClient.getSessionInfo().userId}`
         });
-      }
+      // }
     }
   }, [mediaStream, isStartedAudio, isMuted]);
   const onMicrophoneMenuClick = async (key: string) => {
@@ -372,18 +372,18 @@ const VideoFooter = (props: any) => {
         setIsStartedScreenShare(false);
       }
     } catch (error: any) {
-      if (error?.message) {
+      // if (error?.message) {
         await axios.post('/api/v1/user/airtableCL/errorLog', {
           browserDetails: `${getExploreName()}`,
           browserVersion: `${get_browser()?.version}`,
           computerOS: `${getWindowOS()}`,
-          consoleErrorMessage: error?.message,
+          consoleErrorMessage: JSON.stringify(error),
           sectionBug: 'ScreenShare',
           sessionId: `${zmClient.getSessionInfo().sessionId}`,
           timeStamp: `${moment().format('LT') + ' ' + moment().format('ddd, MMM DD')}`,
           userId: `${zmClient.getSessionInfo().userId}`
         });
-      }
+      // }
     }
   }, [mediaStream, isStartedScreenShare, shareRef]);
 

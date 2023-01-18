@@ -35,13 +35,23 @@ export function usePagination(zmClient: ZoomClient, dimension: Dimension, selfVi
     } else {
       setTotalSize(zmClient.getAllUser().length);
     }
-  }, [selfViewGalleryLayout, mediaStream?.isCapturingVideo(), mediaStream?.isAudioMuted()]);
+  }, [selfViewGalleryLayout]);
 
   // useEffect(() => {
   //   if (isAndroidOrIOSBrowser() && zmClient.getAllUser().length > 1) {
   //     setTotalSize((prev) => prev - 1);
   //   }
   // }, [zmClient.getAllUser().length]);
+
+  useEffect(() => {
+    console.log("calllledddddddddd",totalSize)
+    if(selfViewGalleryLayout && zmClient.getAllUser().length === 1){
+      setTotalSize(0)
+    }else if(selfViewGalleryLayout && zmClient.getAllUser().length - 1 !== totalSize ){
+      setTotalSize(zmClient.getAllUser().length - 1);
+    }
+  }, [totalSize,zmClient.getAllUser().length, mediaStream?.isCapturingVideo(), mediaStream?.isAudioMuted()])
+  
 
   useMount(() => {
     setTotalSize(zmClient.getAllUser().length);
