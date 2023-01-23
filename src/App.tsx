@@ -141,8 +141,8 @@ function App(props: AppProps) {
     setIsLoading(true);
     await zmClient.init('en-US', `${window.location.origin}/lib`, {
       webEndpoint,
-      enforceMultipleVideos: galleryViewWithoutSAB,
-      // enforceMultipleVideos: isAndroidOrIOSBrowser() ? isAndroidOrIOSBrowser() : galleryViewWithoutSAB,
+      // enforceMultipleVideos: galleryViewWithoutSAB,
+      enforceMultipleVideos: isAndroidOrIOSBrowser() ? false : galleryViewWithoutSAB,
       stayAwake: true
     });
     try {
@@ -223,7 +223,7 @@ function App(props: AppProps) {
     console.log('onAudioMerged', payload);
   }, []);
 
-  console.log("isSupportGalleryView || isAndroidOrIOSBrowser",isSupportGalleryView,isAndroidOrIOSBrowser())
+  console.log("galleryViewWithoutSAB || isSupportGalleryView || isAndroidOrIOSBrowser",galleryViewWithoutSAB,isSupportGalleryView,isAndroidOrIOSBrowser())
 
   const onLeaveOrJoinSession = useCallback(async () => {
     if (status === 'closed') {
@@ -295,7 +295,7 @@ function App(props: AppProps) {
                                   setLoadingText={setLoadingText}
                                   SaveTranscript={SaveTranscript}
                                 />
-                              ) : galleryViewWithoutSAB ? (
+                              ) : !isAndroidOrIOSBrowser() ? (
                                 <VideoNonSAB
                                   {...props}
                                   DisplayDataInfo={DisplayDataInfo}
