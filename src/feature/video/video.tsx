@@ -322,7 +322,6 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         })}
       >
         <canvas className="video-canvas" id="video-canvas" width="800" height="600" ref={videoRef} />
-        <IconButton></IconButton>
         <ul className="avatar-list">
           {visibleParticipants.map((user, index) => {
             if (index > videoLayout.length - 1) {
