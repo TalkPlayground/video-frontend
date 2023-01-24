@@ -137,7 +137,8 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     () => participants.find((user) => user.userId === activeVideo && user.userId !== zmClient.getSessionInfo().userId),
     [participants, activeVideo]
   );
-  const isCurrentUserStartedVideo = zmClient.getCurrentUserInfo()?.bVideoOn;
+  const isCurrentUserStartedVideo = zmClient.getCurrentUserInfo()?.bVideoOn &&  participants.length === 1;
+  console.log("zmClient.getCurrentUserInfo()",zmClient.getCurrentUserInfo())
   useEffect(() => {
     if (mediaStream && videoRef.current && isVideoDecodeReady) {
       if (activeUser?.bVideoOn !== previousActiveUser.current?.bVideoOn) {

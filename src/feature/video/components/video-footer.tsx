@@ -205,7 +205,7 @@ const VideoFooter = (props: any) => {
             await mediaStream?.startVideo({ videoElement });
             await mediaStream?.mirrorVideo(true);
             setIsMirrored(true);
-            if (!isSupportWebCodecs() && !isAndroidBrowser() && !isAndroidOrIOSBrowser()) {
+            if (!isSupportWebCodecs() && !isAndroidBrowser() ) {
               const canvasElement = document.querySelector(`#${SELF_VIDEO_ID}`) as HTMLCanvasElement;
               mediaStream?.renderVideo(canvasElement, zmClient.getSessionInfo().userId, 254, 143, 0, 0, 3);
             }
@@ -218,7 +218,7 @@ const VideoFooter = (props: any) => {
           await mediaStream?.startVideo(startVideoOptions);
           await mediaStream?.mirrorVideo(true);
           setIsMirrored(true);
-          if (!mediaStream?.isSupportMultipleVideos() && !isAndroidOrIOSBrowser()) {
+          if (!mediaStream?.isSupportMultipleVideos()) {
             const canvasElement = document.querySelector(`#${SELF_VIDEO_ID}`) as HTMLCanvasElement;
             mediaStream?.renderVideo(canvasElement, zmClient.getSessionInfo().userId, 254, 143, 0, 0, 3);
           }
