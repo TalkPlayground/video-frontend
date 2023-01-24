@@ -477,7 +477,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         })}
       >
         <canvas className="video-canvas" id="video-canvas" width="800" height="600" ref={videoRef} />
-        {isUseVideoElementToDrawSelfVideo ? (
+        {/* {isUseVideoElementToDrawSelfVideo ? (
           <video
             ref={PIPRef}
             id={SELF_VIDEO_ID}
@@ -503,7 +503,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
               }
             )}
           />
-        )}
+        )} */}
         {activeUser && (
           <Avatar
             participant={activeUser}
