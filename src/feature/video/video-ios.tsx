@@ -13,13 +13,14 @@ import {
 import ChatContainer from '../chat/chat';
 import VideoFooter from './components/video-footer';
 import { useShare } from './hooks/useShare';
+import _ from 'lodash';
 
 import ZoomMediaContext from '../../context/media-context';
 import { Participant } from '../../index-types';
 import classnames from 'classnames';
 import { useLocalVolume } from './hooks/useLocalVolume';
 import { useParticipantsChange } from './hooks/useParticipantsChange';
-import { useMount } from '../../hooks';
+import { useMount, useSizeCallback } from '../../hooks';
 import { SELF_VIDEO_ID } from './video-constants';
 import { ChatRecord } from '../chat/chat-types';
 import { getQueryString } from '../../Api';
@@ -35,6 +36,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useSnackbar } from 'notistack';
 import useStayAwake from 'use-stay-awake';
+import { isShallowEqual } from '../../utils/util';
 
 const isUseVideoElementToDrawSelfVideo = isAndroidBrowser() || (isSupportOffscreenCanvas() && isSupportWebCodecs());
 
@@ -79,6 +81,12 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   const [chatRecords, setChatRecords] = useState<ChatRecord[]>([]);
   const [RecordingStatus, setRecordingStatus] = useState(false);
   const [IncallMemberCard, setIncallMemberCard] = useState(false);
+  const [containerDimension, setContainerDimension] = useState({
+    width: 0,
+    height: 0
+  });
+  const [toggleViewScreenPort, settoggleViewScreenPort] = useState(false);
+
 
   const onActiveVideoChange = useCallback((payload: any) => {
     const { userId } = payload;
@@ -97,7 +105,6 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
       setActiveVideo(mediaStream.getActiveVideoId());
     }
   });
-
 
   const JoinSessionApi = async () => {
     const info = {
@@ -241,16 +248,17 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     [participants, activeVideo]
   );
 
-  const RenderVideo = async (activeUser:any) => {
+  const RenderVideo = async (activeUser: any) => {
     console.log('first=====>');
     await mediaStream?.renderVideo(videoRef.current as HTMLCanvasElement, activeUser.userId, 254, 143, 0, 0, 3);
-  }
+  };
 
   useEffect(() => {
     if (activeUser?.bVideoOn) {
       RenderVideo(activeUser);
     }
   }, [activeUser, activeUser?.bVideoOn]);
+  
 
   // useEffect(() => {
   //   console.log("bvideoOn")
@@ -277,6 +285,30 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     //   setAllvisibleParticipants([]);
     // }
   };
+
+  useEffect(() => {
+    if (isSharing && shareContainerRef.current) {
+      const { width, height } = sharedContentDimension;
+      const { width: containerWidth, height: containerHeight } = containerDimension;
+      const ratio = Math.min(containerWidth / width, containerHeight / height, 1);
+      setShareViewDimension({
+        width: Math.floor(width * ratio),
+        height: Math.floor(height * ratio)
+      });
+    }
+  }, [isSharing, sharedContentDimension, containerDimension]);
+
+  const onShareContainerResize = useCallback(({ width, height }: any) => {
+    _.throttle(() => {
+      setContainerDimension({ width, height });
+    }, 50)();
+  }, []);
+  useSizeCallback(shareContainerRef.current, onShareContainerResize);
+  useEffect(() => {
+    if (!isShallowEqual(shareViewDimension, sharedContentDimension)) {
+      mediaStream?.updateSharingCanvasDimension(shareViewDimension.width, shareViewDimension.height);
+    }
+  }, [mediaStream, sharedContentDimension, shareViewDimension]);
 
   const ToggleCamera = async () => {
     if (mediaStream) {
@@ -329,7 +361,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
             <FlipCameraIosIcon style={{ fill: '#fff' }} />
           </IconButton>
         </div>
-      )} 
+      )}
       {/* {isAndroidOrIOSBrowser() && (
         <div
           className="MyVideo"
@@ -373,16 +405,23 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         className={classnames('video-container', {
           'in-sharing': isSharing
         })}
+        style={{
+          width: isSharing && isAndroidOrIOSBrowser() ? (toggleViewScreenPort ? '264px' : '0px') : '100%',
+          position: isSharing && isAndroidOrIOSBrowser() ? (toggleViewScreenPort ? 'inherit' : 'fixed') : 'inherit'
+        }}
       >
         <canvas className="video-canvas" id="video-canvas" width="800" height="600" ref={videoRef} />
         {isUseVideoElementToDrawSelfVideo ? (
           <video
             // ref={PIPRef}
             id={SELF_VIDEO_ID}
-            className={classnames(`self-video ${isAndroidOrIOSBrowser() && participants.length > 1 && 'isMobileView'}`, {
-              'single-self-video': participants.length === 1,
-              'self-video-show': isCurrentUserStartedVideo
-            })}
+            className={classnames(
+              `self-video ${isAndroidOrIOSBrowser() && participants.length > 1 && 'isMobileView'}`,
+              {
+                'single-self-video': participants.length === 1,
+                'self-video-show': isCurrentUserStartedVideo
+              }
+            )}
           />
         ) : (
           <canvas
@@ -390,10 +429,13 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
             id={SELF_VIDEO_ID}
             width="254"
             height="143"
-            className={classnames(`self-video ${isAndroidOrIOSBrowser() && participants.length > 1 && 'isMobileView'}`, {
-              'single-self-video': participants.length === 1,
-              'self-video-show': isCurrentUserStartedVideo
-            })}
+            className={classnames(
+              `self-video ${isAndroidOrIOSBrowser() && participants.length > 1 && 'isMobileView'}`,
+              {
+                'single-self-video': participants.length === 1,
+                'self-video-show': isCurrentUserStartedVideo
+              }
+            )}
           />
         )}
         {activeUser && participants.length > 1 ? (
@@ -404,13 +446,17 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
             volume={userVolumeList.find((u) => u.userId === activeUser.userId)?.volume}
             setLocalVolume={setLocalVolume}
           />
-        ) : participants.length == 1 && <Avatar
-        participant={participants[0]}
-        isActive={false}
-        className="single-view-avatar"
-        volume={userVolumeList.find((u) => u.userId === participants[0].userId)?.volume}
-        setLocalVolume={setLocalVolume}
-      />}
+        ) : (
+          participants.length == 1 && (
+            <Avatar
+              participant={participants[0]}
+              isActive={false}
+              className="single-view-avatar"
+              volume={userVolumeList.find((u) => u.userId === participants[0].userId)?.volume}
+              setLocalVolume={setLocalVolume}
+            />
+          )
+        )}
       </div>
 
       {/* <Box style={{ position: 'absolute' }}>
@@ -418,7 +464,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
        
        
       </Box> */}
-       {isAndroidOrIOSBrowser() ? (
+      {isAndroidOrIOSBrowser() ? (
         <Slide
           direction={'left'}
           in={LinkShowCard}
@@ -462,9 +508,9 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         LinkShowCard && (
           <BasicCard setLinkShowCard={setLinkShowCard} LinkShowCard={LinkShowCard} DisplayDataInfo={DisplayDataInfo} />
         )
-      )} 
+      )}
 
-     {isAndroidOrIOSBrowser() && (
+      {isAndroidOrIOSBrowser() && (
         <Slide
           direction={'left'}
           in={IncallMemberCard}
@@ -538,6 +584,9 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         setLoadingText={setLoadingText}
         SaveTranscript={SaveTranscript}
         setIncallMemberCard={setIncallMemberCard}
+        settoggleViewScreenPort={settoggleViewScreenPort}
+        toggleViewScreenPort={toggleViewScreenPort}
+        inSharing={isSharing}
       />
     </div>
   );
