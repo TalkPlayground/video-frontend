@@ -4,6 +4,7 @@ import { isShallowEqual } from '../../../utils/util';
 import { CellLayout } from '../video-types';
 import { MediaStream, Participant } from '../../../index-types';
 import zoomContext from '../../../context/zoom-context';
+import { isAndroidOrIOSBrowser } from '../../../utils/platform';
 export function useRenderVideo(
   mediaStream: MediaStream | null,
   isVideoDecodeReady: boolean,
@@ -32,10 +33,13 @@ export function useRenderVideo(
     }
     HideShowRenderControl(SelfVideoToggle);
   }, [SelfVideoToggle]);
+  
 
   useEffect(() => {
     if (videoRef.current && layout && layout.length > 0 && isVideoDecodeReady) {
+      console.log("previousSubscribedVideos",previousSubscribedVideos,"subscribedVideos",subscribedVideos)
       const addedSubscribers = subscribedVideos.filter((id) => !(previousSubscribedVideos || []).includes(id));
+      console.log("addedSubscribers",addedSubscribers)
       const removedSubscribers = (previousSubscribedVideos || []).filter(
         (id: number) => !subscribedVideos.includes(id)
       );
@@ -51,6 +55,7 @@ export function useRenderVideo(
         addedSubscribers.forEach(async (userId) => {
           const index = participants.findIndex((user) => user.userId === userId);
           const cellDimension = layout[index];
+
           if (cellDimension && (!isSkipSelfVideo || (isSkipSelfVideo && userId !== currentUserId))) {
             const { width, height, x, y, quality } = cellDimension;
             await mediaStream?.renderVideo(videoRef.current as HTMLCanvasElement, userId, width, height, x, y, quality);

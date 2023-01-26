@@ -8,6 +8,7 @@ import Home from './feature/home/home';
 import Video from './feature/video/video';
 import VideoSingle from './feature/video/video-single';
 import VideoNonSAB from './feature/video/video-non-sab';
+import VideoIOS from './feature/video/video-ios';
 import Preview from './feature/preview/preview';
 import ZoomContext from './context/zoom-context';
 import ZoomMediaContext from './context/media-context';
@@ -223,7 +224,7 @@ function App(props: AppProps) {
     console.log('onAudioMerged', payload);
   }, []);
 
-  console.log("galleryViewWithoutSAB || isSupportGalleryView || isAndroidOrIOSBrowser",galleryViewWithoutSAB,isSupportGalleryView,isAndroidOrIOSBrowser())
+  // console.log("galleryViewWithoutSAB || isSupportGalleryView || isAndroidOrIOSBrowser",galleryViewWithoutSAB,isSupportGalleryView,isAndroidOrIOSBrowser())
 
   const onLeaveOrJoinSession = useCallback(async () => {
     if (status === 'closed') {
@@ -305,13 +306,20 @@ function App(props: AppProps) {
                                 />
                               ) : 
                               (
-                                <VideoSingle
+                                <VideoIOS
                                   {...props}
                                   DisplayDataInfo={DisplayDataInfo}
                                   setIsLoading={setIsLoading}
                                   setLoadingText={setLoadingText}
                                   SaveTranscript={SaveTranscript}
                                 />
+                                // <VideoSingle
+                                //   {...props}
+                                //   DisplayDataInfo={DisplayDataInfo}
+                                //   setIsLoading={setIsLoading}
+                                //   setLoadingText={setLoadingText}
+                                //   SaveTranscript={SaveTranscript}
+                                // />
                               )
                             ) : (
                               <Redirect to="/Join" />
