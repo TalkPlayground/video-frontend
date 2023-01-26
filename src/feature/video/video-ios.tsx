@@ -26,6 +26,16 @@ import { getQueryString } from '../../Api';
 import axios from 'axios';
 import moment from 'moment';
 
+import FlipCameraIosIcon from '@mui/icons-material/FlipCameraIos';
+import usePictureInPicture from 'react-use-pip';
+import PictureInPictureAltIcon from '@mui/icons-material/PictureInPictureAlt';
+import { MobileVideoFacingMode } from '@zoom/videosdk';
+import { url } from '../../App';
+import CloseIcon from '@mui/icons-material/Close';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { useSnackbar } from 'notistack';
+import useStayAwake from 'use-stay-awake';
+
 const isUseVideoElementToDrawSelfVideo = isAndroidBrowser() || (isSupportOffscreenCanvas() && isSupportWebCodecs());
 
 interface VideoProps extends RouteComponentProps {
@@ -38,6 +48,15 @@ interface VideoProps extends RouteComponentProps {
 const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   const { DisplayDataInfo, setIsLoading, setLoadingText, SaveTranscript } = props;
   const zmClient = useContext(zoomContext);
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const RecordingZoomApi: any = zmClient?.getRecordingClient();
+  const { enqueueSnackbar } = useSnackbar();
+  var UserId = localStorage.getItem('UserID');
+  const info = {
+    ...zmClient.getSessionInfo()
+  };
+  const device = useStayAwake();
 
   const { userVolumeList, setLocalVolume } = useLocalVolume();
   const videoRef = useRef<HTMLCanvasElement | null>(null);
@@ -45,6 +64,8 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     width: 0,
     height: 0
   });
+  const PIPRef = useRef(null);
+  const { isPictureInPictureActive, isPictureInPictureAvailable, togglePictureInPicture } = usePictureInPicture(PIPRef);
   useParticipantsChange(zmClient, (payload) => {
     setParticipants(payload);
   });
@@ -77,71 +98,133 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     }
   });
 
+
+  const JoinSessionApi = async () => {
+    const info = {
+      ...zmClient.getSessionInfo()
+    };
+    var a = false;
+    if (UserId) {
+      await axios
+        .post('/api/v1/user/session/store', {
+          userId: UserId,
+          sessionId: info.sessionId
+        })
+        .then(function (response) {
+          a = true;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+    if (a) {
+      return a;
+    }
+  };
+
+  useEffect(() => {
+    const participants = zmClient.getAllUser();
+    console.log(zmClient.getSessionInfo().userId, participants);
+    // noSleep.enable();
+    device.preventSleeping();
+
+    const info = {
+      ...zmClient.getSessionInfo()
+    };
+
+    const startAPi = async () => {
+      const data: any = await JoinSessionApi();
+      if (data && participants?.length == 1) {
+        StartStopRecording(!RecordingStatus);
+      } else if (data) {
+        if (RecordingZoomApi?.getCloudRecordingStatus() == 'Recording') {
+          setRecordingStatus(true);
+          if (SaveTranscript) {
+            enqueueSnackbar('Transcript Started', {
+              variant: 'info',
+              anchorOrigin: { horizontal: 'left', vertical: isAndroidOrIOSBrowser() ? 'top' : 'bottom' }
+            });
+          } else {
+            await axios.post('/api/v1/user/transcripts/delete/statusChange', {
+              userId: UserId,
+              status: false,
+              sessionId: info.sessionId
+            });
+          }
+          ///Call Api Here with else
+        } else {
+          StartStopRecording(true);
+        }
+      }
+    };
+    startAPi();
+  }, []);
+
   const StartStopRecording = async (data: boolean) => {
-    // if (data) {
-    //   await RecordingZoomApi.startCloudRecording()
-    //     .then(async function (response: any) {
-    //       setRecordingStatus(data);
-    //       if (SaveTranscript) {
-    //         enqueueSnackbar('Transcript Started', {
-    //           variant: 'info',
-    //           anchorOrigin: { horizontal: 'left', vertical: isAndroidOrIOSBrowser() ? 'top' : 'bottom' }
-    //         });
-    //       } else {
-    //         await axios.post('/api/v1/user/transcripts/delete/statusChange', {
-    //           userId: UserId,
-    //           status: false,
-    //           sessionId: info.sessionId
-    //         });
-    //       }
-    //       ///Call Api Here with else
-    //       await axios.post(
-    //         '/api/v1/user/session/frontend/loggers' +
-    //           '?' +
-    //           getQueryString({
-    //             logs: `Recording Started on ${moment().format('DD/MM/YYYY LT')}`
-    //           })
-    //       );
-    //     })
-    //     .catch(async function (error: any) {
-    //       console.log(error);
-    //       await axios.post(
-    //         '/api/v1/user/session/frontend/loggers' +
-    //           '?' +
-    //           getQueryString({
-    //             logs: error?.message + ' ' + moment().format('DD/MM/YYYY LT')
-    //           })
-    //       );
-    //     });
-    // } else {
-    //   await RecordingZoomApi.stopCloudRecording()
-    //     .then(async function (response: any) {
-    //       setRecordingStatus(data);
-    //       if (SaveTranscript) {
-    //         enqueueSnackbar('Transcript Stoped', {
-    //           variant: 'info',
-    //           anchorOrigin: { horizontal: 'left', vertical: isAndroidOrIOSBrowser() ? 'top' : 'bottom' }
-    //         });
-    //       }
-    //       await axios.post(
-    //         '/api/v1/user/session/frontend/loggers' +
-    //           '?' +
-    //           getQueryString({
-    //             logs: `Recording Stoped on ${moment().format('DD/MM/YYYY LT')}`
-    //           })
-    //       );
-    //     })
-    //     .catch(async function (error: any) {
-    //       console.log(error);
-    //       await axios.post(
-    //         '/api/v1/user/session/frontend/loggers' +
-    //           '?' +
-    //           getQueryString({
-    //             logs: error?.message + ' ' + moment().format('DD/MM/YYYY LT')
-    //           })
-    //       );
-    //     });
-    // }
+    if (data) {
+      await RecordingZoomApi.startCloudRecording()
+        .then(async function (response: any) {
+          setRecordingStatus(data);
+          if (SaveTranscript) {
+            enqueueSnackbar('Transcript Started', {
+              variant: 'info',
+              anchorOrigin: { horizontal: 'left', vertical: isAndroidOrIOSBrowser() ? 'top' : 'bottom' }
+            });
+          } else {
+            await axios.post('/api/v1/user/transcripts/delete/statusChange', {
+              userId: UserId,
+              status: false,
+              sessionId: info.sessionId
+            });
+          }
+          ///Call Api Here with else
+          await axios.post(
+            '/api/v1/user/session/frontend/loggers' +
+              '?' +
+              getQueryString({
+                logs: `Recording Started on ${moment().format('DD/MM/YYYY LT')}`
+              })
+          );
+        })
+        .catch(async function (error: any) {
+          console.log(error);
+          await axios.post(
+            '/api/v1/user/session/frontend/loggers' +
+              '?' +
+              getQueryString({
+                logs: error?.message + ' ' + moment().format('DD/MM/YYYY LT')
+              })
+          );
+        });
+    } else {
+      await RecordingZoomApi.stopCloudRecording()
+        .then(async function (response: any) {
+          setRecordingStatus(data);
+          if (SaveTranscript) {
+            enqueueSnackbar('Transcript Stoped', {
+              variant: 'info',
+              anchorOrigin: { horizontal: 'left', vertical: isAndroidOrIOSBrowser() ? 'top' : 'bottom' }
+            });
+          }
+          await axios.post(
+            '/api/v1/user/session/frontend/loggers' +
+              '?' +
+              getQueryString({
+                logs: `Recording Stoped on ${moment().format('DD/MM/YYYY LT')}`
+              })
+          );
+        })
+        .catch(async function (error: any) {
+          console.log(error);
+          await axios.post(
+            '/api/v1/user/session/frontend/loggers' +
+              '?' +
+              getQueryString({
+                logs: error?.message + ' ' + moment().format('DD/MM/YYYY LT')
+              })
+          );
+        });
+    }
   };
 
   const {
@@ -195,6 +278,20 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     // }
   };
 
+  const ToggleCamera = async () => {
+    if (mediaStream) {
+      await mediaStream.switchCamera(
+        mediaStream.getActiveCamera() === MobileVideoFacingMode.User
+          ? MobileVideoFacingMode.Environment
+          : MobileVideoFacingMode.User
+      );
+    }
+  };
+
+  const PIPMode = () => {
+    togglePictureInPicture(!isPictureInPictureActive);
+  };
+
   console.log('activeUser', participants, activeUser);
 
   return (
@@ -220,7 +317,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
           )}
         </div>
       </div>
-      {/* {isAndroidOrIOSBrowser() && (
+      {isAndroidOrIOSBrowser() && (
         <div className="d-flex align-items-center px-3 position-absolute" style={{ width: '100vw', top: 0 }}>
           <div style={{ flex: 1 }} className="d-flex">
             <p style={{ color: '#fff', fontSize: '15px', fontWeight: 700 }}>{urlParams.get('topic')}</p>
@@ -232,7 +329,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
             <FlipCameraIosIcon style={{ fill: '#fff' }} />
           </IconButton>
         </div>
-      )}  */}
+      )} 
       {/* {isAndroidOrIOSBrowser() && (
         <div
           className="MyVideo"
@@ -321,7 +418,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
        
        
       </Box> */}
-      {/* {isAndroidOrIOSBrowser() ? (
+       {isAndroidOrIOSBrowser() ? (
         <Slide
           direction={'left'}
           in={LinkShowCard}
@@ -365,9 +462,9 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         LinkShowCard && (
           <BasicCard setLinkShowCard={setLinkShowCard} LinkShowCard={LinkShowCard} DisplayDataInfo={DisplayDataInfo} />
         )
-      )} */}
+      )} 
 
-      {/* {isAndroidOrIOSBrowser() && (
+     {isAndroidOrIOSBrowser() && (
         <Slide
           direction={'left'}
           in={IncallMemberCard}
@@ -422,7 +519,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
           setChatRecords={setChatRecords}
           chatRecords={chatRecords}
         />
-      </Box>*/}
+      </Box>
       <VideoFooter
         className="video-operations"
         sharing
