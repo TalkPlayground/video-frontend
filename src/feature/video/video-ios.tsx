@@ -410,7 +410,10 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
           position: isSharing && isAndroidOrIOSBrowser() ? (toggleViewScreenPort ? 'inherit' : 'fixed') : 'inherit'
         }}
       >
+        <div style={{position:"absolute",top:`${window.innerWidth/2}px`}}>
+
         <canvas className="video-canvas" id="video-canvas" width="800" height="600" ref={videoRef} />
+        </div>
         {isUseVideoElementToDrawSelfVideo ? (
           <video
             // ref={PIPRef}
