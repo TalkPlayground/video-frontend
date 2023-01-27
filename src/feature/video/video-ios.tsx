@@ -412,7 +412,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
       >
         {/* <div style={{position:"absolute",top:`${window.innerWidth/2}px`}}> */}
 
-        <canvas className="video-canvas video-canvas-mobile" id="video-canvas" width="800" height="600" ref={videoRef} />
+        <canvas className="video-canvas video-canvas-mobile" style={{top:`${window.innerWidth/2}px`}} id="video-canvas" width="800" height="600" ref={videoRef} />
         {/* </div> */}
         {isUseVideoElementToDrawSelfVideo ? (
           <video

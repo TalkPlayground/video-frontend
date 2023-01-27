@@ -156,9 +156,7 @@ const VideoFooter = (props: any) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const participants = zmClient.getAllUser();
-  useEffect(() => {
-    onMicrophoneClick();
-  }, []);
+  
 
   // var noSleep = new nosleep();
   const device = useStayAwake();
@@ -297,6 +295,13 @@ const VideoFooter = (props: any) => {
       }
     }
   };
+
+  useEffect(() => {
+    onCameraClick()
+    onMicrophoneClick();
+  }, []);
+
+  
   const onSwitchCamera = async (key: string) => {
     if (mediaStream) {
       if (activeCamera !== key) {
