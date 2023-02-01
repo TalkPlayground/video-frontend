@@ -37,6 +37,9 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useSnackbar } from 'notistack';
 import useStayAwake from 'use-stay-awake';
 import { isShallowEqual } from '../../utils/util';
+import nosleep from 'nosleep.js';
+import ScreenLockPortraitIcon from '@mui/icons-material/ScreenLockPortrait';
+
 
 const isUseVideoElementToDrawSelfVideo = isAndroidBrowser() || (isSupportOffscreenCanvas() && isSupportWebCodecs());
 
@@ -55,6 +58,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   const RecordingZoomApi: any = zmClient?.getRecordingClient();
   const { enqueueSnackbar } = useSnackbar();
   var UserId = localStorage.getItem('UserID');
+  var noSleep = new nosleep();
   const info = {
     ...zmClient.getSessionInfo()
   };
@@ -132,7 +136,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   useEffect(() => {
     const participants = zmClient.getAllUser();
     console.log(zmClient.getSessionInfo().userId, participants);
-    // noSleep.enable();
+    noSleep.enable();
     device.preventSleeping();
 
     const info = {
@@ -249,7 +253,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   );
 
   const RenderVideo = async (activeUser: any) => {
-    console.log('first=====>');
+    // console.log('first=====>');
     await mediaStream?.renderVideo(videoRef.current as HTMLCanvasElement, activeUser.userId, 254, 143, 0, 0, 3);
   };
 
@@ -320,6 +324,9 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     }
   };
 
+  document.addEventListener("mousemove", () => noSleep.enable());
+  document.querySelector("#Screenlock")?.addEventListener("click", () =>{console.log("clickeeedddd"); noSleep.enable();});
+
   const PIPMode = () => {
     togglePictureInPicture(!isPictureInPictureActive);
   };
@@ -354,6 +361,10 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
           <div style={{ flex: 1 }} className="d-flex">
             <p style={{ color: '#fff', fontSize: '15px', fontWeight: 700 }}>{urlParams.get('topic')}</p>
           </div>
+          <IconButton 
+          id="Screenlock">
+            <ScreenLockPortraitIcon style={{ fill: '#fff' }} />
+          </IconButton>
           <IconButton onClick={PIPMode}>
             <PictureInPictureAltIcon style={{ fill: '#fff' }} />
           </IconButton>

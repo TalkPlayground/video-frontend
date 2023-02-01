@@ -158,7 +158,7 @@ const VideoFooter = (props: any) => {
   const participants = zmClient.getAllUser();
   
 
-  // var noSleep = new nosleep();
+  var noSleep = new nosleep();
   const device = useStayAwake();
 
   window.onbeforeunload = function () {
@@ -297,7 +297,7 @@ const VideoFooter = (props: any) => {
   };
 
   useEffect(() => {
-    onCameraClick()
+    // onCameraClick()
     onMicrophoneClick();
   }, []);
 
@@ -956,7 +956,7 @@ const VideoFooter = (props: any) => {
                 setIsLoading(true);
                 StartStopRecording(false).then(async () => {
                   zmClient.leave();
-                  // noSleep.disable();
+                  noSleep.disable();
                   device.allowSleeping();
                   localStorage.removeItem('UserID');
                   history.push('/');
@@ -969,7 +969,7 @@ const VideoFooter = (props: any) => {
                 setLoadingText('You left the meeting');
                 setIsLoading(true);
                 zmClient.leave();
-                // noSleep.disable();
+                noSleep.disable();
                 device.allowSleeping();
                 localStorage.removeItem('UserID');
                 history.push('/');
