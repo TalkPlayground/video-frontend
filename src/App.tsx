@@ -140,7 +140,9 @@ function App(props: AppProps) {
   // useEffect(() => {
   const init = async (nameData: any) => {
     setIsLoading(true);
-    await zmClient.init('en-US', `${window.location.origin}/lib`, {
+    let version = "1.10.7"
+    console.log("window.location.origin",window.location.origin);
+    await zmClient.init('en-US', `https://source.zoom.us/videosdk/${version}/lib/`, {
       webEndpoint,
       // enforceMultipleVideos: galleryViewWithoutSAB,
       enforceMultipleVideos: isAndroidOrIOSBrowser() ? false : galleryViewWithoutSAB,
