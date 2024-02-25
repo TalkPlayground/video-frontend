@@ -12,7 +12,7 @@ import HeaderIcon from '../../assets/app_image.png';
 import { RouteComponentProps, useLocation } from 'react-router-dom';
 import { devConfig } from '../../config/dev';
 import { generateVideoToken } from '../../utils/util';
-import ZoomVideo, { ConnectionState } from '@zoom/videosdk';
+import ZoomVideo, { ConnectionState} from '@zoom/videosdk';
 import zoomContext from '../../context/zoom-context';
 import { ChatClient, MediaStream } from '../../index-types';
 import { message, Modal } from 'antd';
@@ -85,7 +85,7 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
   //     });
   //   }
   // }, [user]);
-
+  
   const [UrlShowJoin, setUrlShowJoin] = useState(false);
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -103,6 +103,15 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
 
   const onSubmitForm = async (e: any, type: any) => {
     e.preventDefault();
+    if (!DisplayDataInfo.Displayname) {
+      setnameValidation(true);
+      return;
+    }
+  
+    if (!DisplayDataInfo.emailinfo) {
+      setemailValidate(true);
+      return;
+    }
     setStartSession(true);
     const info = {
       ...zmClient.getSessionInfo()

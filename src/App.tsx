@@ -145,9 +145,17 @@ function App(props: AppProps) {
     await zmClient.init('en-US', `https://source.zoom.us/videosdk/${version}/lib/`, {
       webEndpoint,
       // enforceMultipleVideos: galleryViewWithoutSAB,
-      enforceMultipleVideos: isAndroidOrIOSBrowser() ? false : galleryViewWithoutSAB,
+      // enforceMultipleVideos: isAndroidOrIOSBrowser() ? false : galleryViewWithoutSAB,
+      enforceMultipleVideos: isAndroidOrIOSBrowser() ? false : true,
       stayAwake: true
     });
+    console.log( {
+      webEndpoint,
+      // enforceMultipleVideos: galleryViewWithoutSAB,
+      enforceMultipleVideos: isAndroidOrIOSBrowser() ? false : true,
+      
+      stayAwake: true
+    })
     try {
       setLoadingText('Joining the session...');
       await zmClient.join(topic, signature, nameData, password).catch((e) => {
