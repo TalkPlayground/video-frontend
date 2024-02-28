@@ -142,7 +142,7 @@ function App(props: AppProps) {
     setIsLoading(true);
     let version = "1.10.7"
     console.log("window.location.origin",window.location.origin);
-    await zmClient.init('en-US', `https://source.zoom.us/videosdk/${version}/lib/`, {
+    await zmClient.init('en-US', `${window.location.origin}/lib`, {
       webEndpoint,
       // enforceMultipleVideos: galleryViewWithoutSAB,
       // enforceMultipleVideos: isAndroidOrIOSBrowser() ? false : galleryViewWithoutSAB,
