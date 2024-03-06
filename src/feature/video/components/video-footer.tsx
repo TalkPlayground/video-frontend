@@ -209,7 +209,8 @@ const VideoFooter = (props: any) => {
             }
           }
         } else {
-          const startVideoOptions = { hd: true };
+          console.log("stream.isSupportHDVideo()",mediaStream?.isSupportHDVideo())
+          const startVideoOptions = { hd: mediaStream?.isSupportHDVideo()};
           if (mediaStream?.isSupportVirtualBackground() && isBlur) {
             Object.assign(startVideoOptions, { virtualBackground: { imageUrl: 'blur' } });
           }
