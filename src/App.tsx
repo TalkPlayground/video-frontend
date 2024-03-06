@@ -163,6 +163,7 @@ function App(props: AppProps) {
       });
       const stream = zmClient.getMediaStream();
       stream.enableHardwareAcceleration(false);
+      console.log("isSupportMultipleVideos()",stream.isSupportMultipleVideos())
       setMediaStream(stream);
       setIsSupportGalleryView(stream.isSupportMultipleVideos() && !isAndroidBrowser());
       const chatClient = zmClient.getChatClient();
