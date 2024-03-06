@@ -37,6 +37,7 @@ export function useRenderVideo(
 
   useEffect(() => {
     if (videoRef.current && layout && layout.length > 0 && isVideoDecodeReady) {
+      try {
       console.log("previousSubscribedVideos",previousSubscribedVideos,"subscribedVideos",subscribedVideos)
       const addedSubscribers = subscribedVideos.filter((id) => !(previousSubscribedVideos || []).includes(id));
       console.log("addedSubscribers",addedSubscribers)
@@ -111,6 +112,9 @@ export function useRenderVideo(
           });
         }
       }
+    } catch (error) {
+      console.log("Error",error)
+    }
     }
   }, [
     mediaStream,
