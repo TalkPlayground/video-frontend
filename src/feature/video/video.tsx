@@ -272,7 +272,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         143,
         0,
         0,
-        3
+        mediaStream?.isSupportHDVideo() ? 3 : 2
       );
       // visibleParticipants.push(AllvisibleParticipants[0]);
       // setRenderShowHide(false);

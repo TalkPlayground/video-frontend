@@ -254,7 +254,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
 
   const RenderVideo = async (activeUser: any) => {
     // console.log('first=====>');
-    await mediaStream?.renderVideo(videoRef.current as HTMLCanvasElement, activeUser.userId, 254, 143, 0, 0, 3);
+    await mediaStream?.renderVideo(videoRef.current as HTMLCanvasElement, activeUser.userId, 254, 143, 0, 0, mediaStream?.isSupportHDVideo() ? 3 : 2);
   };
 
   useEffect(() => {

@@ -59,7 +59,7 @@ export function useRenderVideo(
 
           if (cellDimension && (!isSkipSelfVideo || (isSkipSelfVideo && userId !== currentUserId))) {
             const { width, height, x, y, quality } = cellDimension;
-            await mediaStream?.renderVideo(videoRef.current as HTMLCanvasElement, userId, width, height, x, y, quality);
+            await mediaStream?.renderVideo(videoRef.current as HTMLCanvasElement, userId, width, height, x, y, mediaStream?.isSupportHDVideo() ? quality : 2);
           }
         });
       }
@@ -75,7 +75,7 @@ export function useRenderVideo(
             if (cellDimension && (!isSkipSelfVideo || (isSkipSelfVideo && userId !== currentUserId))) {
               const { width, height, x, y, quality } = cellDimension;
               if (previousLayout && previousLayout[index] && previousLayout[index].quality !== quality) {
-                mediaStream?.renderVideo(videoRef.current as HTMLCanvasElement, userId, width, height, x, y, quality);
+                mediaStream?.renderVideo(videoRef.current as HTMLCanvasElement, userId, width, height, x, y, mediaStream?.isSupportHDVideo() ? quality : 2);
               }
               mediaStream?.adjustRenderedVideoPosition(
                 videoRef.current as HTMLCanvasElement,
@@ -138,7 +138,7 @@ export function useRenderVideo(
         const cellDimension = layout[index];
         if (cellDimension && (!isSkipSelfVideo || (isSkipSelfVideo && userId !== currentUserId))) {
           const { width, height, x, y, quality } = cellDimension;
-          await mediaStream?.renderVideo(videoRef.current as HTMLCanvasElement, userId, width, height, x, y, quality);
+          await mediaStream?.renderVideo(videoRef.current as HTMLCanvasElement, userId, width, height, x, y, mediaStream?.isSupportHDVideo() ? quality : 2);
         }
       });
     }

@@ -205,7 +205,7 @@ const VideoFooter = (props: any) => {
             setIsMirrored(true);
             if (!isSupportWebCodecs() && !isAndroidBrowser() ) {
               const canvasElement = document.querySelector(`#${SELF_VIDEO_ID}`) as HTMLCanvasElement;
-              mediaStream?.renderVideo(canvasElement, zmClient.getSessionInfo().userId, 254, 143, 0, 0, 3);
+              mediaStream?.renderVideo(canvasElement, zmClient.getSessionInfo().userId, 254, 143, 0, 0, mediaStream?.isSupportHDVideo() ? 3 : 2);
             }
           }
         } else {
@@ -219,7 +219,7 @@ const VideoFooter = (props: any) => {
           setIsMirrored(true);
           if (!mediaStream?.isSupportMultipleVideos()) {
             const canvasElement = document.querySelector(`#${SELF_VIDEO_ID}`) as HTMLCanvasElement;
-            mediaStream?.renderVideo(canvasElement, zmClient.getSessionInfo().userId, 254, 143, 0, 0, 3);
+            mediaStream?.renderVideo(canvasElement, zmClient.getSessionInfo().userId, 254, 143, 0, 0, mediaStream?.isSupportHDVideo() ? 3 : 2);
           }
           setIsStartedVideo(true);
         }
