@@ -138,6 +138,24 @@ function App(props: AppProps) {
   const mediaContext = useMemo(() => ({ ...mediaState, mediaStream }), [mediaState, mediaStream]);
   const galleryViewWithoutSAB = Number(enforceGalleryView) === 1 && !window.crossOriginIsolated;
   // useEffect(() => {
+
+  function fnBrowserDetect() {
+    let userAgent = navigator.userAgent;
+
+    if (userAgent.match(/chrome|chromium|crios/i)) {
+        return true
+    } else if (userAgent.match(/firefox|fxios/i)) {
+        return false
+    } else if (userAgent.match(/safari/i)) {
+        return false
+    } else if (userAgent.match(/opr\//i)) {
+      return false
+  } else if (userAgent.match(/edg/i)) {
+      return false
+    }
+    return false
+  }
+
   const init = async (nameData: any) => {
     setIsLoading(true);
     let version = "1.10.7"
@@ -165,7 +183,7 @@ function App(props: AppProps) {
       stream.enableHardwareAcceleration(false);
       console.log("isSupportMultipleVideos()",stream.isSupportMultipleVideos())
       setMediaStream(stream);
-      setIsSupportGalleryView(stream.isSupportMultipleVideos() && !isAndroidBrowser());
+      setIsSupportGalleryView(stream.isSupportMultipleVideos() && !isAndroidBrowser() && fnBrowserDetect());
       const chatClient = zmClient.getChatClient();
       const commandClient = zmClient.getCommandClient();
       const recordingClient = zmClient.getRecordingClient();
@@ -309,7 +327,7 @@ function App(props: AppProps) {
                                   SaveTranscript={SaveTranscript}
                                 />
                               ) : !isAndroidOrIOSBrowser() ? (
-                                <VideoNonSAB
+                                <VideoSingle
                                   {...props}
                                   DisplayDataInfo={DisplayDataInfo}
                                   setIsLoading={setIsLoading}

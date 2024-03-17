@@ -117,6 +117,8 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     }
   );
 
+  console.log("canvasDimension",canvasDimension)
+
   useParticipantsChange(zmClient, (payload) => {
     setParticipants(payload);
   });
@@ -137,46 +139,82 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     () => participants.find((user) => user.userId === activeVideo && user.userId !== zmClient.getSessionInfo().userId),
     [participants, activeVideo]
   );
-  const isCurrentUserStartedVideo = zmClient.getCurrentUserInfo()?.bVideoOn &&  participants.length === 1;
+  const isCurrentUserStartedVideo = zmClient.getCurrentUserInfo()?.bVideoOn;
+  // &&  participants.length === 1;
   console.log("zmClient.getCurrentUserInfo()",zmClient.getCurrentUserInfo())
+  // useEffect(() => {
+  //   if (mediaStream && videoRef.current && isVideoDecodeReady) {
+  //     if (activeUser?.bVideoOn !== previousActiveUser.current?.bVideoOn) {
+  //       if (activeUser?.bVideoOn) {
+  //         if (previousActiveUser.current?.bVideoOn) {
+  //           mediaStream.stopRenderVideo(videoRef.current, previousActiveUser.current?.userId);
+  //         }
+  //         console.log("activeUser",activeUser,"ppp",previousActiveUser.current)
+  //         mediaStream.renderVideo(
+  //           videoRef.current,
+  //           activeUser.userId,
+  //           977,
+  //         481,
+  //           0,
+  //           0,
+  //           // VideoQuality.Video_360P as any
+  //           2
+  //         );
+  //       } else {
+  //         if (previousActiveUser.current?.bVideoOn) {
+  //           mediaStream.stopRenderVideo(videoRef.current, previousActiveUser.current?.userId);
+  //         }
+  //       }
+  //     }
+  //     if (
+  //       activeUser?.bVideoOn &&
+  //       previousActiveUser.current?.bVideoOn &&
+  //       activeUser.userId !== previousActiveUser.current.userId
+  //     ) {
+  //       mediaStream.stopRenderVideo(videoRef.current, previousActiveUser.current?.userId);
+  //       mediaStream.renderVideo(
+  //         videoRef.current,
+  //         activeUser.userId,
+  //         // canvasDimension.width,
+  //         // canvasDimension.height,
+  //         977,
+  //         481,
+  //         0,
+  //         0,
+  //         // VideoQuality.Video_360P as any
+  //         2
+  //       );
+  //     }
+  //     previousActiveUser.current = activeUser;
+  //   }
+  // }, [mediaStream, activeUser, isVideoDecodeReady, canvasDimension]);
+
+  const RenderVideo = async (activeUser: any) => {
+    // console.log('first=====>');
+    await participants.map((item) => mediaStream?.stopRenderVideo(videoRef.current as HTMLCanvasElement,item.userId));
+    const canvasElement = document.querySelector(`#${SELF_VIDEO_ID}`) as HTMLCanvasElement;
+    await mediaStream?.renderVideo(
+              canvasElement,
+              activeUser.userId,
+              // canvasDimension.width,
+              // canvasDimension.height,
+              977,
+              481,
+              0,
+              0,
+              // VideoQuality.Video_360P as any
+              mediaStream?.isSupportHDVideo() ? 3 : 2
+            );
+  };
+
+  console.log("videoRef.current.srcObject",videoRef);
+
   useEffect(() => {
-    if (mediaStream && videoRef.current && isVideoDecodeReady) {
-      if (activeUser?.bVideoOn !== previousActiveUser.current?.bVideoOn) {
-        if (activeUser?.bVideoOn) {
-          mediaStream.renderVideo(
-            videoRef.current,
-            activeUser.userId,
-            canvasDimension.width,
-            canvasDimension.height,
-            0,
-            0,
-            VideoQuality.Video_360P as any
-          );
-        } else {
-          if (previousActiveUser.current?.bVideoOn) {
-            mediaStream.stopRenderVideo(videoRef.current, previousActiveUser.current?.userId);
-          }
-        }
-      }
-      if (
-        activeUser?.bVideoOn &&
-        previousActiveUser.current?.bVideoOn &&
-        activeUser.userId !== previousActiveUser.current.userId
-      ) {
-        mediaStream.stopRenderVideo(videoRef.current, previousActiveUser.current?.userId);
-        mediaStream.renderVideo(
-          videoRef.current,
-          activeUser.userId,
-          canvasDimension.width,
-          canvasDimension.height,
-          0,
-          0,
-          VideoQuality.Video_360P as any
-        );
-      }
-      previousActiveUser.current = activeUser;
+    if (activeUser?.bVideoOn) {
+      RenderVideo(activeUser);
     }
-  }, [mediaStream, activeUser, isVideoDecodeReady, canvasDimension]);
+  }, [activeUser, activeUser?.bVideoOn,participants]);
+
   useMount(() => {
     if (mediaStream) {
       setActiveVideo(mediaStream.getActiveVideoId());
@@ -396,7 +434,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
       zmClient.off('video-capturing-change', onVideoCaptureChange);
     };
   }, [zmClient, onVideoCaptureChange]);
-
+console.log("singlee")
   return (
     <div className="viewport">
       <div
@@ -477,7 +515,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
           'in-sharing': isSharing
         })}
       >
-        <canvas className="video-canvas" id="video-canvas" width="800" height="600" ref={videoRef} />
+        {/* <canvas className="video-canvas" id="video-canvas" width="800" height="600" ref={videoRef} /> */}
         {isUseVideoElementToDrawSelfVideo ? (
           <video
             ref={PIPRef}
@@ -485,17 +523,17 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
             className={classnames(
               `self-video`,
               {
-                'single-self-video': participants.length === 1,
+                'single-self-video': participants.length > 1,
                 'self-video-show': isCurrentUserStartedVideo
               }
             )}
           />
         ) : (
           <canvas
-            ref={PIPRef}
+            ref={videoRef}
             id={SELF_VIDEO_ID}
-            width="254"
-            height="143"
+            width="800"
+            height="600"
             className={classnames(
               `self-video`,
               {
