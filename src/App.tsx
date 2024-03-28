@@ -326,7 +326,7 @@ function App(props: AppProps) {
                                   setLoadingText={setLoadingText}
                                   SaveTranscript={SaveTranscript}
                                 />
-                              ) : !isAndroidOrIOSBrowser() ? (
+                              ) : !isAndroidOrIOSBrowser() && !isSupportGalleryView ? (
                                 <VideoSingle
                                   {...props}
                                   DisplayDataInfo={DisplayDataInfo}
