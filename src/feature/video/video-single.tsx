@@ -298,7 +298,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
             ref={selfVideoCanvasRef}
           />
         )}
-        <div className="single-video-wrap">
+        <div className="single-video-wrap" style={{width:"100%",height:"100%"}}>
           <canvas className="video-canvas video-canvas-single" id="video-canvas" width="800" height="600" ref={videoRef} />
 
           {/* <AvatarActionContext.Provider value={avatarActionState}> */}
