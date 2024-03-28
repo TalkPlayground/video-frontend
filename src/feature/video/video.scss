@@ -40,6 +40,10 @@
       width: 100%;
       height: 100%;
     }
+    .video-canvas-single {
+      width: 100vw !important;
+      height: 450px !important;
+    }
     .video-canvas-mobile{
       height: 45% !important;
     position: absolute !important;
@@ -69,10 +73,6 @@
       }
       &.self-video-show {
         display: block;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
       }
     }
   }
