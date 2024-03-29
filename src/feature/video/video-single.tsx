@@ -100,6 +100,13 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   const isCurrentUserStartedVideo = zmClient.getCurrentUserInfo()?.bVideoOn;
   useEffect(() => {
     if (mediaStream && videoRef.current) {
+      if(participants?.length == 1){
+        RenderVideo()
+      }
+      // else if(participants?.length > 1){
+      //   // mediaStream?.stopRenderVideo(videoRef.current as HTMLCanvasElement,info.userId)
+      //   mediaStream.stopRenderVideo(videoRef.current, info?.userId);
+      // }
       if (activeUser?.bVideoOn !== previousActiveUser.current?.bVideoOn) {
         //
         if (
@@ -175,6 +182,33 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     }
   }, [selfCanvasDimension, mediaStream, zmClient, isCurrentUserStartedVideo]);
   // const avatarActionState = useAvatarAction(zmClient, activeUser ? [activeUser] : []);
+
+  const RenderVideo = async () => {
+    console.log('first=====>',activeVideo);
+    await participants.map((item) => mediaStream?.stopRenderVideo(videoRef.current as HTMLCanvasElement,item.userId));
+    const canvasElement = document.querySelector(`#${SELF_VIDEO_ID}`) as HTMLCanvasElement;
+    await mediaStream?.renderVideo(
+              canvasElement,
+              activeVideo,
+              // canvasDimension.width,
+              // canvasDimension.height,
+              977,
+              481,
+              0,
+              0,
+              // VideoQuality.Video_360P as any
+              mediaStream?.isSupportHDVideo() ? 3 : 2
+            );
+  };
+
+  // useEffect(() => {
+  //   if(participants?.length == 1){
+  //     RenderVideo()
+  //   }else if(participants?.length > 1){
+  //     mediaStream?.stopRenderVideo(videoRef.current as HTMLCanvasElement,info.userId)
+  //   }
+  // }, [participants])
+  
 
   const handleselfView = async (data: any) => {
     // if (data) {
@@ -283,6 +317,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
             playsInline
             className={classnames('self-video', {
               'single-self-video': participants.length === 1,
+              'single-self-video-none': participants.length > 1,
               'self-video-show': isCurrentUserStartedVideo
             })}
           />
@@ -293,6 +328,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
             height="143"
             className={classnames('self-video', {
               'single-self-video': participants.length === 1,
+              'single-self-video-none': participants.length > 1,
               'self-video-show': isCurrentUserStartedVideo
             })}
             ref={selfVideoCanvasRef}
@@ -315,7 +351,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         </div>
       </div>
       {/* <VideoFooter className="video-operations" sharing selfShareCanvas={shareViewRef.current?.selfShareRef} /> */}
-      <Box style={{ width: modalOpenClose ? '100vw' : '' }}>
+      <Box style={{ width: modalOpenClose ? '25%' : '' }}>
         <ChatContainer
           modalOpenClose={modalOpenClose}
           setmodalOpenClose={setmodalOpenClose}

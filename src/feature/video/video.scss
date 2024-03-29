@@ -74,6 +74,9 @@
       &.self-video-show {
         display: block;
       }
+      &.single-self-video-none {
+        display: none !important;
+      }
     }
   }
   .avatar-list {

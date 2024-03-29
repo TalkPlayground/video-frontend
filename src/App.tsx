@@ -164,13 +164,13 @@ function App(props: AppProps) {
       webEndpoint,
       // enforceMultipleVideos: galleryViewWithoutSAB,
       // enforceMultipleVideos: isAndroidOrIOSBrowser() ? false : galleryViewWithoutSAB,
-      enforceMultipleVideos: isAndroidOrIOSBrowser() ? false : true,
+      enforceMultipleVideos: isAndroidOrIOSBrowser() ? false : galleryViewWithoutSAB,
       stayAwake: true
     });
     console.log( {
       webEndpoint,
       // enforceMultipleVideos: galleryViewWithoutSAB,
-      enforceMultipleVideos: isAndroidOrIOSBrowser() ? false : true,
+      enforceMultipleVideos: isAndroidOrIOSBrowser() ? false : galleryViewWithoutSAB,
       
       stayAwake: true
     })
