@@ -16,7 +16,7 @@ import { Participant } from '../../index-types';
 import { SELF_VIDEO_ID } from './video-constants';
 // import { useNetworkQuality } from './hooks/useNetworkQuality';
 // import { useAvatarAction } from './hooks/useAvatarAction';
-import { usePrevious } from '../../hooks';
+import { usePrevious, useSizeCallback } from '../../hooks';
 import './video.scss';
 import { isShallowEqual } from '../../utils/util';
 import { Box } from '@mui/material';
@@ -24,10 +24,11 @@ import ChatContainer from '../chat/chat';
 import { getQueryString } from '../../Api';
 import axios from 'axios';
 import moment from 'moment';
-import { isAndroidOrIOSBrowser } from '../../utils/platform';
+import { isAndroidOrIOSBrowser, isSupportWebCodecs } from '../../utils/platform';
 import { useSnackbar } from 'notistack';
 import { AnyArray } from 'immer/dist/internal';
 import { ChatRecord } from '../chat/chat-types';
+import { useShare } from './hooks/useShare';
 
 interface VideoProps extends RouteComponentProps {
   DisplayDataInfo?: any;
@@ -68,7 +69,21 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   const [RenderShowHide, setRenderShowHide] = useState(false);
   const [AllvisibleParticipants, setAllvisibleParticipants] = useState<AnyArray>([]);
   const [NewMsg, setNewMsg] = useState(false);
+  const shareRef = useRef<HTMLCanvasElement | null>(null);
   const selfShareRef = useRef<HTMLCanvasElement & HTMLVideoElement>(null);
+  const shareContainerRef = useRef<HTMLDivElement | null>(null);
+  const { isRecieveSharing:any, isStartedShare, sharedContentDimension } = useShare(zmClient, mediaStream, shareRef);
+  const isSharing = isRecieveSharing || isStartedShare;
+
+  const [containerDimension, setContainerDimension] = useState({
+    width: 0,
+    height: 0
+  });
+
+  const [shareViewDimension, setShareViewDimension] = useState({
+    width: 0,
+    height: 0
+  });
 
   const { enqueueSnackbar } = useSnackbar();
   const info = {
@@ -182,6 +197,25 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     }
   }, [selfCanvasDimension, mediaStream, zmClient, isCurrentUserStartedVideo]);
   // const avatarActionState = useAvatarAction(zmClient, activeUser ? [activeUser] : []);
+
+  useEffect(() => {
+    if (isSharing && shareContainerRef.current) {
+      const { width, height } = sharedContentDimension;
+      const { width: containerWidth, height: containerHeight } = containerDimension;
+      const ratio = Math.min(containerWidth / width, containerHeight / height, 1);
+      setShareViewDimension({
+        width: Math.floor(width * ratio),
+        height: Math.floor(height * ratio)
+      });
+    }
+  }, [isSharing, sharedContentDimension, containerDimension]);
+
+  const onShareContainerResize = useCallback(({ width, height }: any) => {
+    _.throttle(() => {
+      setContainerDimension({ width, height });
+    }, 50)();
+  }, []);
+  useSizeCallback(shareContainerRef.current, onShareContainerResize);
 
   const RenderVideo = async () => {
     console.log('first=====>',activeVideo);
@@ -304,6 +338,27 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   return (
     <div className="viewport">
       {/* <ShareView ref={shareViewRef} onRecieveSharingChange={setIsRecieveSharing} /> */}
+      <div
+        className={classnames('share-container', {
+          'in-sharing': isSharing
+        })}
+        ref={shareContainerRef}
+      >
+        <div
+          className="share-container-viewport"
+          style={{
+            width: `${shareViewDimension.width}px`,
+            height: `${shareViewDimension.height}px`
+          }}
+        >
+          <canvas className={classnames('share-canvas ccg', { hidden: isStartedShare })} ref={shareRef} />
+          {isSupportWebCodecs() ? (
+            <video className={classnames('share-canvas', { hidden: isRecieveSharing })} ref={selfShareRef} />
+          ) : (
+            <canvas className={classnames('share-canvas', { hidden: isRecieveSharing })} ref={selfShareRef} />
+          )}
+        </div>
+      </div>
       <div
         className={classnames('video-container', 'single-video-container', {
           'video-container-in-sharing': isRecieveSharing

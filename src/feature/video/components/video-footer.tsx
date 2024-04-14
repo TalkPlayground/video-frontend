@@ -214,7 +214,7 @@ const VideoFooter = (props: any) => {
           if (mediaStream?.isSupportVirtualBackground() && isBlur) {
             Object.assign(startVideoOptions, { virtualBackground: { imageUrl: 'blur' } });
           }
-          await mediaStream?.startVideo(startVideoOptions);
+          await mediaStream?.startVideo();
           await mediaStream?.mirrorVideo(true);
           setIsMirrored(true);
           if (!mediaStream?.isSupportMultipleVideos()) {
