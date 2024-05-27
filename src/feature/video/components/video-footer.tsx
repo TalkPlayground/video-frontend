@@ -192,6 +192,7 @@ const VideoFooter = (props: any) => {
   const [onAudioVideoOption, setonAudioVideoOption] = useState(false);
 
   const onCameraClick = useCallback(async () => {
+    console.log("video button was clicked!");
     try {
       if (isStartedVideo) {
         await mediaStream?.stopVideo();
