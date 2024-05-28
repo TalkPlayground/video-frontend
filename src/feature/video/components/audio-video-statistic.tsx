@@ -189,7 +189,7 @@ const AudioVideoStatisticModel = (props: AudioVideoStatisticModelProps) => {
       clearAudioTimer();
       // Reset audio decode data if no data come in over 2 seconds
       audioDecodeTimerRef.current = window.setTimeout(() => {
-        setAudioDecodingStatistic(AudioQosDataShape);
+        setAudioDecodingStatistic(AudioQosDataShape as AudioQosData);
       }, 2000);
     }
   }, []);
@@ -204,7 +204,7 @@ const AudioVideoStatisticModel = (props: AudioVideoStatisticModelProps) => {
       clearVideoTimer();
       // Reset video decode data if no data come in over 2 seconds
       videoDecodeTimerRef.current = window.setTimeout(() => {
-        setVideoDecodingStatistic(VideoQosDataShape);
+        setVideoDecodingStatistic(VideoQosDataShape as VideoQosData);
       }, 2000);
     }
   }, []);
