@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useReducer, useState } from 'react';
-import { Grid, Typography, Box, makeStyles, Checkbox } from '@material-ui/core';
+import { Grid, Typography, Box, makeStyles, Checkbox } from '@mui/material';
 import { Alert, Button, IconButton, Tooltip } from '@mui/material';
 
 import AcUnitIcon from '@mui/icons-material/AcUnit';

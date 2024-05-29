@@ -23,7 +23,7 @@ import { getQueryString } from '../../Api';
 import axios from 'axios';
 import moment from 'moment';
 import { AnyArray } from 'immer/dist/internal';
-import { Box, Slide } from '@material-ui/core';
+import { Box, Slide } from '@mui/material';
 import ChatContainer from '../chat/chat';
 import { Alert, IconButton } from '@mui/material';
 import BasicCard from '../../component/pages/Linkcard';

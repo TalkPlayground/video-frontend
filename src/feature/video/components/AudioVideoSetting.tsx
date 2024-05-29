@@ -8,7 +8,7 @@ import {
   Switch,
   TextField,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import { useEffect, useState } from "react";
 
 import DoneIcon from "@mui/icons-material/Done";

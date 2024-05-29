@@ -11,7 +11,7 @@ import ChatReceiverContainer from './component/chat-receiver';
 
 import { useMount } from '../../hooks';
 import './chat.scss';
-import { Grow, IconButton, Slide, TextareaAutosize } from '@material-ui/core';
+import { Grow, IconButton, Slide, TextareaAutosize } from '@mui/material';
 import mobile from 'is-mobile';
 import CloseIcon from '@mui/icons-material/Close';
 import { Alert } from '@mui/material';

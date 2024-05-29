@@ -41,7 +41,7 @@ import { makeStyles } from '@mui/styles';
 import { useSnackbar } from 'notistack';
 import nosleep from 'nosleep.js';
 import useStayAwake from 'use-stay-awake';
-import { Box, Grid, Menu, MenuItem, Tooltip, Typography } from '@material-ui/core';
+import { Box, Grid, Menu, MenuItem, Tooltip, Typography } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
 import ClosedCaptionOffOutlinedIcon from '@mui/icons-material/ClosedCaptionOffOutlined';

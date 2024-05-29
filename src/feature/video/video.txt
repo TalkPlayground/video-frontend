@@ -22,7 +22,7 @@ import {
 import { SELF_VIDEO_ID } from './video-constants';
 import { isShallowEqual } from '../../utils/util';
 import { useLocalVolume } from './hooks/useLocalVolume';
-import { Box, IconButton, Slide, Typography } from '@material-ui/core';
+import { Box, IconButton, Slide, Typography } from '@mui/material';
 import { Alert, Divider } from '@mui/material';
 import ChatContainer from '../chat/chat';
 import axios from 'axios';

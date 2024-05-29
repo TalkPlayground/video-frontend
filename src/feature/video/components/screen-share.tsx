@@ -5,7 +5,7 @@ import { IconFont } from '../../../component/icon-font';
 import { LockOutlined, UnlockOutlined, UpOutlined, CheckOutlined } from '@ant-design/icons';
 import './screen-share.scss';
 import { SharePrivilege } from '@zoom/videosdk';
-import { IconButton } from '@material-ui/core';
+import { IconButton } from '@mui/material';
 import PresentToAllOutlinedIcon from '@mui/icons-material/PresentToAllOutlined';
 
 const { Button: DropdownButton } = Dropdown;

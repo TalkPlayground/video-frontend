@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Grid, Typography } from "@material-ui/core";
+import { Box, Button, Divider, Grid, Typography } from "@mui/material";
 import React from "react";
 import HeaderIcon from "../../assets/app_image.png";
 import { useHistory } from "react-router-dom";

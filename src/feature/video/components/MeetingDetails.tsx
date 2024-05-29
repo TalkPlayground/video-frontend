@@ -4,7 +4,7 @@ import {
   CardContent,
   IconButton,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import { CloseSharp } from "@mui/icons-material";
 import React from "react";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";

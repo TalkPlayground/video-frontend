@@ -23,7 +23,7 @@ import { isShallowEqual } from '../../utils/util';
 import { useSizeCallback } from '../../hooks/useSizeCallback';
 import { SELF_VIDEO_ID } from './video-constants';
 import ChatContainer from '../chat/chat';
-import { Box, Divider, IconButton, Slide, Typography } from '@material-ui/core';
+import { Box, Divider, IconButton, Slide, Typography } from '@mui/material';
 import { Alert } from '@mui/material';
 import { getQueryString } from '../../Api';
 import moment from 'moment';

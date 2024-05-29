@@ -5,7 +5,7 @@ import ZoomMediaContext from '../../../context/media-context';
 import classNames from 'classnames';
 import './camera.scss';
 import { MediaDevice } from '../video-types';
-import { IconButton } from '@material-ui/core';
+import { IconButton } from '@mui/material';
 
 import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import VideocamOffOutlinedIcon from '@mui/icons-material/VideocamOffOutlined';

@@ -7,7 +7,7 @@ import { IconFont } from '../../../component/icon-font';
 import './microphone.scss';
 import { MediaDevice } from '../video-types';
 import CallOutModal from './call-out-modal';
-import { IconButton } from '@material-ui/core';
+import { IconButton } from '@mui/material';
 
 import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice';
 import MicOffIcon from '@mui/icons-material/MicOff';

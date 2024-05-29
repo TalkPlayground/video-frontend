@@ -1,11 +1,11 @@
 import React from 'react';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 import SwipeableViews from 'react-swipeable-views';
 import { Typography } from 'antd';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 
 const styles = {
   tabs: {
