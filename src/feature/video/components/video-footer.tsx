@@ -129,6 +129,7 @@ const VideoFooter = (props: any) => {
   const [selecetedStatisticTab, setSelectedStatisticTab] = useState('audio');
   const [isComputerAudioDisabled, setIsComputerAudioDisabled] = useState(false);
   const [sharePrivilege, setSharePrivileg] = useState(SharePrivilege.Unlocked);
+  const [isMicrophoneForbidden, setIsMicrophoneForbidden] = useState(false);
   const [caption, setCaption] = useState({ text: '', isOver: false });
 
   const { mediaStream } = useContext(ZoomMediaContext);
@@ -191,85 +192,61 @@ const VideoFooter = (props: any) => {
   };
   const [onAudioVideoOption, setonAudioVideoOption] = useState(false);
 
+
   const onCameraClick = useCallback(async () => {
     console.log("video button was clicked!");
-    try {
-      if (isStartedVideo) {
-        await mediaStream?.stopVideo();
-        setIsStartedVideo(false);
-      } else {
-        if (isAndroidBrowser() || (isSupportOffscreenCanvas() && !mediaStream?.isSupportMultipleVideos())) {
-          const videoElement = document.querySelector(`#${SELF_VIDEO_ID}`) as HTMLVideoElement;
-          if (videoElement) {
-            await mediaStream?.startVideo({ videoElement });
-            await mediaStream?.mirrorVideo(true);
-            setIsMirrored(true);
-            if (!isSupportWebCodecs() && !isAndroidBrowser() ) {
-              const canvasElement = document.querySelector(`#${SELF_VIDEO_ID}`) as HTMLCanvasElement;
-              mediaStream?.renderVideo(canvasElement, zmClient.getSessionInfo().userId, 254, 143, 0, 0, mediaStream?.isSupportHDVideo() ? 3 : 2);
-            }
-          }
-        } else {
-          console.log("stream.isSupportHDVideo()",mediaStream?.isSupportHDVideo())
-          const startVideoOptions = { hd: mediaStream?.isSupportHDVideo()};
-          if (mediaStream?.isSupportVirtualBackground() && isBlur) {
-            Object.assign(startVideoOptions, { virtualBackground: { imageUrl: 'blur' } });
-          }
-          await mediaStream?.startVideo();
-          await mediaStream?.mirrorVideo(true);
-          setIsMirrored(true);
-          if (!mediaStream?.isSupportMultipleVideos()) {
-            const canvasElement = document.querySelector(`#${SELF_VIDEO_ID}`) as HTMLCanvasElement;
-            mediaStream?.renderVideo(canvasElement, zmClient.getSessionInfo().userId, 254, 143, 0, 0, mediaStream?.isSupportHDVideo() ? 3 : 2);
-          }
-          setIsStartedVideo(true);
-        }
+    if (isStartedVideo) {
+      await mediaStream?.stopVideo();
+      setIsStartedVideo(false);
+    } else {
+      const startVideoOptions = {
+        hd: true,
+        fullHd: true,
+        ptz: mediaStream?.isBrowserSupportPTZ(),
+        originalRatio: true
+      };
+      if (mediaStream?.isSupportVirtualBackground() && isBlur) {
+        Object.assign(startVideoOptions, { virtualBackground: { imageUrl: 'blur' } });
       }
-    } catch (error: any) {
-      // if (error?.message) {
-        await axios.post('/api/v1/user/airtableCL/errorLog', {
-          browserDetails: `${getExploreName()}`,
-          browserVersion: `${get_browser()?.version}`,
-          computerOS: `${getWindowOS()}`,
-          consoleErrorMessage: JSON.stringify(error),
-          sectionBug: 'Camera',
-          sessionId: `${zmClient.getSessionInfo().sessionId}`,
-          timeStamp: `${moment().format('LT') + ' ' + moment().format('ddd, MMM DD')}`,
-          userId: `${zmClient.getSessionInfo().userId}`
-        });
-      // }
+      await mediaStream?.startVideo(startVideoOptions);
+      await mediaStream?.mirrorVideo(true);
+      if (!mediaStream?.isSupportMultipleVideos()) {
+        const canvasElement = document.querySelector(`#${SELF_VIDEO_ID}`) as HTMLCanvasElement;
+        mediaStream?.renderVideo(
+          canvasElement,
+          zmClient.getSessionInfo().userId,
+          canvasElement.width,
+          canvasElement.height,
+          0,
+          0,
+          3
+        );
+      }
+      setIsStartedVideo(true);
     }
   }, [mediaStream, isStartedVideo, zmClient, isBlur]);
+
   const onMicrophoneClick = useCallback(async () => {
-    try {
-      if (isStartedAudio) {
-        if (isMuted) {
-          await mediaStream?.unmuteAudio();
-          setIsMuted(false);
-        } else {
-          await mediaStream?.muteAudio();
-          setIsMuted(true);
-        }
+    console.log("microphone button was clicked!");
+    if (isStartedAudio) {
+      if (isMuted) {
+        await mediaStream?.unmuteAudio();
       } else {
-        // await mediaStream?.startAudio({ speakerOnly: true });
-        await mediaStream?.startAudio();
-        setIsStartedAudio(true);
+        await mediaStream?.muteAudio();
       }
-    } catch (error: any) {
-      // if (error?.message) {
-        await axios.post('/api/v1/user/airtableCL/errorLog', {
-          browserDetails: `${getExploreName()}`,
-          browserVersion: `${get_browser()?.version}`,
-          computerOS: `${getWindowOS()}`,
-          consoleErrorMessage: JSON.stringify(error),
-          sectionBug: 'Microphone',
-          sessionId: `${zmClient.getSessionInfo().sessionId}`,
-          timeStamp: `${moment().format('LT') + ' ' + moment().format('ddd, MMM DD')}`,
-          userId: `${zmClient.getSessionInfo().userId}`
-        });
-      // }
+    } else {
+      try {
+        await mediaStream?.startAudio({ highBitrate: true });
+      } catch (e: any) {
+        if (e.type === 'INSUFFICIENT_PRIVILEGES' && e.reason === 'USER_FORBIDDEN_MICROPHONE') {
+          setIsMicrophoneForbidden(true);
+        }
+        console.warn(e);
+      }
+      // setIsStartedAudio(true);
     }
   }, [mediaStream, isStartedAudio, isMuted]);
+
   const onMicrophoneMenuClick = async (key: string) => {
     if (mediaStream) {
       const [type, deviceId] = key.split('|');
