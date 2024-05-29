@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useReducer, useState } from 'react';
-import { Grid, Typography, Box, makeStyles, Checkbox } from '@mui/material';
+import { Grid, Typography, Box, Checkbox } from '@mui/material';
 import { Alert, Button, IconButton, Tooltip } from '@mui/material';
 
 import AcUnitIcon from '@mui/icons-material/AcUnit';
@@ -32,6 +32,9 @@ import { url } from '../../App';
 import mobile from 'is-mobile';
 import { isAndroidOrIOSBrowser } from '../../utils/platform';
 
+import { Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
 interface JoinProps extends RouteComponentProps {
   status: string;
   init: any;
@@ -42,7 +45,7 @@ interface JoinProps extends RouteComponentProps {
   SaveTranscript: any;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   root: {
     '&.css-1eqdgzv-MuiPaper-root-MuiSnackbarContent-root': {
       padding: '0px 16px',
