@@ -310,51 +310,21 @@ function App(props: AppProps) {
                         />
                         <Route path="/chat" component={Chat} />
                         <Route path="/command" component={Command} />
-                        {/* <Route
-                          path="/video"
-                          component={isSupportGalleryView ? Video : galleryViewWithoutSAB ? VideoNonSAB : VideoSingle}
-                        /> */}
                         <Route
                           path="/video"
-                          render={(props) =>
+                          render={(props) => (
                             DisplayDataInfo?.Displayname ? (
-                              isSupportGalleryView ? (
-                                <Video
-                                  {...props}
-                                  DisplayDataInfo={DisplayDataInfo}
-                                  setIsLoading={setIsLoading}
-                                  setLoadingText={setLoadingText}
-                                  SaveTranscript={SaveTranscript}
-                                />
-                              ) : !isAndroidOrIOSBrowser() && !isSupportGalleryView ? (
-                                <VideoSingle
-                                  {...props}
-                                  DisplayDataInfo={DisplayDataInfo}
-                                  setIsLoading={setIsLoading}
-                                  setLoadingText={setLoadingText}
-                                  SaveTranscript={SaveTranscript}
-                                />
-                              ) : 
-                              (
-                                <VideoIOS
-                                  {...props}
-                                  DisplayDataInfo={DisplayDataInfo}
-                                  setIsLoading={setIsLoading}
-                                  setLoadingText={setLoadingText}
-                                  SaveTranscript={SaveTranscript}
-                                />
-                                // <VideoSingle
-                                //   {...props}
-                                //   DisplayDataInfo={DisplayDataInfo}
-                                //   setIsLoading={setIsLoading}
-                                //   setLoadingText={setLoadingText}
-                                //   SaveTranscript={SaveTranscript}
-                                // />
-                              )
+                              <Video
+                                {...props}
+                                DisplayDataInfo={DisplayDataInfo}
+                                setIsLoading={setIsLoading}
+                                setLoadingText={setLoadingText}
+                                SaveTranscript={SaveTranscript}
+                              />
                             ) : (
                               <Redirect to="/Join" />
                             )
-                          }
+                          )}
                         />
                         {/* <Route path="/subsession" component={Subsession} /> */}
                         <Route path="/preview" component={Preview} />
