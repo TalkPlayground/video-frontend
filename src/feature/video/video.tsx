@@ -182,6 +182,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
     ...zmClient.getSessionInfo()
   };
   const StartStopRecording = async (data: boolean) => {
+    console.log(data, 'start recording');
     if (data) {
       await RecordingZoomApi.startCloudRecording()
         .then(async function (response: any) {

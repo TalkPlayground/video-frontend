@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useContext, useEffect, MutableRefObject } from 'react';
 import classNames from 'classnames';
-import { message } from 'antd';
+import { Button, Dropdown, message } from 'antd';
 import ZoomContext from '../../../context/zoom-context';
 import RecordingContext from '../../../context/recording-context';
 import CameraButton from './camera';
@@ -31,7 +31,9 @@ import {
   DialOutOption,
   VideoCapturingState,
   SharePrivilege,
-  MobileVideoFacingMode
+  MobileVideoFacingMode,
+  SubsessionStatus,
+  SubsessionUserStatus
 } from '@zoom/videosdk';
 import { LiveTranscriptionButton } from './live-transcription';
 import { TranscriptionSubtitle } from './transcription-subtitle';
@@ -55,6 +57,17 @@ import { topicInfo } from '../../../config/dev';
 // var Airtable = require('airtable');
 import Airtable from 'airtable';
 import axios from 'axios';
+import { useSubsession } from '../../subsession/hooks/useSubsession';
+import subsessionContext from '../../../context/subsession-context';
+import DraggableModal from '../../subsession/component/draggable-modal';
+import SubsessionCreate from '../../subsession/component/subsession-create';
+import SubsessionManage from '../../subsession/component/subsession-manage';
+import { SubsessionStatusDescription } from '../../subsession/subsession-constant';
+import { Participant } from '../../../index-types';
+import { useParticipantsChange } from '../hooks/useParticipantsChange';
+import { IconFont } from '../../../component/icon-font';
+import { useInviteJoinSubsession } from '../../subsession/hooks/useInviteJoinRoom';
+import SubsessionContainer from '../../subsession/subsession';
 
 interface VideoFooterProps {
   className?: string;
@@ -138,7 +151,12 @@ const VideoFooter = (props: any) => {
   const [recordingStatus, setRecordingStatus] = useState<'' | RecordingStatus>(
     recordingClient?.getCloudRecordingStatus() || ''
   );
+  const [isHost, setIsHost] = useState(false);
+  const [participantsSize, setParticipantsSize] = useState(0);
+
   const zmClient = useContext(ZoomContext);
+  const subsessionClient = useContext(subsessionContext);
+  const { invitedToJoin, inviteVisible, setInviteVisible, setInviteAccepted } = useInviteJoinSubsession(zmClient);
 
   const history = useHistory();
 
@@ -157,7 +175,6 @@ const VideoFooter = (props: any) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const participants = zmClient.getAllUser();
-  
 
   var noSleep = new nosleep();
   const device = useStayAwake();
@@ -176,7 +193,42 @@ const VideoFooter = (props: any) => {
   };
 
   var isMobile = mobile();
+  const {
+    subsessions,
+    subsessionStatus,
+    userStatus,
+    currentSubsession,
+    unassignedUserList,
+    subsessionOptions,
+    setSubsessionOptions,
+    createSubsessions,
+    addSubsession,
+    openSubsessions,
+    assignUserToSubsession,
+    moveUserToSubsession
+  } = useSubsession(zmClient, subsessionClient);
+  let subsessionModalTitle = `Subsessions -${SubsessionStatusDescription[subsessionStatus]}`;
+  const [visible, setVisible] = useState(false);
+  const isAttendeeReturnToMainSession =
+    subsessionStatus === SubsessionStatus.InProgress &&
+    currentSubsession.subsessionId &&
+    currentSubsession.userStatus === SubsessionUserStatus.Invited;
 
+  const onModalClose = useCallback(() => {
+    setVisible(false);
+  }, []);
+  const onParticipantsChange = useCallback(
+    (participants: Participant[]) => {
+      const isHost = zmClient.isHost();
+      if (visible && !isHost) {
+        setVisible(false);
+      }
+      setParticipantsSize(participants.length);
+      setIsHost(isHost);
+    },
+    [visible, zmClient]
+  );
+  useParticipantsChange(zmClient, onParticipantsChange);
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
 
@@ -192,9 +244,8 @@ const VideoFooter = (props: any) => {
   };
   const [onAudioVideoOption, setonAudioVideoOption] = useState(false);
 
-
   const onCameraClick = useCallback(async () => {
-    console.log("video button was clicked!");
+    console.log('video button was clicked!');
     if (isStartedVideo) {
       await mediaStream?.stopVideo();
       setIsStartedVideo(false);
@@ -227,7 +278,7 @@ const VideoFooter = (props: any) => {
   }, [mediaStream, isStartedVideo, zmClient, isBlur]);
 
   const onMicrophoneClick = useCallback(async () => {
-    console.log("microphone button was clicked!");
+    console.log('microphone button was clicked!');
     if (isStartedAudio) {
       if (isMuted) {
         await mediaStream?.unmuteAudio();
@@ -280,7 +331,6 @@ const VideoFooter = (props: any) => {
     onMicrophoneClick();
   }, []);
 
-  
   const onSwitchCamera = async (key: string) => {
     if (mediaStream) {
       if (activeCamera !== key) {
@@ -356,16 +406,16 @@ const VideoFooter = (props: any) => {
       }
     } catch (error: any) {
       // if (error?.message) {
-        await axios.post('/api/v1/user/airtableCL/errorLog', {
-          browserDetails: `${getExploreName()}`,
-          browserVersion: `${get_browser()?.version}`,
-          computerOS: `${getWindowOS()}`,
-          consoleErrorMessage: JSON.stringify(error),
-          sectionBug: 'ScreenShare',
-          sessionId: `${zmClient.getSessionInfo().sessionId}`,
-          timeStamp: `${moment().format('LT') + ' ' + moment().format('ddd, MMM DD')}`,
-          userId: `${zmClient.getSessionInfo().userId}`
-        });
+      await axios.post('/api/v1/user/airtableCL/errorLog', {
+        browserDetails: `${getExploreName()}`,
+        browserVersion: `${get_browser()?.version}`,
+        computerOS: `${getWindowOS()}`,
+        consoleErrorMessage: JSON.stringify(error),
+        sectionBug: 'ScreenShare',
+        sessionId: `${zmClient.getSessionInfo().sessionId}`,
+        timeStamp: `${moment().format('LT') + ' ' + moment().format('ddd, MMM DD')}`,
+        userId: `${zmClient.getSessionInfo().userId}`
+      });
       // }
     }
   }, [mediaStream, isStartedScreenShare, shareRef]);
@@ -505,6 +555,25 @@ const VideoFooter = (props: any) => {
     onCaptionMessage,
     onCanSeeMyScreen
   ]);
+  const onAttendeeBoMenuClick = useCallback(
+    ({ key }: any) => {
+      if (key === 'askHelp') {
+        console.log('subsession ask for help');
+        subsessionClient?.askForHelp();
+      } else if (key === 'leaveRoom') {
+        console.log('subsession leave subsession');
+
+        subsessionClient?.leaveSubsession();
+      }
+    },
+    [subsessionClient]
+  );
+  const attendeeBoMenu = (
+    <Menu onClick={onAttendeeBoMenuClick} open={true} className="attendee-bo-menu">
+      {subsessionStatus === SubsessionStatus.InProgress && <MenuItem key="askHelp">Ask for Help </MenuItem>}
+      <MenuItem key="leaveRoom">Leave Subsession</MenuItem>
+    </Menu>
+  );
   useUnmount(() => {
     if (isStartedAudio) {
       mediaStream?.stopAudio();
@@ -623,6 +692,7 @@ const VideoFooter = (props: any) => {
             isBlur={isBlur}
             HideSelfView={HideSelfView}
           />
+
           {sharing && !isAndroidOrIOSBrowser() && (
             <ScreenShareButton
               sharePrivilege={sharePrivilege}
@@ -915,8 +985,51 @@ const VideoFooter = (props: any) => {
                   Show Self view
                 </MenuItem>
               )}
+              {(isHost ||
+                invitedToJoin || // invite to join
+                isAttendeeReturnToMainSession) && (
+                <MenuItem
+                  onClick={() => {
+                    if (isHost) {
+                      setVisible(true);
+                    } else if (isAttendeeReturnToMainSession) {
+                      subsessionClient?.joinSubsession(currentSubsession.subsessionId);
+                    } else {
+                      if (invitedToJoin?.accepted) {
+                        subsessionClient?.joinSubsession(invitedToJoin.subsessionId);
+                      } else {
+                        setInviteVisible(true);
+                      }
+                    }
+                  }}
+                >
+                  Subsession
+                </MenuItem>
+              )}
+              {!isHost &&
+                userStatus === SubsessionUserStatus.InSubsession &&
+                subsessionStatus === SubsessionStatus.InProgress && (
+                  <MenuItem onClick={onAttendeeBoMenuClick} key="askHelp">
+                    Ask for Help{' '}
+                  </MenuItem>
+                )}
+              {!isHost && userStatus === SubsessionUserStatus.InSubsession && (
+                <MenuItem onClick={onAttendeeBoMenuClick} key="leaveRoom">
+                  Leave Subsession
+                </MenuItem>
+              )}
             </Menu>
           )}
+          {/* {!isHost && userStatus === SubsessionUserStatus.InSubsession && (
+            <Dropdown
+              className="breakout-room-attendee-dropdown"
+              overlay={attendeeBoMenu}
+              trigger={['click']}
+              placement="topLeft"
+            >
+              <Button shape="circle" icon={<IconFont type="icon-group" />} />
+            </Dropdown>
+          )} */}
 
           {/* </Tooltip> */}
           <Typography
@@ -1027,9 +1140,9 @@ const VideoFooter = (props: any) => {
             <Tooltip title={RecordingStatus && SaveTranscript ? 'Transcript On' : 'Transcript Off'}>
               <IconButton
                 sx={{ display: { xs: 'none', md: 'block' } }}
-                // onClick={() => {
-                //   StartStopRecording(!RecordingStatus);
-                // }}
+                onClick={() => {
+                  StartStopRecording(!RecordingStatus);
+                }}
                 className="ml-2 HoverIcon"
               >
                 <ClosedCaptionOffOutlinedIcon
@@ -1050,6 +1163,48 @@ const VideoFooter = (props: any) => {
           isMuted={isMuted}
           isStartedVideo={isStartedVideo}
         />
+        {isHost && (
+          <DraggableModal title={subsessionModalTitle} visible={visible} onClose={onModalClose}>
+            {subsessions.length === 0 && subsessionStatus === SubsessionStatus.NotStarted ? (
+              <SubsessionCreate totalParticipantsSize={participantsSize} onCreateSubsession={createSubsessions} />
+            ) : (
+              <SubsessionManage
+                subsessionStatus={subsessionStatus}
+                userStatus={userStatus}
+                currentSubsession={currentSubsession}
+                subsessions={subsessions}
+                subsessionOptions={{ ...subsessionOptions, ...setSubsessionOptions }}
+                unassignedUserList={unassignedUserList}
+                onAddSubsession={addSubsession}
+                onOpenSubsessions={openSubsessions}
+                onAssignUserToSubsession={assignUserToSubsession}
+                onMoveUserToSubsession={moveUserToSubsession}
+              />
+            )}
+          </DraggableModal>
+        )}
+        {invitedToJoin && (
+          <DraggableModal
+            title="Join Subsession"
+            visible={inviteVisible}
+            onClose={() => {
+              setInviteVisible(false);
+            }}
+            okText="Join"
+            cancelText="Not now"
+            onOk={() => {
+              subsessionClient?.joinSubsession(invitedToJoin.subsessionId);
+              setInviteVisible(false);
+              setInviteAccepted(true);
+            }}
+            onCancel={() => {
+              setInviteVisible(false);
+            }}
+            width={400}
+          >
+            You have been assigned to {invitedToJoin.subsessionName}.
+          </DraggableModal>
+        )}
       </div>
     </>
   );
