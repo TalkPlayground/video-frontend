@@ -55,6 +55,7 @@ import { topicInfo } from '../../../config/dev';
 // var Airtable = require('airtable');
 import Airtable from 'airtable';
 import axios from 'axios';
+import PlayGroundCustom from './PlayGroundCustom';
 
 interface VideoFooterProps {
   className?: string;
@@ -131,7 +132,7 @@ const VideoFooter = (props: any) => {
   const [sharePrivilege, setSharePrivileg] = useState(SharePrivilege.Unlocked);
   const [isMicrophoneForbidden, setIsMicrophoneForbidden] = useState(false);
   const [caption, setCaption] = useState({ text: '', isOver: false });
-
+  const [openCustomModal, setOpenCustomModal] = useState(false);
   const { mediaStream } = useContext(ZoomMediaContext);
   const liveTranscriptionClient = useContext(LiveTranscriptionContext);
   const recordingClient = useContext(RecordingContext);
@@ -157,7 +158,6 @@ const VideoFooter = (props: any) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const participants = zmClient.getAllUser();
-  
 
   var noSleep = new nosleep();
   const device = useStayAwake();
@@ -192,9 +192,8 @@ const VideoFooter = (props: any) => {
   };
   const [onAudioVideoOption, setonAudioVideoOption] = useState(false);
 
-
   const onCameraClick = useCallback(async () => {
-    console.log("video button was clicked!");
+    console.log('video button was clicked!');
     if (isStartedVideo) {
       await mediaStream?.stopVideo();
       setIsStartedVideo(false);
@@ -227,7 +226,7 @@ const VideoFooter = (props: any) => {
   }, [mediaStream, isStartedVideo, zmClient, isBlur]);
 
   const onMicrophoneClick = useCallback(async () => {
-    console.log("microphone button was clicked!");
+    console.log('microphone button was clicked!');
     if (isStartedAudio) {
       if (isMuted) {
         await mediaStream?.unmuteAudio();
@@ -280,7 +279,6 @@ const VideoFooter = (props: any) => {
     onMicrophoneClick();
   }, []);
 
-  
   const onSwitchCamera = async (key: string) => {
     if (mediaStream) {
       if (activeCamera !== key) {
@@ -356,16 +354,16 @@ const VideoFooter = (props: any) => {
       }
     } catch (error: any) {
       // if (error?.message) {
-        await axios.post('/api/v1/user/airtableCL/errorLog', {
-          browserDetails: `${getExploreName()}`,
-          browserVersion: `${get_browser()?.version}`,
-          computerOS: `${getWindowOS()}`,
-          consoleErrorMessage: JSON.stringify(error),
-          sectionBug: 'ScreenShare',
-          sessionId: `${zmClient.getSessionInfo().sessionId}`,
-          timeStamp: `${moment().format('LT') + ' ' + moment().format('ddd, MMM DD')}`,
-          userId: `${zmClient.getSessionInfo().userId}`
-        });
+      await axios.post('/api/v1/user/airtableCL/errorLog', {
+        browserDetails: `${getExploreName()}`,
+        browserVersion: `${get_browser()?.version}`,
+        computerOS: `${getWindowOS()}`,
+        consoleErrorMessage: JSON.stringify(error),
+        sectionBug: 'ScreenShare',
+        sessionId: `${zmClient.getSessionInfo().sessionId}`,
+        timeStamp: `${moment().format('LT') + ' ' + moment().format('ddd, MMM DD')}`,
+        userId: `${zmClient.getSessionInfo().userId}`
+      });
       // }
     }
   }, [mediaStream, isStartedScreenShare, shareRef]);
@@ -671,6 +669,40 @@ const VideoFooter = (props: any) => {
         </MenuItem> */}
               <Box sx={{ width: '95vw' }}>
                 <Grid container>
+                  <Grid item xs={4}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginTop: 20
+                      }}
+                    >
+                      <Tooltip title="Talk Playground">
+                        <IconButton
+                          sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                          }}
+                          onClick={() => {
+                            setmodalOpenClose(false);
+                            setOpenCustomModal(!openCustomModal);
+
+                            setAnchorEl(null);
+                          }}
+                        >
+                          <img width={'24px'} height={'24px'} src="img/button.svg" />
+
+                          <Typography variant="body1" style={{ color: 'white' }}>
+                            Charts
+                          </Typography>
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  </Grid>
                   <Grid item xs={4}>
                     <Box
                       sx={{
@@ -987,6 +1019,23 @@ const VideoFooter = (props: any) => {
               display: { xs: 'none', sm: 'block' }
             }}
           >
+            <Tooltip title="Talk Playground">
+              <IconButton
+                className="ml-2 HoverIcon"
+                onClick={() => {
+                  setmodalOpenClose(false);
+                  setOpenCustomModal(!openCustomModal);
+                }}
+              >
+                <img width={'20px'} height={'20px'} src="img/button.svg" />
+              </IconButton>
+            </Tooltip>
+          </Box>
+          <Box
+            sx={{
+              display: { xs: 'none', sm: 'block' }
+            }}
+          >
             <Tooltip title="Meeting details">
               <IconButton
                 className="ml-2 HoverIcon"
@@ -1050,6 +1099,7 @@ const VideoFooter = (props: any) => {
           isMuted={isMuted}
           isStartedVideo={isStartedVideo}
         />
+        <PlayGroundCustom visible={openCustomModal} setVisible={setOpenCustomModal} />
       </div>
     </>
   );

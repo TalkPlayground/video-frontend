@@ -1,0 +1,40 @@
+.playgroundModal {
+  border-radius: 20px;
+  max-width: 420px;
+  top: 8%;
+  max-height: 90%;
+  overflow: hidden;
+  .ant-modal-content {
+    border-radius: 20px;
+    .ant-modal-header {
+      border-radius: 20px 20px 0 0;
+    }
+  }
+}
+.talkPlaygroundModal {
+  .ant-tabs-nav-list {
+    // flex-wrap: wrap;
+    // justify-content: center;
+  }
+  .ant-tabs-tab {
+    // width: 150px;
+    background-color: white !important;
+
+    border: 0px !important;
+    border-bottom: 1px solid #f2f2f2 !important;
+  }
+  .ant-tabs-tab.ant-tabs-tab-active {
+    border-bottom: 1px solid blue !important;
+  }
+
+  // .ant-tabs-tab:nth-last-child(3),
+  // .ant-tabs-tab:nth-last-child(2) {
+
+  //   @media screen and (min-width: 768px) {
+  //     width: 200px;
+  //   }
+  // }
+  .img-container {
+    width: 100%;
+  }
+}
