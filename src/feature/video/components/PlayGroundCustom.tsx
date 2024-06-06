@@ -21,22 +21,22 @@ const PlayGroundCustom = (props: any) => {
     >
       <div className="talkPlaygroundModal">
         <Tabs onChange={onTabChange} type="card" activeKey={tab} size="large">
-          <TabPane tab="core" key="core">
+          <TabPane tab="Core" key="core">
             <div className="img-container">
               <Image src="img/core.svg" />
             </div>
           </TabPane>
-          <TabPane tab="primary" key="primary">
+          <TabPane tab="Primary" key="primary">
             <div className="img-container">
               <Image src="img/primary.svg" />
             </div>
           </TabPane>
-          <TabPane tab="secondry" key="secondry">
+          <TabPane tab="Secondry" key="secondry">
             <div className="img-container">
               <Image src="img/secondary.svg" />
             </div>
           </TabPane>
-          <TabPane tab="positive Self-Regard" key="positive">
+          <TabPane tab="Positive Self-Regard" key="positive">
             <div className="img-container">
               <Image src="img/positive.svg" />
             </div>
