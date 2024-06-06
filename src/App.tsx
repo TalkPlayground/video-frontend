@@ -4,11 +4,7 @@ import ZoomVideo, { ConnectionState, ReconnectReason } from '@zoom/videosdk';
 import { message, Modal } from 'antd';
 import 'antd/dist/antd.min.css';
 import produce from 'immer';
-import Home from './feature/home/home';
 import Video from './feature/video/video';
-import VideoSingle from './feature/video/video-single';
-import VideoNonSAB from './feature/video/video-non-sab';
-import VideoIOS from './feature/video/video-ios';
 import Preview from './feature/preview/preview';
 import ZoomContext from './context/zoom-context';
 import ZoomMediaContext from './context/media-context';
@@ -30,8 +26,7 @@ import {
 } from './index-types';
 import './App.css';
 import SubsessionContext from './context/subsession-context';
-import { isAndroidBrowser, isAndroidOrIOSBrowser } from './utils/platform';
-import { devConfig, topicInfo } from './config/dev';
+import { devConfig } from './config/dev';
 import Homepage from './feature/home/Homepage';
 import Joinpage from './feature/Join/Joinpage';
 interface AppProps {
@@ -120,7 +115,6 @@ function App(props: AppProps) {
   const [commandClient, setCommandClient] = useState<CommandChannelClient | null>(null);
   const [subsessionClient, setSubsessionClient] = useState<SubsessionClient | null>(null);
   const [liveTranscriptionClient, setLiveTranscriptionClient] = useState<LiveTranscriptionClient | null>(null);
-  const [isSupportGalleryView, setIsSupportGalleryView] = useState<boolean>(true);
 
   const [DisplayDataInfo, setDisplayDataInfo] = useState({
     Displayname: '',
@@ -136,54 +130,24 @@ function App(props: AppProps) {
     webEndpoint = window?.webEndpoint ?? 'zoom.us';
   }
   const mediaContext = useMemo(() => ({ ...mediaState, mediaStream }), [mediaState, mediaStream]);
-  const galleryViewWithoutSAB = Number(enforceGalleryView) === 1 && !window.crossOriginIsolated;
-  // useEffect(() => {
 
-  function fnBrowserDetect() {
-    let userAgent = navigator.userAgent;
-
-    if (userAgent.match(/chrome|chromium|crios/i)) {
-        return true
-    } else if (userAgent.match(/firefox|fxios/i)) {
-        return false
-    } else if (userAgent.match(/safari/i)) {
-        return false
-    } else if (userAgent.match(/opr\//i)) {
-      return false
-  } else if (userAgent.match(/edg/i)) {
-      return false
-    }
-    return false
-  }
-
-  const init = async (nameData: any) => {
+  const init = async (usernameData: any) => {
     setIsLoading(true);
-    let version = "1.10.7"
-    console.log("window.location.origin",window.location.origin);
     await zmClient.init('en-US', `${window.location.origin}/lib`, {
       webEndpoint,
-      // enforceMultipleVideos: galleryViewWithoutSAB,
-      // enforceMultipleVideos: isAndroidOrIOSBrowser() ? false : galleryViewWithoutSAB,
-      enforceMultipleVideos: isAndroidOrIOSBrowser() ? false : galleryViewWithoutSAB,
-      stayAwake: true
+      enforceMultipleVideos: false,
+      enforceVirtualBackground: false,
+      stayAwake: true,
+      patchJsMedia: true,
+      leaveOnPageUnload: false
     });
-    console.log( {
-      webEndpoint,
-      // enforceMultipleVideos: galleryViewWithoutSAB,
-      enforceMultipleVideos: isAndroidOrIOSBrowser() ? false : galleryViewWithoutSAB,
-      
-      stayAwake: true
-    })
     try {
       setLoadingText('Joining the session...');
-      await zmClient.join(topic, signature, nameData, password).catch((e) => {
+      await zmClient.join(topic, signature, usernameData, password).catch((e) => {
         console.log(e);
       });
       const stream = zmClient.getMediaStream();
-      stream.enableHardwareAcceleration(false);
-      console.log("isSupportMultipleVideos()",stream.isSupportMultipleVideos())
       setMediaStream(stream);
-      setIsSupportGalleryView(stream.isSupportMultipleVideos() && !isAndroidBrowser() && fnBrowserDetect());
       const chatClient = zmClient.getChatClient();
       const commandClient = zmClient.getCommandClient();
       const recordingClient = zmClient.getRecordingClient();
@@ -200,11 +164,8 @@ function App(props: AppProps) {
       message.error(e.reason);
     }
   };
-  // init();
-  //   return () => {
-  //     ZoomVideo.destroyClient();
-  //   };
-  // }, [sdkKey, signature, zmClient, topic, name, password, webEndpoint, galleryViewWithoutSAB]);
+
+
   const onConnectionChange = useCallback(
     (payload: any) => {
       if (payload.state === ConnectionState.Reconnecting) {
@@ -246,38 +207,14 @@ function App(props: AppProps) {
     dispatch({ type: `${type}-${action}`, payload: result === 'success' });
   }, []);
 
-  const onDialoutChange = useCallback((payload: any) => {
-    console.log('onDialoutChange', payload);
-  }, []);
-
-  const onAudioMerged = useCallback((payload: any) => {
-    console.log('onAudioMerged', payload);
-  }, []);
-
-  // console.log("galleryViewWithoutSAB || isSupportGalleryView || isAndroidOrIOSBrowser",galleryViewWithoutSAB,isSupportGalleryView,isAndroidOrIOSBrowser())
-
-  const onLeaveOrJoinSession = useCallback(async () => {
-    if (status === 'closed') {
-      setIsLoading(true);
-      await zmClient.join(topic, signature, name, password);
-      setIsLoading(false);
-    } else if (status === 'connected') {
-      await zmClient.leave();
-      message.warn('You have left the session.');
-    }
-  }, [zmClient, status, topic, signature, name, password]);
   useEffect(() => {
     zmClient.on('connection-change', onConnectionChange);
     zmClient.on('media-sdk-change', onMediaSDKChange);
-    zmClient.on('dialout-state-change', onDialoutChange);
-    zmClient.on('merged-audio', onAudioMerged);
     return () => {
       zmClient.off('connection-change', onConnectionChange);
       zmClient.off('media-sdk-change', onMediaSDKChange);
-      zmClient.off('dialout-state-change', onDialoutChange);
-      zmClient.off('merged-audio', onAudioMerged);
     };
-  }, [zmClient, onConnectionChange, onMediaSDKChange, onDialoutChange, onAudioMerged]);
+  }, [zmClient, onConnectionChange, onMediaSDKChange]);
   return (
     <div className="App">
       {loading && <LoadingLayer content={loadingText} />}
@@ -290,7 +227,7 @@ function App(props: AppProps) {
                   <LiveTranscriptionContext.Provider value={liveTranscriptionClient}>
                     <Router>
                       <Switch>
-                        <Route path="/" render={(props) => <Homepage {...props} status={status} init={init} />} exact />
+                        <Route path="/" render={(props) => <Homepage {...props} status={status} />} exact />
                         {/* <Route path="/index.html" component={Home} exact />*/}
                         <Route
                           path="/Join"
