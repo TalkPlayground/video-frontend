@@ -56,6 +56,7 @@ import { topicInfo } from '../../../config/dev';
 import Airtable from 'airtable';
 import axios from 'axios';
 import PlayGroundCustom from './PlayGroundCustom';
+import { postLog } from '../../../Api/loggingApi';
 
 interface VideoFooterProps {
   className?: string;
@@ -198,49 +199,93 @@ const VideoFooter = (props: any) => {
       await mediaStream?.stopVideo();
       setIsStartedVideo(false);
     } else {
-      const startVideoOptions = {
-        hd: true,
-        fullHd: true,
-        ptz: mediaStream?.isBrowserSupportPTZ(),
-        originalRatio: true
-      };
-      if (mediaStream?.isSupportVirtualBackground() && isBlur) {
-        Object.assign(startVideoOptions, { virtualBackground: { imageUrl: 'blur' } });
+      try {
+        const startVideoOptions = {
+          hd: true,
+          fullHd: true,
+          ptz: mediaStream?.isBrowserSupportPTZ(),
+          originalRatio: true
+        };
+        if (mediaStream?.isSupportVirtualBackground() && isBlur) {
+          Object.assign(startVideoOptions, { virtualBackground: { imageUrl: 'blur' } });
+        }
+        await mediaStream?.startVideo(startVideoOptions);
+        await mediaStream?.mirrorVideo(true);
+        if (!mediaStream?.isSupportMultipleVideos()) {
+          const canvasElement = document.querySelector(`#${SELF_VIDEO_ID}`) as HTMLCanvasElement;
+          mediaStream?.renderVideo(
+            canvasElement,
+            zmClient.getSessionInfo().userId,
+            canvasElement.width,
+            canvasElement.height,
+            0,
+            0,
+            3
+          );
+        }
+        setIsStartedVideo(true);
+        let content = {
+          userName: zmClient.getSessionInfo().userName,
+          userId: zmClient.getSessionInfo().userId,
+          browserDetails: `${getExploreName()}`,
+          browserVersion: `${get_browser()?.version}`,
+          supportMultipleVideos: mediaStream?.isSupportMultipleVideos()
+        };
+        await postLog({ type: 'start Video  Success in onCameraClick ', content: JSON.stringify(content) });
+      } catch (error) {
+        let content = {
+          userName: zmClient.getSessionInfo().userName,
+          userId: zmClient.getSessionInfo().userId,
+          browserDetails: `${getExploreName()}`,
+          browserVersion: `${get_browser()?.version}`,
+          error: error
+        };
+        await postLog({ type: 'start Video  Success in onCameraClick ', content: JSON.stringify(content) });
       }
-      await mediaStream?.startVideo(startVideoOptions);
-      await mediaStream?.mirrorVideo(true);
-      if (!mediaStream?.isSupportMultipleVideos()) {
-        const canvasElement = document.querySelector(`#${SELF_VIDEO_ID}`) as HTMLCanvasElement;
-        mediaStream?.renderVideo(
-          canvasElement,
-          zmClient.getSessionInfo().userId,
-          canvasElement.width,
-          canvasElement.height,
-          0,
-          0,
-          3
-        );
-      }
-      setIsStartedVideo(true);
     }
   }, [mediaStream, isStartedVideo, zmClient, isBlur]);
 
   const onMicrophoneClick = useCallback(async () => {
     console.log('microphone button was clicked!');
+
     if (isStartedAudio) {
+      let content = {
+        userName: zmClient.getSessionInfo().userName,
+        userId: zmClient.getSessionInfo().userId,
+        browserDetails: `${getExploreName()}`,
+        browserVersion: `${get_browser()?.version}`
+      };
       if (isMuted) {
         await mediaStream?.unmuteAudio();
+
+        await postLog({ type: 'unmute audio  Success in onMicrophoneClick ', content: JSON.stringify(content) });
       } else {
         await mediaStream?.muteAudio();
+        await postLog({ type: 'mute audio  Success in onMicrophoneClick ', content: JSON.stringify(content) });
       }
     } else {
       try {
         await mediaStream?.startAudio({ highBitrate: true });
+        let content = {
+          userName: zmClient.getSessionInfo().userName,
+          userId: zmClient.getSessionInfo().userId,
+          browserDetails: `${getExploreName()}`,
+          browserVersion: `${get_browser()?.version}`
+        };
+        await postLog({ type: 'start audio  Success in onMicrophoneClick ', content: JSON.stringify(content) });
       } catch (e: any) {
         if (e.type === 'INSUFFICIENT_PRIVILEGES' && e.reason === 'USER_FORBIDDEN_MICROPHONE') {
           setIsMicrophoneForbidden(true);
         }
         console.warn(e);
+        let content = {
+          userName: zmClient.getSessionInfo().userName,
+          userId: zmClient.getSessionInfo().userId,
+          browserDetails: `${getExploreName()}`,
+          browserVersion: `${get_browser()?.version}`,
+          error: e
+        };
+        await postLog({ type: 'start audio  Error in onMicrophoneClick ', content: JSON.stringify(content) });
       }
       // setIsStartedAudio(true);
     }
