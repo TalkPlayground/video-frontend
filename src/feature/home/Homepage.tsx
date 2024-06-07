@@ -102,11 +102,10 @@ function KeepMountedModal({ setOpenModal, openModal }: any) {
 
 interface HomeProps extends RouteComponentProps {
   status: string;
-  init: any;
 }
 
 const Homepage: React.FunctionComponent<HomeProps> = (props) => {
-  const { history, status, init } = props;
+  const { history, status } = props;
   const [anchorEl, setAnchorEl] = useState(null);
   // const navigate = useNavigate();
   const [openModal, setOpenModal] = React.useState(false);
