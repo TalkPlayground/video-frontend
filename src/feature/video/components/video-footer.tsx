@@ -724,7 +724,7 @@ const VideoFooter = (props: any) => {
                         marginTop: 20
                       }}
                     >
-                      <Tooltip title="Talk Playground">
+                      <Tooltip title="Feelings Wheel">
                         <IconButton
                           sx={{
                             display: 'flex',
@@ -1064,7 +1064,7 @@ const VideoFooter = (props: any) => {
               display: { xs: 'none', sm: 'block' }
             }}
           >
-            <Tooltip title="Talk Playground">
+            <Tooltip title="Feelings Wheel">
               <IconButton
                 className="ml-2 HoverIcon"
                 onClick={() => {
