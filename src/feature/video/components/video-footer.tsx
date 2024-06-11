@@ -229,18 +229,38 @@ const VideoFooter = (props: any) => {
           userId: zmClient.getSessionInfo().userId,
           browserDetails: `${getExploreName()}`,
           browserVersion: `${get_browser()?.version}`,
+          enabledSAB: window.crossOriginIsolated,
           supportMultipleVideos: mediaStream?.isSupportMultipleVideos()
         };
-        await postLog({ type: 'start Video  Success in onCameraClick ', content: JSON.stringify(content) });
+        await postLog({ type: 'start Video Success in onCameraClick ', content: JSON.stringify(content) });
       } catch (error) {
+        console.error('Error occurred:', error);
+  
+        // Type guard to check if error is an instance of Error
+        let errorDetails = {};
+        if (error instanceof Error) {
+          errorDetails = {
+            message: error.message,
+            name: error.name,
+            stack: error.stack
+          };
+        } else {
+          errorDetails = {
+            message: 'Unknown error',
+            error: JSON.stringify(error)
+          };
+        }
+  
         let content = {
           userName: zmClient.getSessionInfo().userName,
           userId: zmClient.getSessionInfo().userId,
           browserDetails: `${getExploreName()}`,
           browserVersion: `${get_browser()?.version}`,
-          error: error
+          enabledSAB: window.crossOriginIsolated,
+          videoStarted: isStartedVideo,
+          error: errorDetails
         };
-        await postLog({ type: 'start Video  Success in onCameraClick ', content: JSON.stringify(content) });
+        await postLog({ type: 'start Video Error in onCameraClick ', content: JSON.stringify(content) });
       }
     }
   }, [mediaStream, isStartedVideo, zmClient, isBlur]);
