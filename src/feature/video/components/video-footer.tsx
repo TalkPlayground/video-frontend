@@ -211,18 +211,18 @@ const VideoFooter = (props: any) => {
         }
         await mediaStream?.startVideo(startVideoOptions);
         await mediaStream?.mirrorVideo(true);
-        if (!mediaStream?.isSupportMultipleVideos()) {
-          const canvasElement = document.querySelector(`#${SELF_VIDEO_ID}`) as HTMLCanvasElement;
-          mediaStream?.renderVideo(
-            canvasElement,
-            zmClient.getSessionInfo().userId,
-            canvasElement.width,
-            canvasElement.height,
-            0,
-            0,
-            3
-          );
-        }
+        // if (!mediaStream?.isSupportMultipleVideos()) {
+        //   const canvasElement = document.querySelector(`#${SELF_VIDEO_ID}`) as HTMLCanvasElement;
+        //   mediaStream?.renderVideo(
+        //     canvasElement,
+        //     zmClient.getSessionInfo().userId,
+        //     canvasElement.width,
+        //     canvasElement.height,
+        //     0,
+        //     0,
+        //     3
+        //   );
+        // }
         setIsStartedVideo(true);
         let content = {
           userName: zmClient.getSessionInfo().userName,
@@ -258,6 +258,7 @@ const VideoFooter = (props: any) => {
           browserVersion: `${get_browser()?.version}`,
           enabledSAB: window.crossOriginIsolated,
           videoStarted: isStartedVideo,
+          supportMultipleVideos: mediaStream?.isSupportMultipleVideos(),
           error: errorDetails
         };
         await postLog({ type: 'start Video Error in onCameraClick ', content: JSON.stringify(content) });

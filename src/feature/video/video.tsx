@@ -73,24 +73,35 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
   const myVideoRef = useRef<HTMLCanvasElement | null>(null);
   const [NewMsg, setNewMsg] = useState(false);
   var noSleep = new nosleep();
+
+  //The first section is for calling functions that gather information to learn about the current "state"
+  //First thing we do is call the useStayAwake hook (function) to prevent the browser from going to sleep
   const device = useStayAwake();
 
+  //Nextwe do is call the useActiveVideo hook (function) to check for who is the active video
   const activeVideo = useActiveVideo(zmClient);
+
+  //Then we call the usePagination hook to check if we need to the paginate
   const { page, pageSize, totalPage, totalSize, setPage } = usePagination(
     zmClient,
     canvasDimension,
     selfViewGalleryLayout
   );
+
+  //Then we call the useGalleryLayout hook to get the visible participants and the layout
   const {
     visibleParticipants,
     layout: videoLayout,
     setSelfVideoToggle
   } = useGalleryLayout(zmClient, mediaStream, isVideoDecodeReady, videoRef, canvasDimension, {
+
     page,
     pageSize,
     totalPage,
     totalSize
   });
+
+  //Then we call the useShare hook (method) to check if anyone (us or anyone else) on the call is trying to share the screen and get the dimensions
   const { isRecieveSharing, isStartedShare, sharedContentDimension } = useShare(zmClient, mediaStream, shareRef);
 
   const { userVolumeList, setLocalVolume } = useLocalVolume();
@@ -382,7 +393,7 @@ const VideoContainer: React.FunctionComponent<VideoProps> = (props) => {
         setLoadingText={setLoadingText}
         SaveTranscript={SaveTranscript}
       />
-      {totalPage > 1 && <Pagination page={page} totalPage={totalPage} setPage={setPage} inSharing={isSharing} />}
+      {/* {isMobileBrowser && totalPage > 1 && <Pagination page={page} totalPage={totalPage} setPage={setPage} inSharing={isSharing} />} */}
     </div>
   );
 };

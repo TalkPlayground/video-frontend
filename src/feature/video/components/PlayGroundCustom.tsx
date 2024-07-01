@@ -31,7 +31,7 @@ const PlayGroundCustom = (props: any) => {
               <Image src="img/primary.svg" />
             </div>
           </TabPane>
-          <TabPane tab="Secondry" key="secondry">
+          <TabPane tab="Secondary" key="secondary">
             <div className="img-container">
               <Image src="img/secondary.svg" />
             </div>
