@@ -7,7 +7,6 @@ import SubsessionContext from '../../context/subsession-context';
 import { useParticipantsChange } from './hooks/useParticipantsChange';
 import { IconFont } from '../../component/icon-font';
 import Video from '../video/video';
-import VideoSingle from '../video/video-single';
 import SubsessionCreate from './component/subsession-create';
 import SubsessionManage from './component/subsession-manage';
 import DraggableModal from './component/draggable-modal';
