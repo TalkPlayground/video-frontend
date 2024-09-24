@@ -165,7 +165,7 @@ function RegisterPage(props: any) {
               color: '#434343'
             }}
           >
-            Playground
+            TalkPlayground
           </Typography>
         </Grid>
         {!SendingEmail ? (

@@ -170,7 +170,7 @@ const Joinpage: React.FunctionComponent<JoinProps> = (props) => {
               }}
               className="pb-3"
             >
-              Playground
+              TalkPlayground
             </Typography>
           </Grid>
 

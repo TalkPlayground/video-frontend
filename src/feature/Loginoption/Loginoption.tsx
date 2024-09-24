@@ -20,7 +20,7 @@ function Loginoption(props: any) {
           color: "#434343",
         }}
       >
-        Playground
+        TalkPlayground
       </Typography>
       <Typography
         style={{
