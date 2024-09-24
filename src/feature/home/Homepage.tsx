@@ -263,10 +263,16 @@ const Homepage: React.FunctionComponent<HomeProps> = (props) => {
 
             <Divider className="ml-5 mt-3" />
             <Typography className="pt-3 px-5" style={{ fontSize: '15px' }}>
-              <span className="LearnMore pr-1" style={{ color: '#494CE2' }}>
+              <a
+                href="https://talkplayground.com/" // Replace with your desired URL
+                target="_blank"
+                rel="noopener noreferrer"
+                className="LearnMore pr-1"
+                style={{ color: '#494CE2' }}
+              >
                 Learn more
-              </span>
-              about Playground
+              </a>
+              about TalkPlayground
             </Typography>
           </Grid>
           <Grid item={true} xs={12} md={6}>
