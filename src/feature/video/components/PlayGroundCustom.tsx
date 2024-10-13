@@ -46,6 +46,11 @@ const PlayGroundCustom = (props: any) => {
               <Image src="img/resistant.svg" />
             </div>
           </TabPane>
+          <TabPane tab="Anger Iceberg" key="anger">
+            <div className="img-container">
+              <Image src="img/iceberg.svg" />
+            </div>
+          </TabPane>
         </Tabs>
       </div>
     </Modal>
